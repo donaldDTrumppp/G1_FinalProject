@@ -1,3 +1,6 @@
+using Clinic_Management.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace Clinic_Management
 {
     public class Program
@@ -9,6 +12,11 @@ namespace Clinic_Management
             // Add services to the container.
             builder.Services.AddRazorPages();
 
+
+            var configuration = builder.Configuration;
+
+            builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
+            option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,6 +35,11 @@ namespace Clinic_Management
             app.UseAuthorization();
 
             app.MapRazorPages();
+            app.MapGet("/", context =>
+            {
+                context.Response.Redirect("/Authentication/Login");
+                return Task.CompletedTask;
+            });
 
             app.Run();
         }
