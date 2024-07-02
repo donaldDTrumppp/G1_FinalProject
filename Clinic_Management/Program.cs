@@ -37,7 +37,7 @@ namespace Clinic_Management
             app.MapRazorPages();
             app.MapGet("/", context =>
             {
-                context.Response.Redirect("/Authentication/Login");
+                context.Response.Redirect("/Index");
                 return Task.CompletedTask;
             });
 
