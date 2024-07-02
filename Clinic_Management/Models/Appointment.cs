@@ -11,7 +11,7 @@ namespace Clinic_Management.Models
         }
 
         public int AppointmentId { get; set; }
-        public int DepartmentId { get; set; }
+        public int BranchId { get; set; }
         public int PatientId { get; set; }
         public string PatientName { get; set; } = null!;
         public DateTime PatientDob { get; set; }
@@ -25,7 +25,7 @@ namespace Clinic_Management.Models
         public string? Description { get; set; }
         public int Status { get; set; }
 
-        public virtual Department Department { get; set; } = null!;
+        public virtual Branch Branch { get; set; } = null!;
         public virtual User? Doctor { get; set; }
         public virtual User Patient { get; set; } = null!;
         public virtual User? Receptionist { get; set; }
