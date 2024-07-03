@@ -28,7 +28,7 @@ namespace Clinic_Management.Pages.MedicalRecords
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            if (_context.MedicalRecords == null || MedicalRecord == null)
+            if (!ModelState.IsValid || _context.MedicalRecords == null || MedicalRecord == null)
             {
                 return Page();
             }

@@ -128,7 +128,33 @@ namespace Clinic_Management.Pages.MedicalRecords
                 return BadRequest();
             }
 
-            _context.Entry(medicalRecord).State = EntityState.Modified;
+            var existingRecord = await _context.MedicalRecords
+                .Include(mr => mr.Appointment)
+                .Include(mr => mr.Patient)
+                .FirstOrDefaultAsync(mr => mr.MedicalrecordId == id);
+
+            if (existingRecord == null)
+            {
+                return NotFound();
+            }
+
+            // Update existing record properties
+            existingRecord.AppointmentId = medicalRecord.AppointmentId;
+            existingRecord.PatientId = medicalRecord.PatientId;
+            existingRecord.DoctorId = medicalRecord.DoctorId;
+            existingRecord.VisitTime = medicalRecord.VisitTime;
+            existingRecord.Symptoms = medicalRecord.Symptoms;
+            existingRecord.Diagnosis = medicalRecord.Diagnosis;
+            existingRecord.Treatment = medicalRecord.Treatment;
+
+            // Load related entities if necessary
+            existingRecord.Appointment = await _context.Appointments.FindAsync(medicalRecord.AppointmentId);
+            existingRecord.Patient = await _context.Users.FindAsync(medicalRecord.PatientId);
+
+            if (existingRecord.DoctorId.HasValue)
+            {
+                existingRecord.Doctor = await _context.Users.FindAsync(medicalRecord.DoctorId.Value);
+            }
 
             try
             {

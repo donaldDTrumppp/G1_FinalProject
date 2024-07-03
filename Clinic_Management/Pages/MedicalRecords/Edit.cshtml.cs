@@ -29,15 +29,15 @@ namespace Clinic_Management.Pages.MedicalRecords
                 return NotFound();
             }
 
-            var medicalrecord =  await _context.MedicalRecords.FirstOrDefaultAsync(m => m.MedicalrecordId == id);
+            var medicalrecord = await _context.MedicalRecords.FirstOrDefaultAsync(m => m.MedicalrecordId == id);
             if (medicalrecord == null)
             {
                 return NotFound();
             }
             MedicalRecord = medicalrecord;
-           ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
-           ViewData["DoctorId"] = new SelectList(_context.Users, "UserId", "UserId");
-           ViewData["PatientId"] = new SelectList(_context.Users, "UserId", "UserId");
+            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
+            ViewData["DoctorId"] = new SelectList(_context.Users, "UserId", "UserId");
+            ViewData["PatientId"] = new SelectList(_context.Users, "UserId", "UserId");
             return Page();
         }
 
@@ -47,6 +47,17 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             if (!ModelState.IsValid)
             {
+                foreach (var state in ModelState)
+                {
+                    if (state.Value.Errors.Count > 0)
+                    {
+                        foreach (var error in state.Value.Errors)
+                        {
+                            // You can use any logging mechanism, here just for demonstration
+                            System.Diagnostics.Debug.WriteLine($"Field: {state.Key}, Error: {error.ErrorMessage}");
+                        }
+                    }
+                }
                 return Page();
             }
 
@@ -73,7 +84,7 @@ namespace Clinic_Management.Pages.MedicalRecords
 
         private bool MedicalRecordExists(int id)
         {
-          return (_context.MedicalRecords?.Any(e => e.MedicalrecordId == id)).GetValueOrDefault();
+            return (_context.MedicalRecords?.Any(e => e.MedicalrecordId == id)).GetValueOrDefault();
         }
     }
 }

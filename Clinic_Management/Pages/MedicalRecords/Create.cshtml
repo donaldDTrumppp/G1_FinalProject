@@ -5,54 +5,6 @@
     ViewData["Title"] = "Create";
 }
 
-@* <h1>Create</h1>
-
-<h4>MedicalRecord</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="MedicalRecord.AppointmentId" class="control-label"></label>
-                <select asp-for="MedicalRecord.AppointmentId" class ="form-control" asp-items="ViewBag.AppointmentId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="MedicalRecord.PatientId" class="control-label"></label>
-                <select asp-for="MedicalRecord.PatientId" class ="form-control" asp-items="ViewBag.PatientId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="MedicalRecord.DoctorId" class="control-label"></label>
-                <select asp-for="MedicalRecord.DoctorId" class ="form-control" asp-items="ViewBag.DoctorId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="MedicalRecord.VisitTime" class="control-label"></label>
-                <input asp-for="MedicalRecord.VisitTime" class="form-control" />
-                <span asp-validation-for="MedicalRecord.VisitTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MedicalRecord.Symptoms" class="control-label"></label>
-                <input asp-for="MedicalRecord.Symptoms" class="form-control" />
-                <span asp-validation-for="MedicalRecord.Symptoms" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MedicalRecord.Diagnosis" class="control-label"></label>
-                <input asp-for="MedicalRecord.Diagnosis" class="form-control" />
-                <span asp-validation-for="MedicalRecord.Diagnosis" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MedicalRecord.Treatment" class="control-label"></label>
-                <input asp-for="MedicalRecord.Treatment" class="form-control" />
-                <span asp-validation-for="MedicalRecord.Treatment" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
- *@
-
 <header class="my-6">
     <h3 class="text-center font-semibold uppercase text-gray-300">Basiha Medical - your mom</h3>
     <p class="text-center font-extrabold text-sky-700 tracking-tight text-5xl">Medical Report</p>
