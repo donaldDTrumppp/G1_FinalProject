@@ -5,62 +5,6 @@
     ViewData["Title"] = "Details";
 }
 
-@* <h1>Details</h1>
-
-<div>
-    <h4>MedicalRecord</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.VisitTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.VisitTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.Symptoms)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.Symptoms)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.Diagnosis)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.Diagnosis)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.Treatment)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.Treatment)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.Appointment)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.Appointment.AppointmentId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.Doctor)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.Doctor.UserId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.Patient)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.Patient.UserId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.MedicalRecord?.MedicalrecordId">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
- *@
-
 <header class="my-6 max-w-2xl mx-auto relative">
     <img src="~/Images/heading-notext.png" class="w-full object-cover" />
     <div class="absolute top-8 right-8 w-1/2" style="padding-left: 6rem;">
