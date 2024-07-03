@@ -6,7 +6,9 @@
     <title>@ViewData["Title"] - Clinic_Management</title>
     <link rel="stylesheet" href="~/css/site.css?v=1" asp-append-version="true" />
     <link rel="stylesheet" href="~/Clinic_Management.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/styles.css?v=2" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" />
+    @RenderSection("Styles", required: false)
 </head>
 <body class="antialiased bg-white font-sans text-gray-900">
 
@@ -79,8 +81,7 @@
                         </li>
 
                         <li class="ml-6">
-                            <a class="inline-block font-semibold px-4 py-2 text-white text-white"
-                               asp-page="Authentication/Login">
+                            <a asp-page="/Authentication/Login" class="inline-block font-semibold px-4 py-2 text-white text-white">
                                 Sign in / Sign up
                             </a>
                         </li>
@@ -122,9 +123,8 @@
                                    href="#">Blog</a>
                             </li>
                             <li class="md:ml-4">
-                                <a class="py-2 inline-block md:text-white md:px-2 font-semibold" href="#">
-                                    Contact
-                                    Us
+                                <a asp-page="/MedicalRecords/Index" class="py-2 inline-block md:text-white md:px-2 font-semibold">
+                                    Medical Records
                                 </a>
                             </li>
                             <li class="md:ml-6 mt-3 md:mt-0">
@@ -295,6 +295,6 @@
 
         gtag('config', 'UA-131505823-4');
     </script>
-
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

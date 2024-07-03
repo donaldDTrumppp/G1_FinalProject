@@ -34,7 +34,9 @@ namespace Clinic_Management
 
             app.UseAuthorization();
 
+            app.MapControllers();
             app.MapRazorPages();
+
             app.MapGet("/", context =>
             {
                 context.Response.Redirect("/Index");

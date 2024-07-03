@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Clinic_Management.Models
 {
-    public partial class Specialist
+    public partial class Branch
     {
-        public Specialist()
+        public Branch()
         {
             Appointments = new HashSet<Appointment>();
             Staff = new HashSet<Staff>();
         }
 
-        public int SpecialistId { get; set; }
-        public string SpecialistName { get; set; } = null!;
+        public int BranchId { get; set; }
+        public string BranchName { get; set; } = null!;
 
         public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<Staff> Staff { get; set; }

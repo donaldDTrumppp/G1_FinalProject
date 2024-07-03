@@ -5,5 +5,9 @@
   },
   "scripts": {
     "css:build": "npx tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/styles.css --minify"
+  },
+  "dependencies": {
+    "flowbite": "^2.4.1",
+    "preline": "^2.3.0"
   }
 }
