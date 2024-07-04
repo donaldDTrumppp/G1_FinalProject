@@ -24,13 +24,13 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             if (id == null || _context.MedicalRecords == null)
             {
-                return NotFound();
+                return RedirectToPage("/Home/404");
             }
 
             var medicalrecord = await _context.MedicalRecords.FirstOrDefaultAsync(m => m.MedicalrecordId == id);
             if (medicalrecord == null)
             {
-                return NotFound();
+                return RedirectToPage("/Home/404");
             }
             else 
             {

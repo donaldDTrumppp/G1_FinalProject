@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
+    [Authorize(Policy = "DoctorOnly")]
     public class EditModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
@@ -26,13 +28,13 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             if (id == null || _context.MedicalRecords == null)
             {
-                return NotFound();
+                return RedirectToPage("/Home/404");
             }
 
             var medicalrecord = await _context.MedicalRecords.FirstOrDefaultAsync(m => m.MedicalrecordId == id);
             if (medicalrecord == null)
             {
-                return NotFound();
+                return RedirectToPage("/Home/404");
             }
             MedicalRecord = medicalrecord;
             ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
@@ -71,7 +73,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             {
                 if (!MedicalRecordExists(MedicalRecord.MedicalrecordId))
                 {
-                    return NotFound();
+                    return RedirectToPage("/Home/404");
                 }
                 else
                 {
