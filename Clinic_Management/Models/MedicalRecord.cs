@@ -14,8 +14,8 @@ namespace Clinic_Management.Models
         public string? Diagnosis { get; set; }
         public string? Treatment { get; set; }
 
-        public virtual Appointment? Appointment { get; set; } = null!;
+        public virtual Appointment Appointment { get; set; } = null!;
         public virtual User? Doctor { get; set; }
-        public virtual User? Patient { get; set; } = null!;
+        public virtual User Patient { get; set; } = null!;
     }
 }

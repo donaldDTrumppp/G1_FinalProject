@@ -90,7 +90,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                 DoctorId = s.DoctorId.GetValueOrDefault(),
                 DoctorName = s.Doctor != null ? s.Doctor.Name : "Unknown",
                 DoctorSpecialization = s.SpecialistNavigation != null ? s.SpecialistNavigation.SpecialistName : "Other",
-                PatientId= s.PatientId,
+                PatientId = s.PatientId,
                 PatientName = s.PatientName,
                 PatientAddress = s.PatientAddress,
                 PatientPhone = s.PatientPhoneNumber,

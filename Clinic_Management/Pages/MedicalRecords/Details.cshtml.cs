@@ -18,7 +18,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             _context = context;
         }
 
-      public MedicalRecord MedicalRecord { get; set; } = default!; 
+        public MedicalRecord MedicalRecord { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -32,7 +32,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 MedicalRecord = medicalrecord;
             }
