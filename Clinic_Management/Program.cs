@@ -1,4 +1,4 @@
-using Clinic_Management.Models;
+//using Clinic_Management.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Clinic_Management
@@ -15,8 +15,8 @@ namespace Clinic_Management
 
             var configuration = builder.Configuration;
 
-            builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
-            option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
+            //builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
+            //option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

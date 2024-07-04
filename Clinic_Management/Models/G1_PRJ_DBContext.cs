@@ -28,11 +28,12 @@ namespace Clinic_Management.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server = 1CECREAM\\SQLEXPRESS; database = G1_PRJ_DB;uid=sa;pwd=123;TrustServerCertificate=True;");
-            }
+
+            var builder = new ConfigurationBuilder()
+                              .SetBasePath(Directory.GetCurrentDirectory())
+                              .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfigurationRoot configuration = builder.Build();
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("MyCnn"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -119,7 +120,9 @@ namespace Clinic_Management.Models
             modelBuilder.Entity<AppointmentStatus>(entity =>
             {
                 entity.HasKey(e => e.StatusId)
-                    .HasName("PK__Appointm__3683B53187793E0E");
+
+                    .HasName("PK__Appointm__3683B5312D3C6801");
+
 
                 entity.ToTable("Appointment_Status");
 
@@ -305,6 +308,8 @@ namespace Clinic_Management.Models
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 
+                entity.Property(e => e.Status).HasColumnName("status");
+
                 entity.Property(e => e.Username)
                     .HasMaxLength(50)
                     .IsUnicode(false)
@@ -314,7 +319,52 @@ namespace Clinic_Management.Models
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__User__role_id__3B75D760");
+
+                    .HasConstraintName("FK__User__role_id__286302EC");
+            });
+
+            modelBuilder.Entity<staff>(entity =>
+            {
+                entity.HasKey(e => e.UserId)
+                    .HasName("PK__Staff__B9BE370F11949EE4");
+
+                entity.ToTable("Staff");
+
+                entity.Property(e => e.UserId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("user_id");
+
+                entity.Property(e => e.Cccd)
+                    .HasMaxLength(12)
+                    .IsUnicode(false)
+                    .HasColumnName("CCCD");
+
+                entity.Property(e => e.DoctorBranchId).HasColumnName("doctor_branch_id");
+
+                entity.Property(e => e.DoctorSpecialist).HasColumnName("doctor_specialist");
+
+                entity.Property(e => e.HireDate).HasColumnType("date");
+
+                entity.Property(e => e.Image)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.DoctorBranch)
+                    .WithMany(p => p.staff)
+                    .HasForeignKey(d => d.DoctorBranchId)
+                    .HasConstraintName("FK__Staff__doctor_br__2D27B809");
+
+                entity.HasOne(d => d.DoctorSpecialistNavigation)
+                    .WithMany(p => p.staff)
+                    .HasForeignKey(d => d.DoctorSpecialist)
+                    .HasConstraintName("FK__Staff__doctor_sp__2E1BDC42");
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.staff)
+                    .HasForeignKey<staff>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Staff__user_id__2F10007B");
+
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -24,6 +24,7 @@ namespace Clinic_Management.Models
         public string Email { get; set; } = null!;
         public string Address { get; set; } = null!;
         public int RoleId { get; set; }
+        public bool Status { get; set; }
 
         public virtual Role Role { get; set; } = null!;
         public virtual Staff? Staff { get; set; }
