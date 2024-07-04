@@ -1,0 +1,181 @@
+﻿@page
+@model Clinic_Management.Pages.MedicalRecords.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<header class="my-6">
+    <h3 class="text-center font-semibold uppercase text-gray-300">Basiha Medical - your mom</h3>
+    <p class="text-center font-extrabold text-sky-700 tracking-tight text-5xl">Medical Report</p>
+    <h4 class="font-medium text-center text-red-500">** Fill all field **</h4>
+</header>
+<form class="max-w-2xl mx-auto" method="post">
+    <div class="flex justify-between mb-4">
+        <h4 class="font-medium text-gray-700">Edit report</h4>
+        <p class="font-semibold text-md-center text-gray-900">Appointment code: <span id="floating_appointment" class="font-bold text-lg"></span></p>
+    </div>
+    <div class="main_value">
+        <input type="hidden" asp-for="MedicalRecord.MedicalrecordId" />
+        <select asp-for="MedicalRecord.AppointmentId" id="apmId" class="hidden" asp-items="ViewBag.AppointmentId"></select>
+        <select asp-for="MedicalRecord.PatientId" id="patientId" class="hidden" asp-items="ViewBag.PatientId"></select>
+        <select asp-for="MedicalRecord.DoctorId" id="doctorId" class="hidden" asp-items="ViewBag.DoctorId"></select>
+    </div>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">Doctor Info</h3>
+        <div class="grid md:grid-cols-9 md:gap-6">
+            <div class="relative z-0 w-full group md:col-span-5">
+                <label for="floating_fname_d" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fullname</label>
+                <input type="text" id="floating_fname_d" name="floating_fname_d" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+            </div>
+            <div class="relative z-0 w-full group md:col-span-4">
+                <label asp-for="MedicalRecord.VisitTime" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Visit time</label>
+                <input type="datetime-local" asp-for="MedicalRecord.VisitTime" id="floating_visit_time" class="mb-5 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+        </div>
+        <div class="relative z-0 w-full mb-5 group">
+            <label for="floating_specialization" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Specialization</label>
+            <input type="text" name="floating_specialization" id="floating_specialization" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+        </div>
+    </div>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">Patient Info</h3>
+        <div>
+            <label for="floating_fname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fullname</label>
+            <input type="text" name="floating_fname" id="floating_fname" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+        </div>
+        <div class="relative z-0 w-full mb-5 group">
+            <label for="floating_address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+            <input type="text" name="floating_address" id="floating_address" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+        </div>
+        <div class="grid md:grid-cols-2 md:gap-6">
+            <div class="relative z-0 w-full mb-5 group">
+                <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
+                <input type="date" name="floating_dob" id="floating_dob" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+            </div>
+            <div class="relative z-0 w-full mb-5 group">
+                <label for="floating_phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
+                <input type="tel" name="floating_phone" id="floating_phone" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+            </div>
+        </div>
+        <div class="relative z-0 w-full mb-5 group">
+            <label for="floating_email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+            <input type="email" name="floating_email" id="floating_email" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+        </div>
+    </div>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900">Symstoms</h3>
+        <textarea asp-for="MedicalRecord.Symptoms" id="symptoms" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write symstoms of patient..." required></textarea>
+    </div>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900">Diagnosis</h3>
+        <textarea asp-for="MedicalRecord.Diagnosis" id="diagnosis" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your diagnosis here..." required></textarea>
+    </div>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900">Prescription</h3>
+        <textarea asp-for="MedicalRecord.Treatment" id="treatment" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write prescription..." required></textarea>
+    </div>
+    <div class="flex justify-end items-center">
+        <a asp-page="Index" class="text-blue-700 text-md">Cancel</a>
+        <button type="submit" class="my-2 ml-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Save</button>
+    </div>
+</form>
+<script src="./../js/preline.js"></script>
+<script src="./../js/createjs.js"></script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    window.onload = () => {
+        const url = new URL(window.location.href);
+        const id = url.searchParams.get("id");
+        fetch(`/api/MedicalRecords/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                var aid = data.appointmentId;
+                fetch(`/api/MedicalRecords/appointments/${aid}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById('floating_fname_d').value = (data.doctorName);
+                        document.getElementById('floating_visit_time').value = (data.requestTime);
+                        document.getElementById('floating_specialization').value = (data.doctorSpecialization);
+                        document.getElementById('floating_fname').value = (data.patientName);
+                        document.getElementById('floating_address').value = (data.patientAddress);
+                        document.getElementById('floating_dob').value = isoToInputDate(data.patientDob);
+                        document.getElementById('floating_phone').value = (data.patientPhone);
+                        document.getElementById('floating_email').value = (data.patientEmail);
+                        document.getElementById('apmId').value = decodeId(data.id);
+                        document.getElementById('patientId').value = (data.patientId);
+                        document.getElementById('doctorId').value = (data.doctorId);
+                        document.getElementById('floating_appointment').innerHTML = data.id;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    async function updateMedicalRecord() {
+        const url = new URL(window.location.href);
+        const id = url.searchParams.get("id");
+        // Get the medical record data from the form
+        const medicalRecordId = id;
+        const appointmentId = document.getElementById('apmId').value;
+        const patientId = document.getElementById('patientId').value;
+        const doctorId = document.getElementById('doctorId').value;
+        const visitTime = document.getElementById('floating_visit_time').value;
+        const symptoms = document.getElementById('symptoms').value;
+        const diagnosis = document.getElementById('diagnosis').value;
+        const treatment = document.getElementById('treatment').value;
+
+        // Create the medical record object
+        const medicalRecord = {
+            medicalRecordId: parseInt(medicalRecordId),
+            appointmentId: parseInt(appointmentId),
+            patientId: parseInt(patientId),
+            doctorId: doctorId ? parseInt(doctorId) : null,
+            visitTime: visitTime,
+            symptoms: symptoms,
+            diagnosis: diagnosis,
+            treatment: treatment
+        };
+
+        try {
+            // Call the API using fetch
+            const response = await fetch(`/api/MedicalRecords/${medicalRecordId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(medicalRecord)
+            });
+
+            // Check if the response is successful
+            if (response.ok) {
+                console.log('Medical record updated successfully');
+                location.reload();
+            } else {
+                console.error('Failed to update medical record:', response.status, response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating medical record:', error);
+        }
+    }
+</script>
+

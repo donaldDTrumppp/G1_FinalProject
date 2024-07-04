@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Clinic_Management.Models
 {
-    public partial class staff
+    public partial class Staff
     {
         public int UserId { get; set; }
         public DateTime HireDate { get; set; }
