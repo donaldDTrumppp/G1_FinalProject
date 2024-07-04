@@ -7,7 +7,10 @@
     "css:build": "npx tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/styles.css --minify"
   },
   "dependencies": {
+    "docx": "^8.5.0",
     "flowbite": "^2.4.1",
+    "fs": "^0.0.1-security",
+    "pizzip": "^3.1.7",
     "preline": "^2.3.0"
   }
 }

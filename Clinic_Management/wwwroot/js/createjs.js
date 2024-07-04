@@ -1,4 +1,8 @@
-﻿function chooseAppointment(e) {
+﻿import PizZip from 'pizzip';
+import Docxtemplater from 'https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.22.2/docxtemplater.min.js';
+import { saveAs } from 'https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js';
+
+function chooseAppointment(e) {
     var id = e.querySelector('[data-hs-combo-box-output-item-field]').innerHTML;
 
     fetch(`/api/MedicalRecords/appointments/${id}`)

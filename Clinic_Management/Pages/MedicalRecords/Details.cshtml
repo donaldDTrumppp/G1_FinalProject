@@ -29,13 +29,14 @@
         </div>
     </div>
 </header>
-<form class="max-w-2xl mx-auto">
+<form id="form" class="max-w-2xl mx-auto">
     <div class="main_value">
         <select asp-for="MedicalRecord.AppointmentId" id="apmId" class="hidden" asp-items="ViewBag.AppointmentId"></select>
         <select asp-for="MedicalRecord.PatientId" id="patientId" class="hidden" asp-items="ViewBag.PatientId"></select>
         <select asp-for="MedicalRecord.DoctorId" id="doctorId" class="hidden" asp-items="ViewBag.DoctorId"></select>
     </div>
-    <div class="flex justify-end">
+    <div class="flex justify-between mb-4">
+        <button type="button" onclick="abc()" class="text-blue-500 text-md font-semibold">Export to file Word</button>
         <p id="floating_visit_time" class="font-bold text-md-center text-gray-900"></p>
     </div>
     <div>
@@ -94,7 +95,7 @@
         <a asp-page="./Index" class="my-2 ml-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Back</a>
     </div>
 </form>
-
+<script src="./../js/export.js"></script>
 <script src="./../js/createjs.js"></script>
 
 <script>
@@ -154,4 +155,34 @@
 
         return `${formattedTime}, ${formattedDate}`;
     }
+
+    function abc() {
+        const visitTime = document.getElementById('floating_visit_time').innerHTML;
+        const doctorName = document.getElementById('floating_fname_d').innerHTML;
+        const specialization = document.getElementById('floating_specialization').innerHTML;
+        const patientName = document.getElementById('floating_fname').value;
+        const address = document.getElementById('floating_address').value;
+        const dob = document.getElementById('floating_dob').value;
+        const phone = document.getElementById('floating_phone').value;
+        const email = document.getElementById('floating_email').value;
+        const symptoms = document.getElementById('symptoms').textContent;
+        const diagnosis = document.getElementById('diagnosis').textContent;
+        const treatment = document.getElementById('treatment').textContent;
+        // Example usage
+        const formData = {
+            visitTime: visitTime,
+            doctorName: doctorName,
+            specialization: specialization,
+            patientName: patientName,
+            address: address,
+            dob: dob,
+            phone: phone,
+            email: email,
+            symptoms: symptoms,
+            diagnosis: diagnosis,
+            treatment: treatment,
+            // Add other form data properties here
+        };
+        console.log(formData);
+    };
 </script>
