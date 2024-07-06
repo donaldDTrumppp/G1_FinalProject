@@ -5,11 +5,6 @@ namespace Clinic_Management.Models
 {
     public partial class Appointment
     {
-        public Appointment()
-        {
-            MedicalRecords = new HashSet<MedicalRecord>();
-        }
-
         public int AppointmentId { get; set; }
         public int BranchId { get; set; }
         public int PatientId { get; set; }
@@ -31,6 +26,6 @@ namespace Clinic_Management.Models
         public virtual User? Receptionist { get; set; }
         public virtual Specialist? SpecialistNavigation { get; set; }
         public virtual AppointmentStatus StatusNavigation { get; set; } = null!;
-        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }
+        public virtual MedicalRecord? MedicalRecord { get; set; }
     }
 }

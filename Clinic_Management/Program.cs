@@ -1,4 +1,5 @@
 //using Clinic_Management.Models;
+using Clinic_Management.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Clinic_Management
@@ -11,7 +12,7 @@ namespace Clinic_Management
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-
+            builder.Services.AddDbContext<G1_PRJ_DBContext>(); 
 
             var configuration = builder.Configuration;
 

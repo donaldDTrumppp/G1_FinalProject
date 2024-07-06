@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
@@ -17,6 +18,8 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             _context = context;
         }
+
+       
 
         [BindProperty(SupportsGet = true)]
         public string SearchString { get; set; }
@@ -65,7 +68,8 @@ namespace Clinic_Management.Pages.MedicalRecords
             }
 
             totalRecords = await query.CountAsync();
-
+            
+            //  MedicalRecord = await query.ToListAsync();
             // Apply pagination
             MedicalRecord = await query.Skip((PageIndex - 1) * PageSize).Take(PageSize).ToListAsync();
         }

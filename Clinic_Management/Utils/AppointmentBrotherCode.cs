@@ -2,12 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 
-namespace Clinic_Management.Pages.MedicalRecords.utils
+namespace Clinic_Management.Utils
 {
     public class AppointmentBrotherCode
     {
         private readonly G1_PRJ_DBContext _context;
-
+        
         public AppointmentBrotherCode(G1_PRJ_DBContext context)
         {
             _context = context;

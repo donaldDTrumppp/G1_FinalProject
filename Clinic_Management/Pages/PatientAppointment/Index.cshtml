@@ -1,5 +1,5 @@
 ﻿@page
-@model Clinic_Management.Pages.MedicalRecords.IndexModel
+@model Clinic_Management.Pages.PatientAppointment.IndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -7,20 +7,38 @@
 
 <div class="mx-16 my-5 flex justify-between items-center">
     <p class="text-2xl font-extrabold dark:text-white inline-block">
-        Medical Records
+        Appointments
     </p>
 
     <div class="flex items-center">
-        <form class="flex items-center max-w-md mr-4">
-            <label for="simple-search" class="sr-only">Search</label>
-            <div class="relative w-full">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <input type="text" id="SearchString" name="SearchString" value="@Model.SearchString" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search..." />
-            </div>
+        <form class="flex items-center max-w-fit mr-4">
+            <select asp-for="StatusId" class="bg-gray-50 mr-2 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option value="0" selected>All Status</option>
+                @foreach (var item in Model.Status)
+                {
+                    <option title="@item.StatusName" class="w-full" value="@item.StatusId"><div title="@item.StatusName">@item.StatusName</div></option>
+                }
+
+            </select>
+
+            <select asp-for="BranchId" class="bg-gray-50 mr-2 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option value="0" selected>All Branch</option>
+                @foreach (var item in Model.Branchs)
+                {
+                    <option title ="@item.BranchName" class="w-full" value="@item.BranchId">@item.BranchName</option>
+                }
+            </select>
+
+            <select asp-for="SpecialistId" class="bg-gray-50 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option  value="0" selected>All Specialist</option>
+                @foreach (var item in Model.Specialists)
+                {
+                    <option title="@item.SpecialistName" class="w-full" value="@item.SpecialistId">@item.SpecialistName</option>
+                }
+            </select>
+
+            <input style="display: none" asp-for="SortOrder" value="@Model.SortOrder" />
+            <input style="display: none" asp-for="SortField" value="@Model.SortField" />
             <button type="submit" class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
@@ -36,7 +54,7 @@
                     bg-blue-700 px-8 py-3 text-white
                     hover:bg-transparent hover:text-blue-700
                     focus:outline-none focus:ring active:text-blue-500">
-                <span class="text-sm font-medium"> Create </span>
+                <span class="text-sm font-medium"> Book Appointment </span>
 
                 <svg class="size-5 rtl:rotate-180" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <line x1="12" y1="5" x2="12" y2="19" />  <line x1="5" y1="12" x2="19" y2="12" /></svg>
             </a>
@@ -49,75 +67,111 @@
 
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-5 mx-16 ">
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    <table hidden="@(Model.TotalRecords == 0)" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
-                        @Html.DisplayNameFor(model => model.MedicalRecord[0].VisitTime)
-                        <a asp-page="./Index" id="VisitTime" asp-route-PageIndex="1" asp-route-SearchString="@Model.SearchString" asp-route-SortField="VisitTime" asp-route-SortOrder="@(Model.SortField == "VisitTime" && Model.SortOrder == "asc" ? "desc" : "asc")"></a>
+                        <div class="flex items-center">
+                            Name
+                            <a asp-page="./Index" id="Patient" asp-route-SortField="Patient" asp-route-SortOrder="@(Model.SortField == "Patient" && Model.SortOrder == "asc" ? "desc" : "asc")" asp-route-SpecialistId="@Model.SpecialistId" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="1"></a>
+
+                        </div>
+
                     </div>
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    @Html.DisplayNameFor(model => model.MedicalRecord[0].Symptoms)
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    @Html.DisplayNameFor(model => model.MedicalRecord[0].Diagnosis)
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    @Html.DisplayNameFor(model => model.MedicalRecord[0].Treatment)
+                    BRANCH
                 </th>
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
-                        @Html.DisplayNameFor(model => model.MedicalRecord[0].Doctor)
-                        <a asp-page="./Index" id="Doctor" asp-route-PageIndex="1" asp-route-SearchString="@Model.SearchString" asp-route-SortField="Doctor" asp-route-SortOrder="@(Model.SortField == "Doctor" && Model.SortOrder == "asc" ? "desc" : "asc")"></a>
+                        DOCTOR
+                        <a asp-page="./Index" id="Doctor" asp-route-SortField="Doctor" asp-route-SortOrder="@(Model.SortField == "Doctor" && Model.SortOrder == "asc" ? "desc" : "asc")" asp-route-SpecialistId="@Model.SpecialistId" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="1"></a>
+
                     </div>
                 </th>
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
-                        @Html.DisplayNameFor(model => model.MedicalRecord[0].Patient)
-                        <a asp-page="./Index" id="Patient" asp-route-PageIndex="1" asp-route-SearchString="@Model.SearchString" asp-route-SortField="Patient" asp-route-SortOrder="@(Model.SortField == "Patient" && Model.SortOrder == "asc" ? "desc" : "asc")"></a>
+                        REQUESTED TIME
+                        <a asp-page="./Index" id="RequestedTime" asp-route-SortField="RequestedTime" asp-route-SortOrder="@(Model.SortField == "RequestedTime" && Model.SortOrder == "asc" ? "desc" : "asc")" asp-route-SpecialistId="@Model.SpecialistId" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="1"></a>
+
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
+                        VISIT TIME
+                        <a asp-page="./Index" id="VisitTime" asp-route-SortField="VisitTime" asp-route-SortOrder="@(Model.SortField == "VisitTime" && Model.SortOrder == "asc" ? "desc" : "asc")" asp-route-SpecialistId="@Model.SpecialistId" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="1"></a>
+
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
+                        SPECIALIST
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
+                        STATUS
                     </div>
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.MedicalRecord)
+            @foreach (var item in Model.Appointment)
             {
-                
-                <tr id="root-@item.MedicalrecordId" class="bg-white border-b dark:bg-gray-800 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <tr id="root-@item.AppointmentId" class="bg-white border-b dark:bg-gray-800 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        @Html.DisplayFor(modelItem => item.VisitTime)
+                        @Html.DisplayFor(modelItem => item.PatientName)
                     </th>
                     <td class="px-6 py-4">
-                        @Html.DisplayFor(modelItem => item.Symptoms)
+                        @Html.DisplayFor(modelItem => item.Branch.BranchName)
                     </td>
                     <td class="px-6 py-4">
-                        @Html.DisplayFor(modelItem => item.Diagnosis)
+                        @if (item.Doctor != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Doctor.Name)
+                            ;
+                        }
+                        else
+                        {
+                            @:Not had doctor yet
+                        }
                     </td>
                     <td class="px-6 py-4">
-                        @Html.DisplayFor(modelItem => item.Treatment)
+                        @Html.DisplayFor(modelItem => item.RequestedTime)
                     </td>
                     <td class="px-6 py-4">
-                        @Html.DisplayFor(modelItem => item.Doctor.Name)
+                        @if (item.MedicalRecord != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.MedicalRecord.VisitTime)
+                            ;
+                        }
+                        else
+                        {
+                            @:Not visited yet
+                        }
                     </td>
                     <td class="px-6 py-4">
-                        @Html.DisplayFor(modelItem => item.Patient.Name)
+                        @Html.DisplayFor(modelItem => item.SpecialistNavigation.SpecialistName)
                     </td>
-                    <td class="px-6 py-4 text-right items-center">
-                        <a asp-page="./Edit" asp-route-id="@item.MedicalrecordId">Edit</a> |
-                        <a asp-page="./Details" asp-route-id="@item.MedicalrecordId">Details</a> |
-                        <svg id="@item.MedicalrecordId" onclick="bfdelete(this)" data-modal-target="deleteModal" data-modal-toggle="deleteModal" class="cursor-pointer h-4 w-4 text-red-500 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">  <polyline points="21 8 21 21 3 21 3 8" />  <rect x="1" y="3" width="22" height="5" />  <line x1="10" y1="12" x2="14" y2="12" /></svg>
+                    <td class="px-6 py-4">
+                        @Html.DisplayFor(modelItem => item.StatusNavigation.StatusName)
+                    </td>
+                    <td>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+    <div class="flex items-center justify-center w-full h-full">
+        <img class="w-1/2 h-1/2 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" hidden="@(Model.TotalRecords != 0)" src="~/Images/NoResult.png" />
+    </div>
 </div>
 
+
 @{
-    var totalPages = (int)Math.Ceiling((double)@Model.totalRecords / @Model.PageSize);
+    var totalPages = (int)Math.Ceiling((double)@Model.TotalRecords / @Model.PageSize);
     var currentPage = @Model.PageIndex;
 }
 
@@ -128,14 +182,14 @@
             @if (currentPage > 1)
             {
                 <li>
-                    <a asp-page="./Index" asp-route-SearchString="@Model.SearchString" asp-route-PageIndex="1"
+                    <a asp-page="./Index" asp-route-SpecialistId="@Model.SpecialistId" asp-route-SortOrder="@Model.SortOrder" asp-route-SortField="@Model.SortField" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="1"
                        class="inline-flex size-8 items-center justify-center rounded border border-gray-500 bg-white text-gray-900 rtl:rotate-180">
                         <span class="sr-only">First Page</span>
                         <svg class="h-4 w-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <polyline points="11 7 6 12 11 17" />  <polyline points="17 7 12 12 17 17" /></svg>
                     </a>
                 </li>
                 <li>
-                    <a asp-page="./Index" asp-route-SearchString="@Model.SearchString" asp-route-PageIndex="@(currentPage-1)"
+                    <a asp-page="./Index" asp-route-SpecialistId="@Model.SpecialistId" asp-route-SortOrder="@Model.SortOrder" asp-route-SortField="@Model.SortField" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="@(currentPage-1)"
                        class="inline-flex size-8 items-center justify-center rounded border border-gray-500 bg-white text-gray-900 rtl:rotate-180">
                         <span class="sr-only">Prev Page</span>
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -163,17 +217,19 @@
                     else
                     {
                         <li>
-                            <a asp-page="./Index" asp-route-SearchString="@Model.SearchString" asp-route-PageIndex="@i"
+                            <a asp-page="./Index" asp-route-SpecialistId="@Model.SpecialistId" asp-route-SortOrder="@Model.SortOrder" asp-route-SortField="@Model.SortField" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="@i"
                                class="page-link block size-8 rounded border border-gray-500 bg-white text-center leading-8 text-gray-900">
                                 @i
                             </a>
                         </li>
                     }
                 }
-            }else{
-                @if(currentPage > 3)
+            }
+            else
+            {
+                @if (currentPage > 3)
                 {
-                    @for (int i = currentPage-2; i <= (totalPages > currentPage + 2 ? currentPage + 2 : totalPages); i++)
+                    @for (int i = currentPage - 2; i <= (totalPages > currentPage + 2 ? currentPage + 2 : totalPages); i++)
                     {
                         @if (i == currentPage)
                         {
@@ -184,14 +240,16 @@
                         else
                         {
                             <li>
-                                <a asp-page="./Index" asp-route-SearchString="@Model.SearchString" asp-route-PageIndex="@i"
+                                <a asp-page="./Index" asp-route-SpecialistId="@Model.SpecialistId" asp-route-SortOrder="@Model.SortOrder" asp-route-SortField="@Model.SortField" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="@i"
                                    class="page-link block size-8 rounded border border-gray-500 bg-white text-center leading-8 text-gray-900">
                                     @i
                                 </a>
                             </li>
                         }
                     }
-                }else{
+                }
+                else
+                {
                     @for (int i = 1; i <= 5; i++)
                     {
                         @if (i == currentPage)
@@ -203,7 +261,7 @@
                         else
                         {
                             <li>
-                                <a asp-page="./Index" asp-route-SearchString="@Model.SearchString" asp-route-PageIndex="@i"
+                                <a asp-page="./Index" asp-route-SpecialistId="@Model.SpecialistId" asp-route-SortOrder="@Model.SortOrder" asp-route-SortField="@Model.SortField" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="@i"
                                    class="page-link block size-8 rounded border border-gray-500 bg-white text-center leading-8 text-gray-900">
                                     @i
                                 </a>
@@ -216,7 +274,7 @@
             @if (currentPage < totalPages)
             {
                 <li>
-                    <a asp-page="./Index" asp-route-SearchString="@Model.SearchString" asp-route-PageIndex="@(currentPage+1)"
+                    <a asp-page="./Index" asp-route-SpecialistId="@Model.SpecialistId" asp-route-SortOrder="@Model.SortOrder" asp-route-SortField="@Model.SortField" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="@(currentPage+1)"
                        class="inline-flex size-8 items-center justify-center rounded border border-gray-500 bg-white text-gray-900 rtl:rotate-180">
                         <span class="sr-only">Next Page</span>
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -230,7 +288,7 @@
                     </a>
                 </li>
                 <li>
-                    <a asp-page="./Index" asp-route-SearchString="@Model.SearchString" asp-route-PageIndex="@(totalPages)"
+                    <a asp-page="./Index" asp-route-SpecialistId="@Model.SpecialistId" asp-route-SortOrder="@Model.SortOrder" asp-route-SortField="@Model.SortField" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="@(totalPages)"
                        class="inline-flex size-8 items-center justify-center rounded border border-gray-500 bg-white text-gray-900 rtl:rotate-180">
                         <span class="sr-only">Last Page</span>
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">  <polyline points="13 17 18 12 13 7" />  <polyline points="6 17 11 12 6 7" /></svg>
@@ -240,6 +298,7 @@
         </ol>
     </div>
 }
+
 
 
 
@@ -276,9 +335,10 @@
 <script>
     window.onload = () => {
         const defaultSort = `<svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                        </svg>`;
-        var time = document.getElementById('VisitTime');
+                                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                                    </svg>`;
+        var rtime = document.getElementById('RequestedTime');
+        var vtime = document.getElementById('VisitTime');
         var doc = document.getElementById('Doctor');
         var pat = document.getElementById('Patient');
 
@@ -289,37 +349,48 @@
             var sort = '';
             if (sortOrder == 'desc') {
                 sort = `<svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z" clip-rule="evenodd" />
-                </svg>`;
+                                <path fill-rule="evenodd" d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z" clip-rule="evenodd" />
+                            </svg>`;
             } else {
                 sort = `<svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-              <path fill-rule="evenodd" d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z" clip-rule="evenodd"/>
-            </svg>`;
+                          <path fill-rule="evenodd" d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z" clip-rule="evenodd"/>
+                        </svg>`;
             }
             switch (sortField) {
+                case 'RequestedTime':
+                    rtime.innerHTML = sort;
+                    vtime.innerHTML = defaultSort;
+                    doc.innerHTML = defaultSort;
+                    pat.innerHTML = defaultSort;
+                    break;
                 case 'VisitTime':
-                    time.innerHTML = sort;
+                    rtime.innerHTML = defaultSort;
+                    vtime.innerHTML = sort;
                     doc.innerHTML = defaultSort;
                     pat.innerHTML = defaultSort;
                     break;
                 case 'Doctor':
-                    time.innerHTML = defaultSort;
+                    rtime.innerHTML = defaultSort;
+                    vtime.innerHTML = defaultSort;
                     doc.innerHTML = sort;
                     pat.innerHTML = defaultSort;
                     break;
                 case 'Patient':
-                    time.innerHTML = defaultSort;
+                    rtime.innerHTML = defaultSort;
+                    vtime.innerHTML = defaultSort;
                     doc.innerHTML = defaultSort;
                     pat.innerHTML = sort;
                     break;
                 default:
-                    time.innerHTML = defaultSort;
+                    rtime.innerHTML = defaultSort;
+                    vtime.innerHTML = defaultSort;
                     doc.innerHTML = defaultSort;
                     pat.innerHTML = defaultSort;
                     break;
             }
         } else {
-            time.innerHTML = defaultSort;
+            rtime.innerHTML = defaultSort;
+            vtime.innerHTML = defaultSort;
             doc.innerHTML = defaultSort;
             pat.innerHTML = defaultSort;
         }

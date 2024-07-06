@@ -1,5 +1,5 @@
 ﻿using Clinic_Management.Models;
-using Clinic_Management.Pages.MedicalRecords.utils;
+using Clinic_Management.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
