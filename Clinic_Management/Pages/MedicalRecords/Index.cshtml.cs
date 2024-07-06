@@ -33,6 +33,9 @@ namespace Clinic_Management.Pages.MedicalRecords
         public SelectList Specialists { get; set; }
         [BindProperty(SupportsGet = true)]
         public int? SpecialistFilter { get; set; }
+        public SelectList Branchlist { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public int? BranchFilter { get; set; }
         #endregion
 
         #region Paging
@@ -50,12 +53,23 @@ namespace Clinic_Management.Pages.MedicalRecords
 
             Specialists = new SelectList(await specialistsQuery.ToListAsync(), "SpecialistId", "SpecialistName");
 
+            var branchQuery = from s in _context.Branches
+                                   orderby s.BranchName
+                                   select s;
+
+            Branchlist = new SelectList(await branchQuery.ToListAsync(), "BranchId", "BranchName");
+
 
             var query = _context.MedicalRecords.Include(m => m.Doctor).Include(m => m.Patient).AsQueryable();
 
             if (SpecialistFilter.HasValue)
             {
                 query = query.Where(m => m.Appointment.Specialist == SpecialistFilter.Value);
+            }
+
+            if (BranchFilter.HasValue)
+            {
+                query = query.Where(m => m.Appointment.BranchId == BranchFilter.Value);
             }
 
             if (!string.IsNullOrEmpty(SearchString))

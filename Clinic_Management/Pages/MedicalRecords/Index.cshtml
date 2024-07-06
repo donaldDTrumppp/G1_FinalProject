@@ -11,27 +11,36 @@
     </p>
 
     <div class="flex items-center">
-        <form class="max-w-md mr-4" id="filterForm" method="get">
-            <select onchange="submitForm()" id="specialistFilter" name="SpecialistFilter" asp-for="SpecialistFilter" asp-items="Model.Specialists" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                <option value="">Choose Specialist</option>
-            </select>
-        </form>
-        <form class="flex items-center w-72 mr-4">
-            <label for="simple-search" class="sr-only">Search</label>
-            <div class="relative w-full">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <input type="text" id="SearchString" name="SearchString" value="@Model.SearchString" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search by Doctor or Patient..." />
+        <form class="flex items-center" id="filterForm" method="get">
+            <div class="mr-4">
+                <select onchange="submitForm(this)" id="branchFilter" name="BranchFilter" asp-for="BranchFilter" asp-items="Model.Branchlist" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option value="">Choose Branch</option>
+                </select>
             </div>
-            <button type="submit" class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                </svg>
-                <span class="sr-only">Search</span>
-            </button>
+
+            <div class="mr-4">
+                <select onchange="submitForm(this)" id="specialistFilter" name="SpecialistFilter" asp-for="SpecialistFilter" asp-items="Model.Specialists" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option value="">Choose Specialist</option>
+                </select>
+            </div>
+
+            <div class="flex items-center w-72 mr-4">
+                <label for="simple-search" class="sr-only">Search</label>
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="SearchString" name="SearchString" value="@Model.SearchString" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search by Doctor or Patient..." />
+                </div>
+                <button type="submit" class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                    <span class="sr-only">Search</span>
+                </button>
+            </div>
         </form>
 
         <p class="inline-block">
@@ -60,7 +69,7 @@
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
                         @Html.DisplayNameFor(model => model.MedicalRecord[0].VisitTime)
-                        <a asp-page="./Index" id="VisitTime" asp-route-PageIndex="1" asp-route-SearchString="@Model.SearchString" asp-route-SortField="VisitTime" asp-route-SortOrder="@(Model.SortField == "VisitTime" && Model.SortOrder == "asc" ? "desc" : "asc")"></a>
+                        <a asp-page="./Index" id="VisitTime" asp-route-PageIndex="1" asp-route-SpecialistFilter="@Model.SpecialistFilter" asp-route-BranchFilter="@Model.BranchFilter" asp-route-SearchString="@Model.SearchString" asp-route-SortField="VisitTime" asp-route-SortOrder="@(Model.SortField == "VisitTime" && Model.SortOrder == "asc" ? "desc" : "asc")"></a>
                     </div>
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -75,13 +84,13 @@
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
                         @Html.DisplayNameFor(model => model.MedicalRecord[0].Doctor)
-                        <a asp-page="./Index" id="Doctor" asp-route-PageIndex="1" asp-route-SearchString="@Model.SearchString" asp-route-SortField="Doctor" asp-route-SortOrder="@(Model.SortField == "Doctor" && Model.SortOrder == "asc" ? "desc" : "asc")"></a>
+                        <a asp-page="./Index" id="Doctor" asp-route-PageIndex="1" asp-route-SpecialistFilter="@Model.SpecialistFilter" asp-route-BranchFilter="@Model.BranchFilter" asp-route-SearchString="@Model.SearchString" asp-route-SortField="Doctor" asp-route-SortOrder="@(Model.SortField == "Doctor" && Model.SortOrder == "asc" ? "desc" : "asc")"></a>
                     </div>
                 </th>
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
                         @Html.DisplayNameFor(model => model.MedicalRecord[0].Patient)
-                        <a asp-page="./Index" id="Patient" asp-route-PageIndex="1" asp-route-SearchString="@Model.SearchString" asp-route-SortField="Patient" asp-route-SortOrder="@(Model.SortField == "Patient" && Model.SortOrder == "asc" ? "desc" : "asc")"></a>
+                        <a asp-page="./Index" id="Patient" asp-route-PageIndex="1" asp-route-SpecialistFilter="@Model.SpecialistFilter" asp-route-BranchFilter="@Model.BranchFilter" asp-route-SearchString="@Model.SearchString" asp-route-SortField="Patient" asp-route-SortOrder="@(Model.SortField == "Patient" && Model.SortOrder == "asc" ? "desc" : "asc")"></a>
                     </div>
                 </th>
                 <th></th>
@@ -330,7 +339,8 @@
 
     }
 
-    function submitForm() {
-        document.getElementById('filterForm').submit();
+    function submitForm(selectElement) {
+        // Find the closest parent form element and submit it
+        selectElement.closest('form').submit();
     }
 </script>
