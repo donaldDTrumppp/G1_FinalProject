@@ -78,6 +78,7 @@ function DeleteReport() {
     fetch('/api/MedicalRecords/' + glid, {
         method: 'DELETE',
     }).then((json) => {
-        document.getElementById('root-' + glid).style.display = 'none';
+        window.location.reload(true);
+        //document.getElementById('root-' + glid).style.display = 'none';
     }).catch(error => error);
 }
