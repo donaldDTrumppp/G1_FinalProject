@@ -7,6 +7,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Clinic_Management.Services;
+using NuGet.Protocol.Plugins;
+using System.Net;
+using System.Text;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Web;
+using System.Net.Http.Headers;
+using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
+using RestSharp;
+using Microsoft.Data.SqlClient;
+using NuGet.Common;
 
 namespace Clinic_Management.Pages.PatientAppointment
 {
@@ -14,9 +26,12 @@ namespace Clinic_Management.Pages.PatientAppointment
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
 
-        public IndexModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        private readonly ISMSService _smsService;
+
+        public IndexModel(Clinic_Management.Models.G1_PRJ_DBContext context, ISMSService smsService)
         {
             _context = context;
+            _smsService = smsService;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -45,10 +60,13 @@ namespace Clinic_Management.Pages.PatientAppointment
 
         public int TotalRecords { get; set; }
 
-        public IList<Appointment> Appointment { get;set; } = default!;
+        public IList<Appointment> Appointment { get; set; } = default!;
 
-        public async Task OnGetAsync(int PageIndex, int SpecialistId, int BranchId, int StatusId, string SortField, string SortOrder)
+        public string Message { get; set; } = "";
+
+        public async Task OnGetAsync(int PageIndex, int SpecialistId, int BranchId, int StatusId, string SortField, string SortOrder, string Message)
         {
+            this.Message = Message;
             int v = (PageIndex != 0 ? this.PageIndex = PageIndex : this.PageIndex = 1);
             v = (SpecialistId != 0 ? this.SpecialistId = SpecialistId : this.SpecialistId = 0);
             v = (BranchId != 0 ? this.BranchId = BranchId : this.BranchId = 0);
@@ -59,12 +77,13 @@ namespace Clinic_Management.Pages.PatientAppointment
             var query = _context.Appointments
                 .Include(a => a.Branch)
                 .Include(a => a.Doctor)
+                .Include(a => a.Receptionist)
                 .Include(a => a.MedicalRecord)
                 .Include(a => a.SpecialistNavigation)
                 .Include(a => a.StatusNavigation)
                 .AsQueryable();
-            
-            if(SpecialistId != 0)
+
+            if (SpecialistId != 0)
             {
                 query = query.Where(a => a.SpecialistNavigation.SpecialistId == SpecialistId);
             }
@@ -84,8 +103,8 @@ namespace Clinic_Management.Pages.PatientAppointment
                 case "RequestedTime":
                     query = SortOrder == "desc" ? query.OrderByDescending(r => r.RequestedTime) : query.OrderBy(r => r.RequestedTime);
                     break;
-                case "VisitTime":
-                    query = SortOrder == "desc" ? query.OrderByDescending(r => (r.MedicalRecord != null ? r.MedicalRecord.VisitTime : Convert.ToDateTime("2016-01-01"))) : query.OrderBy(r => (r.MedicalRecord != null ? r.MedicalRecord.VisitTime : Convert.ToDateTime("2016-01-01")));
+                case "Receptionist":
+                    query = SortOrder == "desc" ? query.OrderByDescending(r => (r.Receptionist != null ? r.Receptionist.Name : "")) : query.OrderBy(r => (r.Receptionist != null ? r.Receptionist.Name : ""));
                     break;
                 case "Patient":
                     query = SortOrder == "desc" ? query.OrderByDescending(r => r.Patient.Name) : query.OrderBy(r => r.Patient.Name);
@@ -94,7 +113,7 @@ namespace Clinic_Management.Pages.PatientAppointment
                     query = SortOrder == "desc" ? query.OrderByDescending(r => r.Doctor != null ? r.Doctor.Name : "") : query.OrderBy(r => r.Doctor != null ? r.Doctor.Name : "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
                     break;
                 default:
-                    query = query.OrderBy(r => r.RequestedTime); // Default
+                    query = query.OrderBy(r => r.CreatedAt); // Default
                     break;
             }
 
@@ -102,9 +121,9 @@ namespace Clinic_Management.Pages.PatientAppointment
             Branchs = await _context.Branches.Distinct().ToListAsync();
             Status = await _context.AppointmentStatuses.Distinct().ToListAsync();
             TotalRecords = await query.CountAsync();
-            Console.WriteLine(TotalRecords);
             Appointment = await query.Skip((this.PageIndex - 1) * PageSize).Take(PageSize).ToListAsync();
-
         }
+
+        
     }
 }

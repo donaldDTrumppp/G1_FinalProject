@@ -5,93 +5,553 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Appointment</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.PatientName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.PatientName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.PatientDob)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.PatientDob)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.PatientPhoneNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.PatientPhoneNumber)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.PatientEmail)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.PatientEmail)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.PatientAddress)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.PatientAddress)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.RequestedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.RequestedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Branch)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Branch.BranchId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Doctor)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Doctor.UserId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Patient)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Patient.UserId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Receptionist)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Receptionist.UserId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.SpecialistNavigation)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.SpecialistNavigation.SpecialistId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.StatusNavigation)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.StatusNavigation.StatusId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Appointment?.AppointmentId">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
+<header class="my-6 max-w-2xl mx-auto relative">
+    <div class="mb-5 grid md:grid-cols-2 md:gap-6 flex items-center">
+        <div>
+            <h1 class="text-3xl mb-1 text-gray-900 font-bold">Appointment Details</h1>
+        </div>
+        @if (Model.Appointment.StatusNavigation.StatusName == "Đang chờ duyệt")
+        {
+            <div class="flex justify-end">
+                <form id="frm">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input onclick="sbmit('@Model.Mode')" type="checkbox" class="sr-only peer" @(Model.Mode == true ? "checked" : "") />
+                        <div class="relative w-11 h-6 bg-gray-200 rounded-full  peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Edit Mode</span>
+                    </label>
+                </form>
+
+            </div>
+        }
+    </div>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900">
+            <span class="font-bold">Code:</span> <span class="text-sm text-gray-900 dark:text-white">@Model.GetCodeById()</span>
+        </h3>
+    </div>
+</header>
+
+
+<form id="form" method="post" class="max-w-2xl mx-auto">
+    <input type="hidden" asp-for="Appointment.AppointmentId" />
+        <input type="hidden" asp-for="PageIndex" />
+    <input type="hidden" asp-for="Appointment.PatientId" />
+    <!--<div id="toast-top-right" class="fixed flex z-50 items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow fixed top-5 right-5 dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800" role="alert">-->
+    
+    <!-- </div>-->
+    <!--
+    <div class="main_value">
+        <select asp-for="MedicalRecord.AppointmentId" id="apmId" class="hidden" asp-items="ViewBag.AppointmentId"></select>
+        <select asp-for="MedicalRecord.PatientId" id="patientId" class="hidden" asp-items="ViewBag.PatientId"></select>
+        <select asp-for="MedicalRecord.DoctorId" id="doctorId" class="hidden" asp-items="ViewBag.DoctorId"></select>
+    </div>
+    <div class="flex justify-between mb-4">
+        <button type="button" onclick="abc()" class="text-blue-500 text-md font-semibold">Export to file Word</button>
+        <p id="floating_visit_time" class="font-bold text-md-center text-gray-900"></p>
+    </div>
+    -->
+    <div class="mb-5 grid md:grid-cols-2 md:gap-6">
+        <div>
+            <h3 class="text-lg mb-1 text-gray-900">
+                <span class="font-bold">Doctor Info</span>
+                @if (Model.Appointment.Doctor == null)
+                {
+                    <span class="text-sm text-gray-900 dark:text-white">: Not had doctor yet</span>
+                }
+            </h3>
+            @if (Model.Appointment.Doctor != null)
+            {
+                <div class="mb-4 lg:mb-6 not-format">
+                    <address class="flex items-center mb-6 not-italic">
+                        <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
+                            <img class="mr-4 w-16 h-16 rounded-full" src="~/Images/image.png" alt="Jese Leos">
+                            <div>
+                                <a href="#" rel="author" class="text-sm text-gray-900 dark:text-white" id="floating_fname_d">@Model.Appointment.Doctor.Name</a>
+                                <p class="text-base text-gray-500 dark:text-gray-400" id="floating_specialization"></p>
+                            </div>
+                        </div>
+                    </address>
+                </div>
+            }
+        </div>
+
+        <div>
+            <h3 class="text-lg mb-1 text-gray-900">
+                <span class="font-bold">Receptionist Info</span>
+                @if (Model.Appointment.Receptionist == null)
+                {
+                    <span class="text-sm text-gray-900 dark:text-white">: Not had receptionist yet</span>
+                }
+            </h3>
+            @if (Model.Appointment.Receptionist != null)
+            {
+                <div class="mb-4 lg:mb-6 not-format">
+                    <address class="flex items-center mb-6 not-italic">
+                        <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
+                            <img class="mr-4 w-16 h-16 rounded-full" src="~/Images/image.png" alt="Jese Leos">
+                            <div>
+                                <a href="#" rel="author" class="text-sm text-gray-900 text-gray-900 dark:text-white" id="floating_fname_r">@Model.Appointment.Receptionist.Name</a>
+                                <p class="text-base text-gray-500 dark:text-gray-400" id="floating_specialization"></p>
+                            </div>
+                        </div>
+                    </address>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="mb-5">
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">Branch</h3>
+        <select name="@Html.NameFor(a => a.Appointment.BranchId)" style="font-weight: 450" disabled="@(Model.Mode == false)" class="@(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            @foreach (var item in Model.Branchs)
+            {
+                <option class="border border-gray-300 !text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" title="@item.BranchName" selected="@(Model.Appointment.BranchId == item.BranchId)" class="w-full" value="@item.BranchId">@item.BranchName</option>
+            }
+        </select>
+    </div>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">Patient Info</h3>
+        <div>
+            <label for="floating_fname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Full name
+                <span id="erfn" asp-validation-for="Appointment.PatientName" class="text-danger text-red-500 ml-1"></span>
+
+            </label>
+            <input required oninput="stopEnterCharacter()" onblur="validate('fullname')" name="@Html.NameFor(a => a.Appointment.PatientName)" type="text" id="floating_fname" aria-label="disabled input" class="mb-5 @(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.PatientName" disabled="@(Model.Mode == false)">
+
+        </div>
+        <div class="relative z-0 w-full mb-5 group">
+            <label for="floating_address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Address
+                <span id="erad" asp-validation-for="Appointment.PatientAddress" class="text-danger text-red-500 ml-1"></span>
+            </label>
+            <input required oninput="stopEnterCharacter()" onblur="validate('address')" name="@Html.NameFor(a => a.Appointment.PatientAddress)" type="text" id="floating_address" aria-label="disabled input" class="mb-5 @(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.PatientAddress" disabled="@(Model.Mode == false)">
+        </div>
+        <div class="grid md:grid-cols-2 md:gap-6">
+            <div class="relative z-0 w-full mb-5 group">
+                <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Date of Birth
+                    <span id="erdob" asp-validation-for="Appointment.PatientDob" max="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" class="text-danger text-red-500 ml-1"></span>
+                </label>
+                <input required onblur="validate('dob')" name="@Html.NameFor(a => a.Appointment.PatientDob)" type="datetime-local" id="floating_dob" aria-label="disabled input" class="@(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.PatientDob.ToString("yyyy-MM-ddTHH:mm")" disabled="@(Model.Mode == false)">
+            </div>
+            <div class="relative z-0 w-full mb-5 group">
+                <label for="floating_phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Phone Number
+                    <span id="erpn" asp-validation-for="Appointment.PatientPhoneNumber" class="text-danger text-red-500 ml-1"></span>
+                </label>
+                <input required oninput="stopEnterCharacter()" onblur="validate('phone')" name="@Html.NameFor(a => a.Appointment.PatientPhoneNumber)" type="tel" id="floating_phone" aria-label="disabled input" class="@(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.PatientPhoneNumber" disabled="@(Model.Mode == false)">
+            </div>
+        </div>
+        <div class="relative z-0 w-full mb-5 group">
+            <label for="floating_email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Email
+                <span id="ere" asp-validation-for="Appointment.PatientEmail" class="text-danger text-red-500 ml-1"></span>
+            </label>
+            <input required oninput="stopEnterCharacter()" onblur="validate('email')" name="@Html.NameFor(a => a.Appointment.PatientEmail)" type="email" id="floating_email" aria-label="disabled input" class="mb-5 @(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.PatientEmail" disabled="@(Model.Mode == false)">
+        </div>
+    </div>
+    <div class="mb-5">
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">
+            Requested Time
+            <span id="errt" asp-validation-for="Appointment.RequestedTime" class="text-danger text-red-500 ml-1 mb-2 text-sm font-medium dark:text-white"></span>
+        </h3>
+        <input required onblur="validate('requestedtime')" name="@Html.NameFor(a => a.Appointment.RequestedTime)" type="datetime-local" id="floating_rtime" aria-label="disabled input" class="@(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.RequestedTime.ToString("yyyy-MM-ddTHH:mm")" disabled="@(Model.Mode == false)">
+
+    </div>
+    <div class="mb-5">
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">
+            Specialist
+        </h3>
+        <select name="@Html.NameFor(a => a.Appointment.Specialist)" style="font-weight: 450" disabled="@(Model.Mode == false)" class="@(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            @foreach (var item in Model.Specialists)
+            {
+                <option class="border border-gray-300 !text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" title="@item.SpecialistName" selected="@(Model.Appointment.Specialist == item.SpecialistId)" class="w-full" value="@item.SpecialistId">@item.SpecialistName</option>
+            }
+        </select>
+    </div>
+    <div class="mb-5">
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">
+            Description
+            <span id="erd" asp-validation-for="Appointment.Description" class="text-danger text-red-500 ml-1 mb-2 text-sm font-medium dark:text-white"></span>
+        </h3>
+        <textarea required oninput="stopEnterCharacter()" onblur="validate('description')" name="@Html.NameFor(a => a.Appointment.Description)" type="text" id="floating_description" aria-label="disabled input" class="mb-5 @(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled="@(Model.Mode == false)">@Model.Appointment.Description</textarea>
+
+    </div>
+    <div class="mb-5">
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">Status: @Model.Appointment.StatusNavigation.StatusName</h3>
+        <input required name="@Html.NameFor(a => a.Appointment.Status)" type="hidden" id="floating_specialist" aria-label="disabled input" class="mb-5 @(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.StatusNavigation.StatusId">
+
+    </div>
+    <div class="flex justify-end items-center">
+        <a asp-page="./Index" class="my-2 ml-2 text-blue-700 border border-blue-700 hover:bg-blue-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Back</a>
+        @if (Model.Mode == true)
+        {
+            <button type="submit" id="btnSubmit" class="my-2 ml-2 cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</button>
+        }
+    </div>
+</form>
+<script src="./../js/export.js"></script>
+<script src="./../js/createjs.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.5.1.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
+
+
+
+<script>
+    function sbmit(mode) {
+        var url = !window.location.href.includes("&Mde") ? window.location.href + "&Mde=" + mode : window.location.href.replace("&Mde=True", "").replace("&Mde=False", "") + "&Mde=" + mode
+        window.location.href = url;
+    }
+
+    function stopEnterCharacter() {
+        var txtFN = document.getElementById("floating_fname").value;
+        var txtAddress = document.getElementById("floating_address").value;
+        var txtPhone = document.getElementById("floating_phone").value;
+        var txtEmail = document.getElementById("floating_email").value;
+        var txtDescription = document.getElementById("floating_description").value;
+
+        var erfn = document.getElementById("erfn");
+        var erad = document.getElementById("erad");
+        var erdob = document.getElementById("erdob");
+        var erpn = document.getElementById("erpn");
+        var ere = document.getElementById("ere");
+        var errt = document.getElementById("errt");
+        var erd = document.getElementById("erd");
+
+        if (txtFN.length >= 30) {
+            document.getElementById("floating_fname").value = txtFN.substring(0, 30);
+            erfn.innerHTML = "* Maximum length of full name is 30";
+            document.getElementById("btnSubmit").disabled = true;
+
+            if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+            }
+        }
+        else {
+            erfn.innerHTML = "";
+            document.getElementById("btnSubmit").disabled = false;
+            document.getElementById("btnSubmit").classList.add("cursor-pointer");
+            document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+            document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+        }
+        if (txtAddress.length >= 50) {
+            document.getElementById("floating_address").value = txtAddress.substring(0, 50);
+            erad.innerHTML = "* Maximum length of address is 50";
+            document.getElementById("btnSubmit").disabled = true;
+
+            if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+            }
+        }
+        else {
+            document.getElementById("btnSubmit").disabled = false;
+            erad.innerHTML = "";
+            document.getElementById("btnSubmit").classList.add("cursor-pointer");
+            document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+            document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+        }
+        if (txtPhone.length >= 20) {
+            document.getElementById("floating_phone").value = txtPhone.substring(0, 20);
+            erpn.innerHTML = "* Maximum length of phone is 20";
+            document.getElementById("btnSubmit").disabled = true;
+
+            if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+            }
+        }
+        else {
+            document.getElementById("btnSubmit").disabled = false;
+
+            erpn.innerHTML = "";
+            document.getElementById("btnSubmit").classList.add("cursor-pointer");
+            document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+            document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+        }
+        if (txtEmail.length >= 50) {
+            document.getElementById("floating_email").value = txtEmail.substring(0, 50);
+            ere.innerHTML = "* Maximum length of email is 50";
+            document.getElementById("btnSubmit").disabled = true;
+
+            if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+            }
+        }
+        else {
+            document.getElementById("btnSubmit").disabled = false;
+
+            ere.innerHTML = "";
+            document.getElementById("btnSubmit").classList.add("cursor-pointer");
+            document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+            document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+        }
+        if (txtDescription.length >= 150) {
+            document.getElementById("floating_description").value = txtDescription.substring(0, 150);
+            erd.innerHTML = "* Maximum length of description is 150";
+            document.getElementById("btnSubmit").disabled = true;
+
+            if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+            }
+        }
+        else {
+            document.getElementById("btnSubmit").disabled = false;
+            erd.innerHTML = "";
+            document.getElementById("btnSubmit").classList.add("cursor-pointer");
+            document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+            document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+        }
+    }
+
+
+
+    function validatePhoneNumber(phone) {
+        // Regular expression for validating a Vietnam phone number
+        const re = /^(03|05|07|08|09)\d{8}$/;
+        return re.test(phone);
+    }
+
+    function validateRDate(dateValue) {
+        // Get the current date and time
+        const now = new Date();
+        // Add 30 minutes to the current date and time
+        const nowPlus30Minutes = new Date(now.getTime() + 30 * 60000);
+
+        // Convert the input date value to a Date object
+        const inputDate = new Date(dateValue);
+        // Check if the input date is greater than or equal to the current date plus 30 minutes
+        return inputDate >= nowPlus30Minutes;
+    }
+
+    function validateDob(dateValue) {
+        const now = new Date();
+        const inputDate = new Date(dateValue);
+        return inputDate <= now;
+    }
+
+    function validate(str) {
+        var txtFN = document.getElementById("floating_fname").value;
+        var txtAddress = document.getElementById("floating_address").value;
+        var txtDob = document.getElementById("floating_dob").value;
+        var txtPhone = document.getElementById("floating_phone").value;
+        var txtEmail = document.getElementById("floating_email").value;
+        var txtRtime = document.getElementById("floating_rtime").value;
+        var txtDescription = document.getElementById("floating_description").value;
+
+        var erfn = document.getElementById("erfn");
+        var erad = document.getElementById("erad");
+        var erdob = document.getElementById("erdob");
+        var erpn = document.getElementById("erpn");
+        var ere = document.getElementById("ere");
+        var errt = document.getElementById("errt");
+        var erd = document.getElementById("erd");
+        switch (str) {
+            case "fullname": {
+                if (txtFN.length == 0) {
+                    erfn.innerHTML = "* Full name is required";
+                    document.getElementById("btnSubmit").disabled = true;
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else if (txtFN.length <= 3) {
+                    erfn.innerHTML = "* Minimum length of full name is 3";
+                    document.getElementById("btnSubmit").disabled = true;
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else {
+                    document.getElementById("btnSubmit").disabled = false;
+
+                    erfn.innerHTML = "";
+                    document.getElementById("btnSubmit").classList.add("cursor-pointer");
+                    document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+                    document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+                }
+                break;
+            }
+            case "address": {
+                if (txtAddress.length == 0) {
+                    erad.innerHTML = "* Address is required";
+                    document.getElementById("btnSubmit").disabled = true;
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else if (txtFN.length <= 3) {
+                    erad.innerHTML = "* Minimum length of address is 3";
+                    document.getElementById("btnSubmit").disabled = true;
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else {
+                    document.getElementById("btnSubmit").disabled = false;
+
+                    erad.innerHTML = "";
+                    document.getElementById("btnSubmit").classList.add("cursor-pointer");
+                    document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+                    document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+                }
+                break;
+            }
+            case "dob": {
+                if (txtDob.length == 0) {
+                    erdob.innerHTML = "* Date of birth is required";
+                    document.getElementById("btnSubmit").disabled = true;
+
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else if (!validateDob(txtDob)) {
+                    erdob.innerHTML = "* You must atleast 1 years old";
+                    document.getElementById("btnSubmit").disabled = true;
+
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+
+                else {
+                    document.getElementById("btnSubmit").disabled = false;
+
+                    erdob.innerHTML = "";
+                    document.getElementById("btnSubmit").classList.add("cursor-pointer");
+                    document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+                    document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+                }
+                break;
+            }
+            case "phone": {
+                if (txtPhone.length == 0) {
+                    erpn.innerHTML = "* Phone is required";
+                    document.getElementById("btnSubmit").disabled = true;
+
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else if (!validatePhoneNumber(txtPhone)) {
+                    erpn.innerHTML = "* Wrong format phone number";
+                    document.getElementById("btnSubmit").disabled = true;
+
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else {
+                    document.getElementById("btnSubmit").disabled = false;
+
+                    erpn.innerHTML = "";
+                    document.getElementById("btnSubmit").classList.add("cursor-pointer");
+                    document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+                    document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+                }
+                break;
+            }
+            case "email": {
+                if (txtEmail.length == 0) {
+                    ere.innerHTML = "* Email is required";
+                    document.getElementById("btnSubmit").disabled = true;
+
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+
+                else {
+                    document.getElementById("btnSubmit").disabled = false;
+
+                    ere.innerHTML = "";
+                    document.getElementById("btnSubmit").classList.add("cursor-pointer");
+                    document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+                    document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+                }
+                break;
+            }
+            case "requestedtime": {
+                if (txtRtime.length == 0) {
+                    errt.innerHTML = "* Requested time is required";
+                    document.getElementById("btnSubmit").disabled = true;
+
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else if (!validateRDate(txtRtime)) {
+                    errt.innerHTML = "* Requested time must atleast 30 minutes from now";
+                    document.getElementById("btnSubmit").disabled = true;
+
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else {
+                    document.getElementById("btnSubmit").disabled = false;
+
+                    errt.innerHTML = "";
+                    document.getElementById("btnSubmit").classList.add("cursor-pointer");
+                    document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+                    document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+                }
+                break;
+            }
+            case "description": {
+                if (txtDescription.length == 0) {
+                    erd.innerHTML = "* Description is required";
+                    document.getElementById("btnSubmit").disabled = true;
+
+                    if (document.getElementById("btnSubmit").classList.contains("cursor-pointer") && document.getElementById("btnSubmit").classList.contains("hover:bg-blue-800")) {
+                        document.getElementById("btnSubmit").classList.remove("cursor-pointer");
+                        document.getElementById("btnSubmit").classList.add("cursor-not-allowed");
+                        document.getElementById("btnSubmit").classList.remove("hover:bg-blue-800");
+                    }
+                }
+                else {
+                    document.getElementById("btnSubmit").disabled = false;
+
+                    erd.innerHTML = "";
+                    document.getElementById("btnSubmit").classList.add("cursor-pointer");
+                    document.getElementById("btnSubmit").classList.remove("cursor-not-allowed");
+                    document.getElementById("btnSubmit").classList.add("hover:bg-blue-800");
+                }
+                break;
+            }
+        }
+    }
+</script>

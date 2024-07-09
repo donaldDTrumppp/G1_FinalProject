@@ -45,6 +45,10 @@ namespace Clinic_Management.Models
 
                 entity.Property(e => e.BranchId).HasColumnName("branch_id");
 
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("date")
+                    .HasColumnName("created_at");
+
                 entity.Property(e => e.Description).HasColumnName("description");
 
                 entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
@@ -96,7 +100,6 @@ namespace Clinic_Management.Models
                 entity.HasOne(d => d.Patient)
                     .WithMany(p => p.AppointmentPatients)
                     .HasForeignKey(d => d.PatientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Appointme__patie__47DBAE45");
 
                 entity.HasOne(d => d.Receptionist)

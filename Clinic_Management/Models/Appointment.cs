@@ -7,7 +7,7 @@ namespace Clinic_Management.Models
     {
         public int AppointmentId { get; set; }
         public int BranchId { get; set; }
-        public int PatientId { get; set; }
+        public int? PatientId { get; set; }
         public string PatientName { get; set; } = null!;
         public DateTime PatientDob { get; set; }
         public string PatientPhoneNumber { get; set; } = null!;
@@ -19,13 +19,14 @@ namespace Clinic_Management.Models
         public int? Specialist { get; set; }
         public string? Description { get; set; }
         public int Status { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
-        public virtual Branch Branch { get; set; } = null!;
+        public virtual Branch? Branch { get; set; } = null!;
         public virtual User? Doctor { get; set; }
-        public virtual User Patient { get; set; } = null!;
+        public virtual User? Patient { get; set; }
         public virtual User? Receptionist { get; set; }
         public virtual Specialist? SpecialistNavigation { get; set; }
-        public virtual AppointmentStatus StatusNavigation { get; set; } = null!;
+        public virtual AppointmentStatus? StatusNavigation { get; set; } = null!;
         public virtual MedicalRecord? MedicalRecord { get; set; }
     }
 }

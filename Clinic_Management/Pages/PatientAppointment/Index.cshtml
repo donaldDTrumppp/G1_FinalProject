@@ -11,6 +11,32 @@
     </p>
 
     <div class="flex items-center">
+        <div id="toast-success" class="flex @(String.IsNullOrEmpty(Model.Message)? "hidden": "block") animate-[fade-out_2s_ease-out_1s_1_forwards] opacity-1 flex-col fixed z-50 top-5 right-5 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+            <div class="flex flex-row items-center justify-between w-full">
+                <div class="flex flex-row items-center">
+                    <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                        </svg>
+                        <span class="sr-only">Check icon</span>
+                    </div>
+                    <div class="ms-3 text-sm font-normal">@Model.Message</div>
+                </div>
+                <div>
+                    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-success" aria-label="Close">
+                        <span class="sr-only">Close</span>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="flex flex-row items-center justify-between w-full">
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mb-1 mt-2 dark:bg-gray-700">
+                    <div id="animateDiv" class="bg-green-400 h-1.5 rounded-full dark:bg-green-300" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
         <form class="flex items-center max-w-fit mr-4">
             <select asp-for="StatusId" class="bg-gray-50 mr-2 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <option value="0" selected>All Status</option>
@@ -85,11 +111,19 @@
                 </th>
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
+                        RECEPTIONIST
+                        <a asp-page="./Index" id="Receptionist" asp-route-SortField="Receptionist" asp-route-SortOrder="@(Model.SortField == "Receptionist" && Model.SortOrder == "asc" ? "desc" : "asc")" asp-route-SpecialistId="@Model.SpecialistId" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="1"></a>
+
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
                         DOCTOR
                         <a asp-page="./Index" id="Doctor" asp-route-SortField="Doctor" asp-route-SortOrder="@(Model.SortField == "Doctor" && Model.SortOrder == "asc" ? "desc" : "asc")" asp-route-SpecialistId="@Model.SpecialistId" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="1"></a>
 
                     </div>
                 </th>
+                
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
                         REQUESTED TIME
@@ -97,13 +131,7 @@
 
                     </div>
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    <div class="flex items-center">
-                        VISIT TIME
-                        <a asp-page="./Index" id="VisitTime" asp-route-SortField="VisitTime" asp-route-SortOrder="@(Model.SortField == "VisitTime" && Model.SortOrder == "asc" ? "desc" : "asc")" asp-route-SpecialistId="@Model.SpecialistId" asp-route-StatusId="@Model.StatusId" asp-route-BranchId="@Model.BranchId" asp-route-PageIndex="1"></a>
-
-                    </div>
-                </th>
+                
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
                         SPECIALIST
@@ -128,6 +156,17 @@
                         @Html.DisplayFor(modelItem => item.Branch.BranchName)
                     </td>
                     <td class="px-6 py-4">
+                        @if (item.Receptionist != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Receptionist.Name)
+                            ;
+                        }
+                        else
+                        {
+                            @:Not had receptionist yet
+                        }
+                    </td>
+                    <td class="px-6 py-4">
                         @if (item.Doctor != null)
                         {
                             @Html.DisplayFor(modelItem => item.Doctor.Name)
@@ -141,24 +180,15 @@
                     <td class="px-6 py-4">
                         @Html.DisplayFor(modelItem => item.RequestedTime)
                     </td>
-                    <td class="px-6 py-4">
-                        @if (item.MedicalRecord != null)
-                        {
-                            @Html.DisplayFor(modelItem => item.MedicalRecord.VisitTime)
-                            ;
-                        }
-                        else
-                        {
-                            @:Not visited yet
-                        }
-                    </td>
+             
                     <td class="px-6 py-4">
                         @Html.DisplayFor(modelItem => item.SpecialistNavigation.SpecialistName)
                     </td>
                     <td class="px-6 py-4">
                         @Html.DisplayFor(modelItem => item.StatusNavigation.StatusName)
                     </td>
-                    <td>
+                    <td class="px-6 py-4 text-right items-center">
+                        <a asp-page="./Details" asp-route-id="@item.AppointmentId" asp-route-PageIndex ="@Model.PageIndex">Details</a> 
                     </td>
                 </tr>
             }
@@ -333,12 +363,46 @@
 <script src="./../js/createjs.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
 <script>
+    function test() {
+        var toast = document.getElementById("toast-success");
+        toast.classList.remove("animate-[fade-out_2s_ease-out_1s_1_forwards]");
+        void toast.offsetWidth;
+        toast.classList.add("animate-[fade-out_2s_ease-out_1s_1_forwards]");
+        document.getElementById('animateDiv').classList.add("reduceWidth");
+        document.getElementById('animateDiv').style.width = '0%';
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var toast = document.getElementById("toast-success");
+        if (toast.classList.contains("block")) {
+            document.getElementById('animateDiv').classList.add("reduceWidth");
+            document.getElementById('animateDiv').style.width = '0%';
+
+
+        }
+
+        function onTransitionEnd(event) {
+            if (event.propertyName === 'width' && animateDiv.style.width === '0%') {
+                document.getElementById('animateDiv').classList.remove("reduceWidth");
+                document.getElementById('animateDiv').style.width = '100%';
+                console.log(document.getElementById('animateDiv').style.width);
+                //   toast.classList.add("animate-[fade-out_1s_ease-out_0.25s_1]");
+
+            }
+        }
+
+
+
+        animateDiv.addEventListener('transitionend', onTransitionEnd);
+    });
+</script>
+<script>
     window.onload = () => {
         const defaultSort = `<svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                                     </svg>`;
         var rtime = document.getElementById('RequestedTime');
-        var vtime = document.getElementById('VisitTime');
+        var vtime = document.getElementById('Receptionist');
         var doc = document.getElementById('Doctor');
         var pat = document.getElementById('Patient');
 
@@ -363,7 +427,7 @@
                     doc.innerHTML = defaultSort;
                     pat.innerHTML = defaultSort;
                     break;
-                case 'VisitTime':
+                case 'Receptionist':
                     rtime.innerHTML = defaultSort;
                     vtime.innerHTML = sort;
                     doc.innerHTML = defaultSort;
