@@ -28,11 +28,18 @@
                 </div>
             </form>
             <div class="flex items-center justify-between mt-4">
-                <div class="text-sm text-slate-500">Didn't receive code? <button type="button" class="font-medium text-indigo-500 hover:text-indigo-600" onclick="phoneAuth()">Resend</button></div>
+                <div class="text-sm text-slate-500">Didn't receive code? <button type="button" class="font-medium text-indigo-500 hover:text-indigo-600" onclick="resend()">Resend</button></div>
                 <div id="countdown" style="color: blue">03:00</div>
             </div>
-            <div class = "flex justify-end mt-2">
-                <button onclick="swtch()" class="my-2 ml-2 text-blue-700 border border-blue-700 hover:bg-blue-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Back</button>
+            <div class="flex items-start justify-between mt-4">
+                <div id="div2" class="flex flex-col items-start justify-start">
+                    <span class="text-danger text-red-500 ml-1 mb-2 text-sm font-medium dark:text-white">* Please check the captcha box in order to resend code</span>
+                    <!--  <div class="mb-5 w-full" id="recaptcha-container"></div>-->
+                </div>
+
+                <div class="flex justify-end">
+                    <button onclick="swtch()" class=" ml-2 text-blue-700 border border-blue-700 hover:bg-blue-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Back</button>
+                </div>
             </div>
         </div>
 
@@ -98,14 +105,12 @@
 
 
 
-<div  id="notverify">
-    <button onclick="swtch2()">Click</button>
-    <header class="my-6 max-w-2xl mx-auto relative">
-        <div class="mb-5 grid md:grid-cols-2 md:gap-6 flex items-center">
-            <div>
-                <h1 class="text-3xl mb-1 text-gray-900 font-bold">Book Appointments</h1>
-            </div>
-        </div>
+<div id="notverify" style="display: block">
+    <!--<button onclick="swtch2()">Click</button>-->
+    <header class="my-6">
+        <h3 class="text-center font-semibold uppercase text-gray-300">Basiha Medical - your mom</h3>
+        <p class="text-center font-extrabold text-sky-700 tracking-tight text-5xl">Book Appointment</p>
+        <h4 class="font-medium text-center text-red-500 mt-1">** Fill all field **</h4>
     </header>
 
 
@@ -180,7 +185,7 @@
                 Requested Time
                 <span id="errt" asp-validation-for="Appointment.RequestedTime" class="text-danger text-red-500 ml-1 mb-2 text-sm font-medium dark:text-white"></span>
             </h3>
-            <input required onblur="validate('requestedtime')" name="@Html.NameFor(a => a.Appointment.RequestedTime)" type="datetime-local" id="floating_rtime" aria-label="disabled input" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <input required onblur="validate('requestedtime')" name="@Html.NameFor(a => a.Appointment.RequestedTime)" type="datetime-local" id="floating_rtime" aria-label="disabled input" value="@(DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
 
         </div>
         <div class="mb-5">
@@ -194,24 +199,30 @@
                 }
             </select>
         </div>
-        <div class="mb-5">
+        <div class="mb-2">
             <h3 class="text-lg mb-1 text-gray-900 font-bold">
                 Description
                 <span id="erd" asp-validation-for="Appointment.Description" class="text-danger text-red-500 ml-1 mb-2 text-sm font-medium dark:text-white"></span>
             </h3>
-            <textarea required oninput="stopEnterCharacter()" onblur="validate('description')" name="@Html.NameFor(a => a.Appointment.Description)" type="text" id="floating_description" aria-label="disabled input" class="mb-5  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+            <textarea required oninput="stopEnterCharacter()" onblur="validate('description')" name="@Html.NameFor(a => a.Appointment.Description)" type="text" id="floating_description" aria-label="disabled input" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
 
         </div>
-        <span class="text-danger text-red-500 ml-1 mb-2 text-sm font-medium dark:text-white">* Please check the captcha box</span>
-        <div class="mb-5 w-full" style="z-index: 10" id="recaptcha-container"></div>
-        <input id='recaptcha_check_empty' onclick="test()" required tabindex='-1' ,
-               style='width: 25px; height: 30px; opacity: 0; z-index:0 margin-left: 15px;position: absolute;bottom: 528px'>
-        <div class="flex justify-end items-center">
-            <a asp-page="./Index" class="my-2 ml-2 text-blue-700 border border-blue-700 hover:bg-blue-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Back</a>
+        <div class="flex flex-row items-center justify-between">
+            <div id="div3">
+                <span class="text-danger text-red-500 nml-1 mb-2 text-sm font-medium dark:text-white">* Please check the captcha box</span>
+                <div class="mb-5 mt-2 w-full" style="z-index: 10" id="recaptcha-container"></div>
+            </div>
+            <div class="flex justify-end items-center">
+                <div>
+                    <a asp-page="./Index" class="ml-2 h-25 text-blue-700  border border-blue-700 hover:bg-blue-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Back</a>
+                </div>
+                <div>
+                    <button type="button" onclick="phoneAuth()" id="btnSubmit" class="ml-2 h-25 cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create</button>
 
-            <button type="button" onclick="phoneAuth()" id="btnSubmit" class="my-2 ml-2 cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create</button>
-
+                </div>
+            </div>
         </div>
+
     </form>
     </divstyle>
     <script src="./../js/export.js"></script>
@@ -226,28 +237,30 @@
 
     <script type="module">
         import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js'
-    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js'        // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js'        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBZz4ebKXndDgmmmHXoRuNkTU44B_zh_uo",
-  authDomain: "basiha-medical-74e16.firebaseapp.com",
-  projectId: "basiha-medical-74e16",
-  storageBucket: "basiha-medical-74e16.appspot.com",
-  messagingSenderId: "501525144075",
-  appId: "1:501525144075:web:c28ccd6351743277b4dd0e",
-  measurementId: "G-L5WT5J8PC6"
-};
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZz4ebKXndDgmmmHXoRuNkTU44B_zh_uo",
+            authDomain: "basiha-medical-74e16.firebaseapp.com",
+            projectId: "basiha-medical-74e16",
+            storageBucket: "basiha-medical-74e16.appspot.com",
+            messagingSenderId: "501525144075",
+            appId: "1:501525144075:web:c28ccd6351743277b4dd0e",
+            measurementId: "G-L5WT5J8PC6"
+        };
 
-// Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+
 
     </script>
 
@@ -609,9 +622,12 @@ const analytics = getAnalytics(app);
                 }
             }
         }
+
+
+        function checkIsValid()
     </script>
 
-    
+
     <script>
         /*
         let timeInMinutes = 0.5;
@@ -635,4 +651,4 @@ const analytics = getAnalytics(app);
         const countdownInterval = setInterval(updateCountdown, 1000);
         */
     </script>
-    
+
