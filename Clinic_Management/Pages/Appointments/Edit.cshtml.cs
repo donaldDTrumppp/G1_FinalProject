@@ -20,8 +20,8 @@ namespace Clinic_Management.Pages.Appointements
 
         public Appointment Appointment { get; set; } = default!;
         public User patient { get; set; } = default!;
-        public IList<MedicalRecord> MedicalRecords { get; set; }
-
+        public IList<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
+        public IList<AppointmentStatus> StatusList { get; set; } = new List<AppointmentStatus>();
         public IList<User> DoctorList { get; set; }
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,10 +30,10 @@ namespace Clinic_Management.Pages.Appointements
                 return NotFound();
             }
 
-            var appointment= await _context.Appointments.Include(a=>a.Doctor).Include(a=>a.Branch)
-                .Include(a=>a.SpecialistNavigation).Include(a=>a.StatusNavigation)
-                .Include(a=>a.Doctor).Include(a=>a.Receptionist).FirstOrDefaultAsync(m => m.AppointmentId == id);
-            patient = _context.Users.Include(p=>p.MedicalRecordPatients).FirstOrDefault(p => p.UserId == appointment.PatientId);
+            var appointment = await _context.Appointments.Include(a => a.Doctor).Include(a => a.Branch)
+                .Include(a => a.SpecialistNavigation).Include(a => a.StatusNavigation)
+                .Include(a => a.Doctor).Include(a => a.Receptionist).FirstOrDefaultAsync(m => m.AppointmentId == id);
+            patient = _context.Users.Include(p => p.MedicalRecordPatients).FirstOrDefault(p => p.UserId == appointment.PatientId);
             MedicalRecords = _context.MedicalRecords.Where(m => m.PatientId == patient.UserId).ToList();
             if (appointment == null)
             {
@@ -43,28 +43,37 @@ namespace Clinic_Management.Pages.Appointements
             {
                 Appointment = appointment;
             }
-            List<User> Doctors = _context.Users.Include(s=>s.Staff).Where(s=>s.RoleId==2).ToList();
+            List<User> Doctors = _context.Users.Include(s => s.Staff).Where(s => s.RoleId == 2).ToList();
             List<User> DoctorToRemove = new List<User>();
-            foreach (var user in Doctors) {
-                foreach (var a in _context.Appointments.Where(a => a.Status == 1 && a.AppointmentId != appointment.AppointmentId).ToList()) {
-                    if (a.RequestedTime.Equals(appointment.RequestedTime))
+            foreach (var user in Doctors)
+            {
+                foreach (var a in _context.Appointments.Where(a => a.Status == 1 && a.AppointmentId != Appointment.AppointmentId).ToList())
+                {
+                    if (a.RequestedTime.Equals(Appointment.RequestedTime) && a.Doctor != null)
                     {
                         DoctorToRemove.Add(user);
                     }
                 }
             }
-            foreach(var u in DoctorToRemove)
+            foreach (var u in DoctorToRemove)
             {
-                foreach(var d in Doctors)
-                {
-                    if (u.UserId == d.UserId)
-                    {
-                        Doctors.Remove(u);
-                    }
-                }
+                Doctors.Remove(u);
             }
+            StatusList = _context.AppointmentStatuses.ToList();
             DoctorList = Doctors.ToList();
             return Page();
+        }
+        public async Task<IActionResult> OnPostAsync(int? AppointmentId, int? AppointmentDoctor, int AppointmentStatus)
+        {
+            var a = _context.Appointments.FirstOrDefault(a => a.AppointmentId == AppointmentId);
+            if(AppointmentDoctor!=null && AppointmentDoctor != 0)
+            {
+                a.DoctorId = AppointmentDoctor;
+            }         
+            a.Status = AppointmentStatus;
+            _context.Appointments.Update(a);
+            _context.SaveChanges();
+            return RedirectToPage("./Index");
         }
     }
 }

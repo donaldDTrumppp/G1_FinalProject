@@ -153,8 +153,12 @@
                         @Html.DisplayFor(modelItem => item.StatusNavigation.StatusName)
                     </td>
                     <td class="px-6 py-4 text-left items-center">
-                        <a asp-page="./Edit" asp-route-id="@item.AppointmentId">Edit</a> |
-                        <a asp-page="./Details" asp-route-id="@item.AppointmentId">Details</a> |
+                        @if (item.Status != 2 && item.Status != 3)
+                        {
+                           <a asp-page="./Edit" asp-route-id="@item.AppointmentId">Edit</a> 
+                        }
+                        
+                        <a asp-page="./Details" asp-route-id="@item.AppointmentId">Details</a> 
                         @if (item.Status != 2 && item.Status != 3)
                         {
                             <svg id="@item.AppointmentId" data-modal-target="deactiveModal" onclick="document.getElementById('btnArchive').value=@item.AppointmentId" data-modal-toggle="deactiveModal" class="cursor-pointer h-4 w-4 text-red-500 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">  <polyline points="21 8 21 21 3 21 3 8" />  <rect x="1" y="3" width="22" height="5" />  <line x1="10" y1="12" x2="14" y2="12" /></svg>

@@ -20,7 +20,7 @@ namespace Clinic_Management.Pages.Appointements
 
         public Appointment Appointment { get; set; } = default!;
         public User patient { get; set; } = default!;
-        public IList<MedicalRecord> MedicalRecords { get; set; }
+        public IList<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null || _context.Appointments == null)
