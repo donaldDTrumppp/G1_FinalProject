@@ -42,15 +42,11 @@ namespace Clinic_Management.Pages.Authentication
             if (!_context.Users.Any(u => u.Username == Username))
             {
                 ModelState.AddModelError("Username", "Username is invalid.");
+                return Page();
             }
-
-            if (!_context.Users.Any(u => u.Username == Username))
+            if (!_context.Users.Any(u => u.Password == Password))
             {
                 ModelState.AddModelError("Password", "Password is invalid.");
-            }
-
-            if (!ModelState.IsValid)
-            {
                 return Page();
             }
 
@@ -58,22 +54,22 @@ namespace Clinic_Management.Pages.Authentication
                 .Where(u => (u.Username == Username && u.Password == Password) || (u.Email == Username && u.Password == Password))
                 .FirstOrDefaultAsync();
 
-            
 
             var role = await _context.Roles
                 .Where(r => r.RoleId == user.RoleId)
                 .Select(r => r.RoleName)
                 .FirstOrDefaultAsync();
 
-            
-
             var token = GenerateJwtToken(user, role);
 
             HttpContext.Session.SetString("JWToken", token);
             HttpContext.Session.SetString("Username", user.Username);
 
-            return RedirectToPage("/Home/Home");
+
+
+            return Redirect("Home/Home");
         }
+
 
         private string GenerateJwtToken(User user, string roleName)
         {
@@ -92,17 +88,16 @@ namespace Clinic_Management.Pages.Authentication
                     new Claim("phoneNumber", user.PhoneNumber),
                     new Claim("email", user.Email),
                     new Claim("address", user.Address),
-                    new Claim(ClaimTypes.Role, roleName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    new Claim("userrole", user.RoleId.ToString())
+                    
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(double.Parse(jwtSettings["ExpirationSeconds"])),
-                Issuer = jwtSettings["Issuer"],
-                Audience = jwtSettings["Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        
     }
 }
