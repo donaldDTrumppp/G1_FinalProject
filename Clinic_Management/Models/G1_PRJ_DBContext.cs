@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -31,7 +31,7 @@ namespace Clinic_Management.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server =DESKTOP-OSDDH1R\\SQLEXPRESS; database = PRN221_Project;uid=sa;pwd=haibang20042003;");
+                optionsBuilder.UseSqlServer("server =(local); database = G1_PRJ_DB;uid=sa;pwd=12345;");
             }
         }
 
@@ -304,9 +304,9 @@ namespace Clinic_Management.Models
                     .IsUnicode(false)
                     .HasColumnName("password");
 
-                entity.Property(e => e.Passwprd)
-                    .HasMaxLength(50)
-                    .HasColumnName("passwprd");
+                //entity.Property(e => e.Passwprd)
+                //    .HasMaxLength(50)
+                //    .HasColumnName("passwprd");
 
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(10)
