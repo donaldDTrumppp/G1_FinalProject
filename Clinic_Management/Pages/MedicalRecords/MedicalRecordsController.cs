@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
-using Clinic_Management.Pages.MedicalRecords.utils;
+using Clinic_Management.Utils;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {

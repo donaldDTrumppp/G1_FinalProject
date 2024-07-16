@@ -1,28 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Clinic_Management.Models;
+using Clinic_Management.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Clinic_Management.Models;
-using Clinic_Management.Services;
+using Xceed.Words.NET;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
     public class DetailsModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
+        private AppointmentBrotherCode brotherCode;
 
-        private readonly IConfiguration _config;
-
-        private readonly EmailService _emailService;
-
-        public DetailsModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config)
+        public DetailsModel(Clinic_Management.Models.G1_PRJ_DBContext context)
         {
             _context = context;
-            _emailService = emailService;
-            _config = config;
+            brotherCode = new AppointmentBrotherCode(_context);
         }
 
         public MedicalRecord MedicalRecord { get; set; } = default!;
@@ -31,26 +24,76 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             if (id == null || _context.MedicalRecords == null)
             {
-                return NotFound();
+                return RedirectToPage("/Home/404");
             }
 
             var medicalrecord = await _context.MedicalRecords
-                .Include(m => m.Doctor)
-                .Include(m => m.Appointment)
-                .Include(m => m.Appointment.Branch)
+                .Include(s => s.Doctor).ThenInclude(d => d.Staff)
+                .Include(s => s.Patient).ThenInclude(p => p.PatientNavigation)
+                .Include(s => s.Appointment)
                 .FirstOrDefaultAsync(m => m.MedicalrecordId == id);
             if (medicalrecord == null)
             {
-                return NotFound();
+                return RedirectToPage("/Home/404");
             }
             else
             {
                 MedicalRecord = medicalrecord;
-                string activeLink = _config["Host"] + _config["Port"] + "/MedicalRecords/Details?id=" + MedicalRecord.MedicalrecordId;
-                var htmlContent = await _emailService.GetMedicalRecordEmail("medical_record_edited.html", MedicalRecord.Appointment.Branch.BranchName, MedicalRecord.Appointment.PatientName, MedicalRecord.Appointment.PatientAddress, MedicalRecord.Appointment.PatientDob.ToString(), MedicalRecord.Appointment.PatientPhoneNumber, MedicalRecord.Appointment.PatientEmail, MedicalRecord.Symptoms, MedicalRecord.Diagnosis, MedicalRecord.Treatment, activeLink, MedicalRecord.Doctor.Name, MedicalRecord.VisitTime);
-                _emailService.SendEmailMedical("tranhaibang665@gmail.com", "[Medical Record] Medical Record Created Successfully", htmlContent);
             }
             return Page();
         }
+
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (id == null || _context.MedicalRecords == null)
+            {
+                return RedirectToPage("/Home/404");
+            }
+
+            var medicalrecord = await _context.MedicalRecords
+                .Include(s => s.Doctor).ThenInclude(d => d.Staff).ThenInclude(s => s.DoctorSpecialistNavigation)
+                .Include(s => s.Patient).ThenInclude(p => p.PatientNavigation)
+                .Include(s => s.Appointment)
+                .FirstOrDefaultAsync(m => m.MedicalrecordId == id);
+
+            if (medicalrecord == null)
+            {
+                return RedirectToPage("/Home/404");
+            }
+            else
+            {
+                MedicalRecord = medicalrecord;
+            }
+
+            string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/template/template_report.docx");
+
+            using (var document = DocX.Load(templatePath))
+            {
+                // Replace placeholders with actual data
+                document.ReplaceText("{DoctorName}", MedicalRecord.Doctor?.Name ?? "Unknown");
+                document.ReplaceText("{SpecialistName}", MedicalRecord.Doctor?.Staff?.DoctorSpecialistNavigation?.SpecialistName ?? "N/A");
+                document.ReplaceText("{PatientName}", MedicalRecord.Patient?.PatientNavigation?.Name ?? "Unknown");
+                document.ReplaceText("{PatientAddress}", MedicalRecord.Appointment.PatientAddress);
+                document.ReplaceText("{PatientPhone}", MedicalRecord.Appointment.PatientPhoneNumber);
+                document.ReplaceText("{PatientEmail}", MedicalRecord.Appointment.PatientEmail);
+                document.ReplaceText("{Symptoms}", MedicalRecord.Symptoms);
+                document.ReplaceText("{Diagnosis}", MedicalRecord.Diagnosis);
+                document.ReplaceText("{Treatment}", MedicalRecord.Treatment);
+                document.ReplaceText("{VisitTime}", brotherCode.ConvertDateTime(MedicalRecord.VisitTime));
+
+                // Save the document to a MemoryStream
+                using (var stream = new MemoryStream())
+                {
+                    document.SaveAs(stream);
+                    stream.Position = 0; // Reset the stream position to the beginning
+
+                    // Return the file
+                    var fileName = "MedicalRecord.docx";
+                    var contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    return File(stream.ToArray(), contentType, fileName);
+                }
+            }
+        }
+
     }
 }

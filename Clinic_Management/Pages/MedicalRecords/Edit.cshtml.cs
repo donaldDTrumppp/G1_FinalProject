@@ -26,7 +26,7 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             if (id == null || _context.MedicalRecords == null)
             {
-                return NotFound();
+                return RedirectToPage("/Home/404");
             }
 
             var medicalrecord = await _context.MedicalRecords
@@ -36,7 +36,7 @@ namespace Clinic_Management.Pages.MedicalRecords
 
             if (medicalrecord == null)
             {
-                return NotFound();
+                return RedirectToPage("/Home/404");
             }
             MedicalRecord = medicalrecord;
             ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
@@ -75,7 +75,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             {
                 if (!MedicalRecordExists(MedicalRecord.MedicalrecordId))
                 {
-                    return NotFound();
+                    return RedirectToPage("/Home/404");
                 }
                 else
                 {

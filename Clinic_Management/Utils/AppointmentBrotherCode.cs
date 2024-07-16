@@ -15,6 +15,25 @@ namespace Clinic_Management.Utils
             _context = context;
         }
 
+        public string ConvertDateTime(DateTime dateTime)
+        {
+            // Lấy ngày trong tuần
+            string[] daysOfWeek = { "Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy" };
+            string dayOfWeek = daysOfWeek[(int)dateTime.DayOfWeek];
+
+            // Lấy các thành phần ngày, tháng, năm và giờ
+            string day = dateTime.Day.ToString();
+            string month = dateTime.Month.ToString();
+            string year = dateTime.Year.ToString();
+            string hour = dateTime.Hour.ToString();
+
+            // Định dạng chuỗi kết quả
+            string result = $"{dayOfWeek}, Ngày {day} Tháng {month} Năm {year}";
+
+            return result;
+        }
+
+
         public string EncodeAppointment(Appointment appointment)
         {
             // Format: {Specialization}-{Date(yyyyMMdd)}-{Id}

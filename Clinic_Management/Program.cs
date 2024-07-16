@@ -79,6 +79,8 @@ namespace Clinic_Management
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapControllers();
+
             app.MapRazorPages();
             app.MapGet("/", context =>
             {
