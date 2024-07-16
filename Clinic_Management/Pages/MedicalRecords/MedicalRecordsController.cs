@@ -149,7 +149,7 @@ namespace Clinic_Management.Pages.MedicalRecords
 
             // Load related entities if necessary
             existingRecord.Appointment = await _context.Appointments.FindAsync(medicalRecord.AppointmentId);
-            existingRecord.Patient = await _context.Users.FindAsync(medicalRecord.PatientId);
+            existingRecord.Patient = await _context.Patients.FindAsync(medicalRecord.PatientId);
 
             if (existingRecord.DoctorId.HasValue)
             {

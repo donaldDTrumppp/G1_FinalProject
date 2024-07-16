@@ -28,6 +28,9 @@ namespace Clinic_Management.Pages.PatientAppointment
         public bool Mode { get; set; } = false;
 
         [BindProperty(SupportsGet = true)]
+        public int Time { get; set; }
+
+        [BindProperty(SupportsGet = true)]
         public int PageIndex { get; set; }
 
         [BindProperty(SupportsGet = true)]
@@ -78,14 +81,16 @@ namespace Clinic_Management.Pages.PatientAppointment
         public async Task<IActionResult> OnPostAsync()
         {
             Appointment.Branch = _context.Branches.FirstOrDefault(i => i.BranchId == Appointment.BranchId);
-            Appointment.Patient = _context.Users.FirstOrDefault(i => i.UserId == Appointment.PatientId);
+            Appointment.Patient = _context.Patients.FirstOrDefault(i => i.PatientId == Appointment.PatientId);
             Appointment.StatusNavigation = _context.AppointmentStatuses.FirstOrDefault(i => i.StatusId == Appointment.Status);
             if (!ModelState.IsValid)
             {
                 
                 return Page();
             }
-
+            Console.WriteLine(Appointment.RequestedTime + " " + Time);
+            Appointment.RequestedTime = new DateTime(Appointment.RequestedTime.Year, Appointment.RequestedTime.Month, Appointment.RequestedTime.Day, 0, 0, 0);
+            Appointment.RequestedTime = Appointment.RequestedTime.AddHours(Time);
             _context.Attach(Appointment).State = EntityState.Modified;
 
             try

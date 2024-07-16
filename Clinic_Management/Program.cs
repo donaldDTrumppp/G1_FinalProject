@@ -16,7 +16,7 @@ namespace Clinic_Management
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<G1_PRJ_DBContext>();
-            builder.Services.AddTransient<ISMSService, SMSService>();
+            builder.Services.AddTransient<EmailService>();
 
             var configuration = builder.Configuration;
 

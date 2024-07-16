@@ -38,7 +38,10 @@ namespace Clinic_Management.Pages.MedicalRecords
 
         public async Task OnGetAsync()
         {
-            var query = _context.MedicalRecords.Include(m => m.Doctor).Include(m => m.Patient).AsQueryable();
+            var query = _context.MedicalRecords
+                .Include(m => m.Appointment)
+                .Include(m => m.Doctor)
+                .Include(m => m.Patient).AsQueryable();
 
             if (!string.IsNullOrEmpty(SearchString))
             {
@@ -47,7 +50,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                     m.Diagnosis.ToLower().Contains(SearchString.ToLower()) ||
                     m.Treatment.ToLower().Contains(SearchString.ToLower()) ||
                     m.Doctor.Name.ToLower().Contains(SearchString.ToLower()) ||
-                    m.Patient.Name.ToLower().Contains(SearchString.ToLower())
+                    m.Appointment.PatientName.ToLower().Contains(SearchString.ToLower())
                 );
             }
 
@@ -60,7 +63,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                     query = SortOrder == "desc" ? query.OrderByDescending(r => r.Doctor.Name) : query.OrderBy(r => r.Doctor.Name);
                     break;
                 case "Patient":
-                    query = SortOrder == "desc" ? query.OrderByDescending(r => r.Patient.Name) : query.OrderBy(r => r.Patient.Name);
+                    query = SortOrder == "desc" ? query.OrderByDescending(r => r.Appointment.PatientName) : query.OrderBy(r => r.Appointment.PatientName);
                     break;
                 default:
                     query = query.OrderBy(r => r.VisitTime); // Default

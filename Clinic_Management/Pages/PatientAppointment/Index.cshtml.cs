@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Clinic_Management.Services;
 using NuGet.Protocol.Plugins;
 using System.Net;
 using System.Text;
@@ -19,6 +18,8 @@ using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using RestSharp;
 using Microsoft.Data.SqlClient;
 using NuGet.Common;
+using Clinic_Management.Services;
+using Microsoft.AspNetCore.Html;
 
 namespace Clinic_Management.Pages.PatientAppointment
 {
@@ -26,12 +27,12 @@ namespace Clinic_Management.Pages.PatientAppointment
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
 
-        private readonly ISMSService _smsService;
+        private readonly EmailService _emailService;
 
-        public IndexModel(Clinic_Management.Models.G1_PRJ_DBContext context, ISMSService smsService)
+        public IndexModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService)
         {
             _context = context;
-            _smsService = smsService;
+            _emailService = emailService;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -107,7 +108,7 @@ namespace Clinic_Management.Pages.PatientAppointment
                     query = SortOrder == "desc" ? query.OrderByDescending(r => (r.Receptionist != null ? r.Receptionist.Name : "")) : query.OrderBy(r => (r.Receptionist != null ? r.Receptionist.Name : ""));
                     break;
                 case "Patient":
-                    query = SortOrder == "desc" ? query.OrderByDescending(r => r.Patient.Name) : query.OrderBy(r => r.Patient.Name);
+                    query = SortOrder == "desc" ? query.OrderByDescending(r => r.PatientName) : query.OrderBy(r => r.PatientName);
                     break;
                 case "Doctor":
                     query = SortOrder == "desc" ? query.OrderByDescending(r => r.Doctor != null ? r.Doctor.Name : "") : query.OrderBy(r => r.Doctor != null ? r.Doctor.Name : "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
@@ -122,6 +123,8 @@ namespace Clinic_Management.Pages.PatientAppointment
             Status = await _context.AppointmentStatuses.Distinct().ToListAsync();
             TotalRecords = await query.CountAsync();
             Appointment = await query.Skip((this.PageIndex - 1) * PageSize).Take(PageSize).ToListAsync();
+            var htmlContent = await _emailService.GetForgotPasswordEmail("forgot_password.html", "https://www.facebook.com/", "Tran Hai Bang");
+            _emailService.SendEmailNoHeader("tranhaibang665@gmail.com", "[Account Register] Verify Account", htmlContent);
         }
 
         

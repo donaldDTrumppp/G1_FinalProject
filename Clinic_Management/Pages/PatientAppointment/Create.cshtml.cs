@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Clinic_Management.Models;
 using Microsoft.EntityFrameworkCore;
+using Clinic_Management.Services;
 
 namespace Clinic_Management.Pages.PatientAppointment
 {
@@ -14,12 +15,21 @@ namespace Clinic_Management.Pages.PatientAppointment
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
 
-        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        private readonly EmailService _emailService;
+
+        private readonly IConfiguration _config;
+
+        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config)
         {
             _context = context;
+            _emailService = emailService;
+            _config = config;
         }
 
         public List<Branch> Branchs { get; set; }
+
+        [BindProperty]
+        public int Time { get; set; }
 
         public List<Specialist> Specialists { get; set; }
 
@@ -46,6 +56,8 @@ namespace Clinic_Management.Pages.PatientAppointment
             Appointment.Status = _context.AppointmentStatuses.FirstOrDefault(i => i.StatusName == "Đang chờ duyệt").StatusId;
             Appointment.Branch = _context.Branches.FirstOrDefault(i => i.BranchId == Appointment.BranchId);
             Appointment.CreatedAt = DateTime.Now;
+            Appointment.RequestedTime = Appointment.RequestedTime.AddHours(Time);
+            Appointment.SpecialistNavigation = _context.Specialists.FirstOrDefault(i => i.SpecialistId == Appointment.Specialist);
             if (!ModelState.IsValid || _context.Appointments == null || Appointment == null)
             {
                 return Page();
@@ -56,6 +68,9 @@ namespace Clinic_Management.Pages.PatientAppointment
 
             _context.Appointments.Add(Appointment);
             await _context.SaveChangesAsync();
+            string activeLink = _config["Host"] + _config["Port"] + "/PatientAppointment/Details?id=" + Appointment.AppointmentId + "&PageIndex=" + PageIndex;
+            var htmlContent = await _emailService.GetAppointmentCreatedEmail("appointment_created.html", Appointment.Branch.BranchName, Appointment.PatientName, Appointment.PatientAddress, Appointment.PatientDob.ToString(), Appointment.PatientPhoneNumber, Appointment.PatientEmail, Appointment.RequestedTime.ToString(), Appointment.SpecialistNavigation.SpecialistName, Appointment.Description, activeLink);
+            _emailService.SendEmailAppointment(Appointment.PatientEmail, "[Appointment] Appointment Booked Successfully", htmlContent);
 
             return RedirectToPage("./Index", new { PageIndex = PageIndex, Message = "Create appointment request successfully" });
         }

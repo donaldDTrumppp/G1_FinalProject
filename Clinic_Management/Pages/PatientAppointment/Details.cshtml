@@ -35,10 +35,10 @@
 
 <form id="form" method="post" class="max-w-2xl mx-auto">
     <input type="hidden" asp-for="Appointment.AppointmentId" />
-        <input type="hidden" asp-for="PageIndex" />
+        <input type="hidden" asp-for="Appointment.CreatedAt" />
+    <input type="hidden" asp-for="PageIndex" />
     <input type="hidden" asp-for="Appointment.PatientId" />
     <!--<div id="toast-top-right" class="fixed flex z-50 items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow fixed top-5 right-5 dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800" role="alert">-->
-    
     <!-- </div>-->
     <!--
     <div class="main_value">
@@ -151,13 +151,38 @@
             <input required oninput="stopEnterCharacter()" onblur="validate('email')" name="@Html.NameFor(a => a.Appointment.PatientEmail)" type="email" id="floating_email" aria-label="disabled input" class="mb-5 @(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.PatientEmail" disabled="@(Model.Mode == false)">
         </div>
     </div>
-    <div class="mb-5">
-        <h3 class="text-lg mb-1 text-gray-900 font-bold">
-            Requested Time
-            <span id="errt" asp-validation-for="Appointment.RequestedTime" class="text-danger text-red-500 ml-1 mb-2 text-sm font-medium dark:text-white"></span>
-        </h3>
-        <input required onblur="validate('requestedtime')" name="@Html.NameFor(a => a.Appointment.RequestedTime)" type="datetime-local" id="floating_rtime" aria-label="disabled input" class="@(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.RequestedTime.ToString("yyyy-MM-ddTHH:mm")" disabled="@(Model.Mode == false)">
+    <div class="grid md:grid-cols-2 md:gap-6">
+        <div class="relative z-0 w-full mb-5 group">
+            <h3 class="text-lg mb-1 text-gray-900 font-bold">
+                Requested Date
+                <span id="errt" asp-validation-for="Appointment.RequestedTime" class="text-danger text-red-500 ml-1 mb-2 text-sm font-medium dark:text-white"></span>
+            </h3>
+            <input required onblur="validate('requestedtime')" name="@Html.NameFor(a => a.Appointment.RequestedTime)" type="date" id="floating_rtime" aria-label="disabled input" class="@(Model.Mode == true ? "" : "bg-gray-100") border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.Appointment.RequestedTime.ToString("yyyy-MM-dd")" disabled="@(Model.Mode == false)">
+        </div>
 
+        <div class="relative z-0 w-full mb-5 group">
+            <h3 class="text-lg mb-1 text-gray-900 font-bold">
+                Requested Time 
+                <span id="errt" asp-validation-for="Appointment.RequestedTime" class="text-danger text-red-500 ml-1 mb-2 text-sm font-medium dark:text-white"></span>
+            </h3>
+            <svg class="h-5 w-5 text-black" style="position: absolute;margin-right: 15px;margin-top: 11px;left: 5px;" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <circle cx="12" cy="12" r="9" />
+                <polyline points="12 7 12 12 15 15" />
+            </svg>
+            <select name="Time" style="font-weight: 450; padding-left: 30px; padding-top: 11px" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 @(Model.Mode == true ? "" : "bg-gray-100") focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled="@(Model.Mode == false)">
+                <option selected="@Model.Appointment.RequestedTime.Hour == 7" value="7">
+                    Shift 1: 07:00 - 08:00
+                </option>
+                <option selected="@(Model.Appointment.RequestedTime.Hour == 8)" value="8">Shift 2: 08:00 - 09:00</option>
+                <option selected="@(Model.Appointment.RequestedTime.Hour == 9)" value="9">Shift 3: 09:00 - 10:00</option>
+                <option selected="@(Model.Appointment.RequestedTime.Hour == 10)" value="10">Shift 4: 10:00 - 11:00</option>
+                <option selected="@(Model.Appointment.RequestedTime.Hour == 13)" value="13">Shift 5: 13:00 - 14:00</option>
+                <option selected="@(Model.Appointment.RequestedTime.Hour == 14)" value="14">Shift 6: 14:00 - 15:00</option>
+                <option selected="@(Model.Appointment.RequestedTime.Hour == 15)" value="15">Shift 7: 15:00 - 16:00</option>
+                <option selected="@(Model.Appointment.RequestedTime.Hour == 16)" value="16">Shift 8: 16:00 - 17:00</option>
+            </select>
+        </div>
     </div>
     <div class="mb-5">
         <h3 class="text-lg mb-1 text-gray-900 font-bold">

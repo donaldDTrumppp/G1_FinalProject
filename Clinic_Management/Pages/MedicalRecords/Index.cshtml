@@ -103,7 +103,7 @@
                         @Html.DisplayFor(modelItem => item.Doctor.Name)
                     </td>
                     <td class="px-6 py-4">
-                        @Html.DisplayFor(modelItem => item.Patient.Name)
+                        @Html.DisplayFor(modelItem => item.Appointment.PatientName)
                     </td>
                     <td class="px-6 py-4 text-right items-center">
                         <a asp-page="./Edit" asp-route-id="@item.MedicalrecordId">Edit</a> |
