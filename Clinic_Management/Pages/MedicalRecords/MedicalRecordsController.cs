@@ -43,7 +43,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             {
                 return NotFound();
             }
-
+            if(medicalRecord.CreatedAt is null) medicalRecord.CreatedAt = DateTime.Now;
             return medicalRecord;
         }
 

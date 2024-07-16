@@ -18,12 +18,14 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             _context = context;
         }
-
+        [BindProperty]
+        public int? PageIndex { get; set; } = 1;
         [BindProperty]
         public MedicalRecord MedicalRecord { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id, int? PageIndex)
         {
+            this.PageIndex = PageIndex;
             if (id == null || _context.MedicalRecords == null)
             {
                 return RedirectToPage("/Home/404");
@@ -71,7 +73,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!MedicalRecordExists(MedicalRecord.MedicalrecordId))
                 {
@@ -83,7 +85,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                 }
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Index", new { PageIndex = this.PageIndex, Message = "Edit Medical report successfully" });
         }
 
         private bool MedicalRecordExists(int id)

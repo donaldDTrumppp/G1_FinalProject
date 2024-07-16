@@ -15,6 +15,7 @@ namespace Clinic_Management.Pages.MedicalRecords
         }
         public IList<MedicalRecord> MedicalRecord { get; set; }
         public string Message { get; set; } = "";
+        public string TypeMessage { get; set; } = "";
 
         #region Search
         [BindProperty(SupportsGet = true)]
@@ -44,8 +45,10 @@ namespace Clinic_Management.Pages.MedicalRecords
         public int PageSize { get; set; } = 5;
         public int totalRecords { get; set; } = 1;
         #endregion
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string? TypeMessage, string? Message)
         {
+            this.TypeMessage = TypeMessage;
+            this.Message = Message;
             // Get specialists for the dropdown list
             var specialistsQuery = from s in _context.Specialists
                                    select s;
@@ -91,9 +94,6 @@ namespace Clinic_Management.Pages.MedicalRecords
                     break;
                 case "Patient":
                     query = SortOrder == "desc" ? query.OrderByDescending(r => r.Patient.PatientNavigation.Name) : query.OrderBy(r => r.Patient.PatientNavigation.Name);
-                    break;
-                default:
-                    query = query.OrderBy(r => r.VisitTime); // Default
                     break;
             }
 

@@ -16,7 +16,9 @@
         <p class="font-semibold text-md-center text-gray-900">Appointment code: <span id="floating_appointment" class="font-bold text-lg"></span></p>
     </div>
     <div class="main_value">
+        <input type="hidden" asp-for="@Model.PageIndex">
         <input type="hidden" asp-for="MedicalRecord.MedicalrecordId" />
+        <input type="hidden" asp-for="MedicalRecord.VisitTime">
         <select asp-for="MedicalRecord.AppointmentId" id="apmId" class="hidden" asp-items="ViewBag.AppointmentId"></select>
         <select asp-for="MedicalRecord.PatientId" id="patientId" class="hidden" asp-items="ViewBag.PatientId"></select>
         <select asp-for="MedicalRecord.DoctorId" id="doctorId" class="hidden" asp-items="ViewBag.DoctorId"></select>

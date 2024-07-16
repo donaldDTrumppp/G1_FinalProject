@@ -13,8 +13,14 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             _context = context;
         }
-        public IActionResult OnGet()
+
+        public string Message { get; set; } = "";
+        public string TypeMessage { get; set; } = "";
+
+        public IActionResult OnGet(string? TypeMessage, string? Message)
         {
+            this.TypeMessage = TypeMessage;
+            this.Message = Message;
             ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
             ViewData["DoctorId"] = new SelectList(_context.Users, "UserId", "UserId");
             ViewData["PatientId"] = new SelectList(_context.Users, "UserId", "UserId");
@@ -34,9 +40,16 @@ namespace Clinic_Management.Pages.MedicalRecords
             }
             MedicalRecord.CreatedAt = DateTime.Now;
             _context.MedicalRecords.Add(MedicalRecord);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            try
+            {
+                await _context.SaveChangesAsync();
+                int TotalRecord = _context.MedicalRecords.ToList().Count;
+                int PageIndex = TotalRecord % 5 == 0 ? TotalRecord / 5 : (TotalRecord / 5 + 1);
+                return RedirectToPage("./Index", new { PageIndex = PageIndex, TypeMessage = "success", Message = "Create appointment successfully" });
+            } catch(Exception e)
+            {
+                return RedirectToPage("./Create", new { TypeMessage = "error",  Message = "Create appointment fail: " + e.Message });
+            }
         }
     }
 }
