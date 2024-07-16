@@ -15,6 +15,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             _context = context;
         }
         public IList<MedicalRecord> MedicalRecord { get; set; }
+        public string Message { get; set; } = "";
 
         #region Search
         [BindProperty(SupportsGet = true)]
