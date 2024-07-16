@@ -14,12 +14,10 @@ namespace Clinic_Management.Pages.Authentication
     public class RegisterModel : PageModel
     {
         private readonly G1_PRJ_DBContext _context;
-        private readonly IMailSender _mailSender;
 
-        public RegisterModel(G1_PRJ_DBContext context, IMailSender mailSender)
+        public RegisterModel(G1_PRJ_DBContext context)
         {
             _context = context;
-            _mailSender = mailSender;
         }
 
         [BindProperty]
