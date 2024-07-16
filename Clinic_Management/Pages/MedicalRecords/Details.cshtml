@@ -47,8 +47,8 @@
                 <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
                     <img class="mr-4 w-16 h-16 rounded-full" src="~/Images/image.png" alt="Jese Leos">
                     <div>
-                        <a href="#" rel="author" class="text-xl font-bold text-gray-900 dark:text-white" id="floating_fname_d">@(Model.MedicalRecord.Doctor.Name != null ? Model.MedicalRecord.Doctor.Name : "")</a>
-                        <p class="text-base text-gray-500 dark:text-gray-400" id="floating_specialization">@(Model.MedicalRecord.Doctor.Staff.DoctorSpecialistNavigation.SpecialistName != null ? Model.MedicalRecord.Doctor.Staff.DoctorSpecialistNavigation.SpecialistName : "")</p>
+                        <a href="#" rel="author" class="text-xl font-bold text-gray-900 dark:text-white" id="floating_fname_d">@(Model.MedicalRecord.Doctor?.Name ?? "N/A")</a>
+                        <p class="text-base text-gray-500 dark:text-gray-400" id="floating_specialization">@(Model.MedicalRecord.Doctor?.Staff?.DoctorSpecialistNavigation?.SpecialistName ?? "N/A")</p>
                         <p class="text-base text-gray-500 dark:text-gray-400">Doctor</p>
                     </div>
                 </div>
@@ -59,25 +59,25 @@
         <h3 class="text-lg mb-1 text-gray-900 font-bold">Patient Info</h3>
         <div>
             <label for="floating_fname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fullname</label>
-            <input type="text" name="floating_fname" id="floating_fname" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Patient.Name" disabled>
+            <input type="text" name="floating_fname" id="floating_fname" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@(Model.MedicalRecord.Patient?.PatientNavigation?.Name ?? "N/A")" disabled>
         </div>
         <div class="relative z-0 w-full mb-5 group">
             <label for="floating_address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
-            <input type="text" name="floating_address" id="floating_address" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Patient.Address" disabled>
+            <input type="text" name="floating_address" id="floating_address" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Appointment.PatientAddress" disabled>
         </div>
         <div class="grid md:grid-cols-2 md:gap-6">
             <div class="relative z-0 w-full mb-5 group">
                 <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
-                <input type="date" name="floating_dob" id="floating_dob" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Patient.Dob" disabled>
+                <input type="date" name="floating_dob" id="floating_dob" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Appointment.PatientDob.ToString("yyyy-MM-dd")" disabled>
             </div>
             <div class="relative z-0 w-full mb-5 group">
                 <label for="floating_phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
-                <input type="tel" name="floating_phone" id="floating_phone" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Patient.PhoneNumber" disabled>
+                <input type="tel" name="floating_phone" id="floating_phone" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Appointment.PatientPhoneNumber" disabled>
             </div>
         </div>
         <div class="relative z-0 w-full mb-5 group">
             <label for="floating_email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-            <input type="email" name="floating_email" id="floating_email" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Patient.Email" disabled>
+            <input type="email" name="floating_email" id="floating_email" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Appointment.PatientEmail" disabled>
         </div>
     </div>
     <div>

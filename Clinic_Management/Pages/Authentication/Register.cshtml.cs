@@ -105,7 +105,7 @@ namespace Clinic_Management.Pages.Authentication
                 Email = Email,
                 Address = Address,
                 RoleId = RoleId,
-                Status = false
+                Status = null
             };
 
             _context.Users.Add(user);

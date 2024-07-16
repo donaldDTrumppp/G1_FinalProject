@@ -13,8 +13,7 @@ namespace Clinic_Management.Models
         }
 
         public int SpecialistId { get; set; }
-
-        [DisplayName("Specialist")]
+        [DisplayName("Specialist Name")]
         public string SpecialistName { get; set; } = null!;
 
         public virtual ICollection<Appointment> Appointments { get; set; }

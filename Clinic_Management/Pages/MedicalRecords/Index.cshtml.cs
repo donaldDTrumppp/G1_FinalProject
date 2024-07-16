@@ -48,13 +48,11 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             // Get specialists for the dropdown list
             var specialistsQuery = from s in _context.Specialists
-                                   orderby s.SpecialistName
                                    select s;
 
             Specialists = new SelectList(await specialistsQuery.ToListAsync(), "SpecialistId", "SpecialistName");
 
             var branchQuery = from s in _context.Branches
-                                   orderby s.BranchName
                                    select s;
 
             Branchlist = new SelectList(await branchQuery.ToListAsync(), "BranchId", "BranchName");
@@ -79,7 +77,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                     //m.Diagnosis.ToLower().Contains(SearchString.ToLower()) ||
                     //m.Treatment.ToLower().Contains(SearchString.ToLower()) ||
                     m.Doctor.Name.ToLower().Contains(SearchString.ToLower()) ||
-                    m.Patient.Name.ToLower().Contains(SearchString.ToLower())
+                    m.Patient.PatientNavigation.Name.ToLower().Contains(SearchString.ToLower())
                 );
             }
 
@@ -92,7 +90,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                     query = SortOrder == "desc" ? query.OrderByDescending(r => r.Doctor.Name) : query.OrderBy(r => r.Doctor.Name);
                     break;
                 case "Patient":
-                    query = SortOrder == "desc" ? query.OrderByDescending(r => r.Patient.Name) : query.OrderBy(r => r.Patient.Name);
+                    query = SortOrder == "desc" ? query.OrderByDescending(r => r.Patient.PatientNavigation.Name) : query.OrderBy(r => r.Patient.PatientNavigation.Name);
                     break;
                 default:
                     query = query.OrderBy(r => r.VisitTime); // Default

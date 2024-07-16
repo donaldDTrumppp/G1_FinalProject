@@ -30,6 +30,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             var medicalrecord = await _context.MedicalRecords
                 .Include(s => s.Doctor).ThenInclude(d => d.Staff).ThenInclude(s => s.DoctorSpecialistNavigation)
                 .Include(s => s.Patient)
+                .Include(s => s.Appointment)
                 .FirstOrDefaultAsync(m => m.MedicalrecordId == id);
             if (medicalrecord == null)
             {
@@ -69,10 +70,10 @@ namespace Clinic_Management.Pages.MedicalRecords
                 // Replace placeholders with actual data
                 document.ReplaceText("{DoctorName}", MedicalRecord.Doctor != null? MedicalRecord.Doctor.Name : "N/A");
                 document.ReplaceText("{SpecialistName}", MedicalRecord.Doctor != null ? MedicalRecord.Doctor.Staff.DoctorSpecialistNavigation.SpecialistName : "N/A");
-                document.ReplaceText("{PatientName}", MedicalRecord.Patient.Name);
-                document.ReplaceText("{PatientAddress}", MedicalRecord.Patient.Address);
-                document.ReplaceText("{PatientPhone}", MedicalRecord.Patient.PhoneNumber);
-                document.ReplaceText("{PatientEmail}", MedicalRecord.Patient.Email);
+                document.ReplaceText("{PatientName}", MedicalRecord.Patient.PatientNavigation.Name);
+                document.ReplaceText("{PatientAddress}", MedicalRecord.Patient.PatientNavigation.Address);
+                document.ReplaceText("{PatientPhone}", MedicalRecord.Patient.PatientNavigation.PhoneNumber);
+                document.ReplaceText("{PatientEmail}", MedicalRecord.Patient.PatientNavigation.Email);
                 document.ReplaceText("{Symptoms}", MedicalRecord.Symptoms);
                 document.ReplaceText("{Diagnosis}", MedicalRecord.Diagnosis);
                 document.ReplaceText("{Treatment}", MedicalRecord.Treatment);
