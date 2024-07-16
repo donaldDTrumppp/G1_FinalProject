@@ -12,6 +12,18 @@
     <link rel="stylesheet" href="~/css/site.css?v=1" asp-append-version="true" />
     <link rel="stylesheet" href="~/Clinic_Management.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/styles.css?v=2" asp-append-version="true" />
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+    <style>
+        #animateDiv {
+            width: 100%;
+        }
+
+        .reduceWidth {
+            transition: width 2s ease-out;
+            width: 0%;
+        }
+    </style>
     @RenderSection("Styles", required: false)
 </head>
 <body class="antialiased bg-white font-sans text-gray-900">
@@ -154,7 +166,7 @@
                             </li>
                             <li class="md:ml-6 mt-3 md:mt-0">
                                 <a class="inline-block font-semibold px-4 py-2 text-white bg-blue-600 md:bg-transparent md:text-white border border-white rounded"
-                                   href="book-appointment.html">
+                                   href="/PatientAppointment/Create">
                                     Book
                                     Appointment
                                 </a>
@@ -169,7 +181,7 @@
             @RenderBody()
         </main>
         <!-- start footer -->
-        <footer class="relative bg-gray-900 text-white px-4 sm:px-8 lg:px-16 xl:px-40 2xl:px-64 py-12 lg:py-24">
+        <footer class="  bg-gray-900 text-white px-4 sm:px-8 lg:px-16 xl:px-40 2xl:px-64 py-12 lg:py-24">
             <div class="flex flex-col md:flex-row">
                 <div class="w-full lg:w-2/6 lg:mx-4 lg:pr-8">
                     <h3 class="font-bold text-2xl">Basiha Medical</h3>
@@ -309,6 +321,7 @@
     </main>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131505823-4"></script>
     <script>
         window.dataLayer = window.dataLayer || [];

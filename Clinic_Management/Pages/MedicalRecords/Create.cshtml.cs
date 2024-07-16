@@ -32,7 +32,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             {
                 return Page();
             }
-
+            MedicalRecord.CreatedAt = DateTime.Now;
             _context.MedicalRecords.Add(MedicalRecord);
             await _context.SaveChangesAsync();
 

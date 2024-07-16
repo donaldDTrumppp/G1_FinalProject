@@ -1,8 +1,11 @@
-﻿using Clinic_Management.Models;
-using Clinic_Management.Utilities.MailSender;
+﻿//using Clinic_Management.Models;
+using Clinic_Management.Models;
+using Clinic_Management.Services;
+using Clinic_Management.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Configuration;
 using System.Text;
 
 namespace Clinic_Management
@@ -13,13 +16,15 @@ namespace Clinic_Management
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddTransient<IMailSender, MailSender>();
+            builder.Services.AddDbContext<G1_PRJ_DBContext>();
+            builder.Services.AddTransient<EmailService>();
 
             var configuration = builder.Configuration;
 
-            builder.Services.AddDbContext<G1_PRJ_DBContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("MyCnn")));
+            //builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
+            //option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSession(options =>
             {
@@ -74,6 +79,8 @@ namespace Clinic_Management
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapControllers();
+
             app.MapRazorPages();
             app.MapGet("/", context =>
             {
@@ -82,6 +89,7 @@ namespace Clinic_Management
             });
 
             app.Run();
+
         }
     }
 }

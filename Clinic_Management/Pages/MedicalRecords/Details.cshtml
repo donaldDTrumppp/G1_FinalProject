@@ -29,14 +29,15 @@
         </div>
     </div>
 </header>
-<form id="form" class="max-w-2xl mx-auto">
+<form id="form" class="max-w-2xl mx-auto" method="post">
     <div class="main_value">
-        <select asp-for="MedicalRecord.AppointmentId" id="apmId" class="hidden" asp-items="ViewBag.AppointmentId"></select>
+        @* <select asp-for="MedicalRecord.AppointmentId" id="apmId" class="hidden" asp-items="ViewBag.AppointmentId"></select>
         <select asp-for="MedicalRecord.PatientId" id="patientId" class="hidden" asp-items="ViewBag.PatientId"></select>
-        <select asp-for="MedicalRecord.DoctorId" id="doctorId" class="hidden" asp-items="ViewBag.DoctorId"></select>
+        <select asp-for="MedicalRecord.DoctorId" id="doctorId" class="hidden" asp-items="ViewBag.DoctorId"></select> *@
+        <input type="hidden" name="MedicalrecordId" value="@Model.MedicalRecord.MedicalrecordId"/>
     </div>
     <div class="flex justify-between mb-4">
-        <button type="button" onclick="abc()" class="text-blue-500 text-md font-semibold">Export to file Word</button>
+        <button type="submit" class="text-blue-500 text-md font-semibold">Export to file Word</button>
         <p id="floating_visit_time" class="font-bold text-md-center text-gray-900"></p>
     </div>
     <div>
@@ -46,8 +47,8 @@
                 <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
                     <img class="mr-4 w-16 h-16 rounded-full" src="~/Images/image.png" alt="Jese Leos">
                     <div>
-                        <a href="#" rel="author" class="text-xl font-bold text-gray-900 dark:text-white" id="floating_fname_d"></a>
-                        <p class="text-base text-gray-500 dark:text-gray-400" id="floating_specialization"></p>
+                        <a href="#" rel="author" class="text-xl font-bold text-gray-900 dark:text-white" id="floating_fname_d">@(Model.MedicalRecord.Doctor?.Name ?? "N/A")</a>
+                        <p class="text-base text-gray-500 dark:text-gray-400" id="floating_specialization">@(Model.MedicalRecord.Doctor?.Staff?.DoctorSpecialistNavigation?.SpecialistName ?? "N/A")</p>
                         <p class="text-base text-gray-500 dark:text-gray-400">Doctor</p>
                     </div>
                 </div>
@@ -58,92 +59,46 @@
         <h3 class="text-lg mb-1 text-gray-900 font-bold">Patient Info</h3>
         <div>
             <label for="floating_fname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fullname</label>
-            <input type="text" name="floating_fname" id="floating_fname" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+            <input type="text" name="floating_fname" id="floating_fname" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@(Model.MedicalRecord.Patient?.PatientNavigation?.Name ?? "N/A")" disabled>
         </div>
         <div class="relative z-0 w-full mb-5 group">
             <label for="floating_address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
-            <input type="text" name="floating_address" id="floating_address" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+            <input type="text" name="floating_address" id="floating_address" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Appointment.PatientAddress" disabled>
         </div>
         <div class="grid md:grid-cols-2 md:gap-6">
             <div class="relative z-0 w-full mb-5 group">
                 <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
-                <input type="date" name="floating_dob" id="floating_dob" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+                <input type="date" name="floating_dob" id="floating_dob" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Appointment.PatientDob.ToString("yyyy-MM-dd")" disabled>
             </div>
             <div class="relative z-0 w-full mb-5 group">
                 <label for="floating_phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
-                <input type="tel" name="floating_phone" id="floating_phone" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+                <input type="tel" name="floating_phone" id="floating_phone" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Appointment.PatientPhoneNumber" disabled>
             </div>
         </div>
         <div class="relative z-0 w-full mb-5 group">
             <label for="floating_email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-            <input type="email" name="floating_email" id="floating_email" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" disabled>
+            <input type="email" name="floating_email" id="floating_email" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@Model.MedicalRecord.Appointment.PatientEmail" disabled>
         </div>
     </div>
     <div>
         <h3 class="text-lg mb-1 text-gray-900 font-bold">Symstoms</h3>
-        <p asp-for="MedicalRecord.Symptoms" id="symptoms" class="pl-4 mb-2"></p>
+        <p asp-for="MedicalRecord.Symptoms" id="symptoms" class="pl-4 mb-2">@Model.MedicalRecord.Symptoms</p>
     </div>
     <div>
         <h3 class="text-lg mb-1 text-gray-900 font-bold">Diagnosis</h3>
-        <p asp-for="MedicalRecord.Diagnosis" id="diagnosis" class="pl-4 mb-2"></p>
+        <p asp-for="MedicalRecord.Diagnosis" id="diagnosis" class="pl-4 mb-2">@Model.MedicalRecord.Diagnosis</p>
     </div>
     <div>
         <h3 class="text-lg mb-1 text-gray-900 font-bold">Prescription</h3>
-        <p asp-for="MedicalRecord.Treatment" id="treatment" class="pl-4 mb-2"></p>
+        <p asp-for="MedicalRecord.Treatment" id="treatment" class="pl-4 mb-2">@Model.MedicalRecord.Treatment</p>
     </div>
     <div class="flex justify-end items-center">
         <a asp-page="./Index" class="my-2 ml-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Back</a>
     </div>
 </form>
-<script src="./../js/export.js"></script>
 <script src="./../js/createjs.js"></script>
 
 <script>
-    window.onload = () => {
-        const url = new URL(window.location.href);
-        const id = url.searchParams.get("id");
-        fetch(`/api/MedicalRecords/${id}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                var aid = data.appointmentId;
-                document.getElementById('symptoms').innerHTML = (data.symptoms.replace(/\r\n/g, '<br>'));
-                document.getElementById('diagnosis').innerHTML = (data.diagnosis.replace(/\r\n/g, '<br>'));
-                document.getElementById('treatment').innerHTML = (data.treatment.replace(/\r\n/g, '<br>'));
-                fetch(`/api/MedicalRecords/appointments/${aid}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        document.getElementById('floating_fname_d').innerHTML = (data.doctorName);
-                        document.getElementById('floating_visit_time').innerHTML = convertDataToReportDate(data.requestTime);
-                        document.getElementById('floating_specialization').innerHTML = (data.doctorSpecialization);
-                        document.getElementById('floating_fname').value = (data.patientName);
-                        document.getElementById('floating_address').value = (data.patientAddress);
-                        document.getElementById('floating_dob').value = isoToInputDate(data.patientDob);
-                        document.getElementById('floating_phone').value = (data.patientPhone);
-                        document.getElementById('floating_email').value = (data.patientEmail);
-                        document.getElementById('apmId').value = decodeId(data.id);
-                        document.getElementById('patientId').value = (data.patientId);
-                        document.getElementById('doctorId').value = (data.doctorId);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
-
-
     function convertDataToReportDate(dateString) {
         const date = new Date(dateString);
 
@@ -155,34 +110,4 @@
 
         return `${formattedTime}, ${formattedDate}`;
     }
-
-    function abc() {
-        const visitTime = document.getElementById('floating_visit_time').innerHTML;
-        const doctorName = document.getElementById('floating_fname_d').innerHTML;
-        const specialization = document.getElementById('floating_specialization').innerHTML;
-        const patientName = document.getElementById('floating_fname').value;
-        const address = document.getElementById('floating_address').value;
-        const dob = document.getElementById('floating_dob').value;
-        const phone = document.getElementById('floating_phone').value;
-        const email = document.getElementById('floating_email').value;
-        const symptoms = document.getElementById('symptoms').textContent;
-        const diagnosis = document.getElementById('diagnosis').textContent;
-        const treatment = document.getElementById('treatment').textContent;
-        // Example usage
-        const formData = {
-            visitTime: visitTime,
-            doctorName: doctorName,
-            specialization: specialization,
-            patientName: patientName,
-            address: address,
-            dob: dob,
-            phone: phone,
-            email: email,
-            symptoms: symptoms,
-            diagnosis: diagnosis,
-            treatment: treatment,
-            // Add other form data properties here
-        };
-        console.log(formData);
-    };
 </script>
