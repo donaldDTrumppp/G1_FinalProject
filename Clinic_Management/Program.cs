@@ -1,4 +1,3 @@
-//using Clinic_Management.Models;
 using Clinic_Management.Models;
 using Microsoft.EntityFrameworkCore;
 

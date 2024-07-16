@@ -39,19 +39,10 @@ namespace Clinic_Management.Pages.Appointements
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 5;
         public int totalRecords { get; set; }
-
-        public async Task OnGetAsync(string action, int id)
+        public String Message { get; set; }
+        public async Task OnGetAsync(string action, int id,string Message)
         {
-            if (!string.IsNullOrEmpty(action))
-            {
-                if (action.Equals("cancel") && id != null)
-                {
-                    var a = _context.Appointments.FirstOrDefault(a => a.AppointmentId == id);
-                    a.Status = 3;
-                    await _context.SaveChangesAsync();
-                }
-            }
-            
+            this.Message = Message;
             var query = _context.Appointments.Include(a => a.Doctor).Include(a => a.Patient).Include(a => a.Branch).Include(a => a.SpecialistNavigation).Include(a => a.StatusNavigation).AsQueryable();
 
             if (!string.IsNullOrEmpty(SearchString))
@@ -89,5 +80,7 @@ namespace Clinic_Management.Pages.Appointements
             BranchList = _context.Branches.ToList();
             StatusList = _context.AppointmentStatuses.ToList();
         }
+        
     }
+   
 }

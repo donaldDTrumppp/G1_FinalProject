@@ -24,7 +24,7 @@
         <div class="grid md:grid-cols-2 md:gap-6">
             <div class="relative z-0 w-full mb-5 group">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
-                <input type="text" value="@Model.Appointment.PatientDob.ToString("MM/dd/yyyy")"  aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"  disabled>
+                <input type="text" value="@Model.Appointment.PatientDob.ToString("dd/MM/yyyy")"  aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"  disabled>
             </div>
             <div class="relative z-0 w-full mb-5 group">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
@@ -85,22 +85,16 @@
             <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full mb-5 group">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Requested Date</label>
-                    <input type="tel" value="@Model.Appointment.RequestedTime.ToString("MM/dd/yyyy")" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+                    <input type="text" value="@Model.Appointment.RequestedTime.ToString("dd/MM/yyyy")" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
                 </div>
-                @{
-                    var newTime = Model.Appointment.RequestedTime.AddHours(1);
-                }
+
                 <div class="relative z-0 w-full mb-5 group">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Requested Time</label>
-                    <input type="tel" value="@Model.Appointment.RequestedTime.ToString("HH"):00 - @newTime.ToString("HH"):00" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+                    <input type="tel" value="@Model.Appointment.RequestedTime.ToString("HH"):00 - @Model.Appointment.RequestedTime.AddHours(1).ToString("HH"):00" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
                 </div>
             </div>
         </div>
         <div class="grid md:grid-cols-2 md:gap-6">
-            <div class="relative z-0 w-full mb-5 group">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Receptionist</label>
-                <input type="text" value="@Model.Appointment.Receptionist.Name" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
-            </div>
             <div class="relative z-0 w-full mb-5 group">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
                  <input type="text" value="@Model.Appointment.StatusNavigation.StatusName" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>  
