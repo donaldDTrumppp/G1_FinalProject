@@ -16,7 +16,7 @@ namespace Clinic_Management.Models
         }
 
         public int UserId { get; set; }
-        public string? Username { get; set; }
+        public string Username { get; set; } = null!;
         public string? Password { get; set; }
         public string Name { get; set; } = null!;
         public DateTime Dob { get; set; }
@@ -24,6 +24,7 @@ namespace Clinic_Management.Models
         public string Email { get; set; } = null!;
         public string Address { get; set; } = null!;
         public int RoleId { get; set; }
+        public bool Status { get; set; }
 
         public virtual Role Role { get; set; } = null!;
         public virtual Staff? Staff { get; set; }

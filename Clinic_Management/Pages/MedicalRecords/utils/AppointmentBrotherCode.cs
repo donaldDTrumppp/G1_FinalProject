@@ -67,7 +67,7 @@ namespace Clinic_Management.Pages.MedicalRecords.utils
                 {
                     id = Int32.Parse(code);
                 }
-                
+
                 // Return the appointment
                 return _context.Appointments
                     .Include(m => m.SpecialistNavigation)
