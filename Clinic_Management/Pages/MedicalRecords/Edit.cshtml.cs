@@ -12,9 +12,9 @@ namespace Clinic_Management.Pages.MedicalRecords
 {
     public class EditModel : PageModel
     {
-        private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
+        private readonly G1_PRJ_DBContext _context;
 
-        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        public EditModel(G1_PRJ_DBContext context)
         {
             _context = context;
         }
@@ -29,7 +29,11 @@ namespace Clinic_Management.Pages.MedicalRecords
                 return RedirectToPage("/Home/404");
             }
 
-            var medicalrecord = await _context.MedicalRecords.FirstOrDefaultAsync(m => m.MedicalrecordId == id);
+            var medicalrecord = await _context.MedicalRecords
+                .Include(m => m.Appointment)
+                .Include(d => d.Doctor).ThenInclude(s => s.Staff).ThenInclude(d => d.DoctorSpecialistNavigation)
+                .FirstOrDefaultAsync(m => m.MedicalrecordId == id);
+
             if (medicalrecord == null)
             {
                 return RedirectToPage("/Home/404");
@@ -60,7 +64,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                 }
                 return Page();
             }
-
+            if(MedicalRecord.CreatedAt is null) MedicalRecord.CreatedAt = DateTime.Now;
             _context.Attach(MedicalRecord).State = EntityState.Modified;
 
             try

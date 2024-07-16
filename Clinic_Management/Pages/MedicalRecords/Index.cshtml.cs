@@ -8,8 +8,8 @@ namespace Clinic_Management.Pages.MedicalRecords
 {
     public class IndexModel : PageModel
     {
-
-        public IndexModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        private readonly G1_PRJ_DBContext _context;
+        public IndexModel(G1_PRJ_DBContext context)
         {
             _context = context;
         }
