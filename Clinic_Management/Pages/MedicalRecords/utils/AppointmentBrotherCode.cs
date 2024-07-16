@@ -1,5 +1,7 @@
 ﻿using Clinic_Management.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace Clinic_Management.Pages.MedicalRecords.utils
@@ -114,6 +116,57 @@ namespace Clinic_Management.Pages.MedicalRecords.utils
             }
 
             return number;
+        }
+
+
+
+        public static int GetUserIdFromToken(string token, string signingKey)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(signingKey);
+
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "userId").Value);
+            return userId;
+        }
+
+        public User GetUserFromToken(string token, string signingKey)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(signingKey);
+
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            var user = new User
+            {
+                UserId = int.Parse(jwtToken.Claims.First(x => x.Type == "userId").Value),
+                Name = jwtToken.Claims.First(x => x.Type == "name").Value,
+                Username = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value,
+                Dob = DateTime.Parse(jwtToken.Claims.First(x => x.Type == "dob").Value),
+                PhoneNumber = jwtToken.Claims.First(x => x.Type == "phoneNumber").Value,
+                Email = jwtToken.Claims.First(x => x.Type == "email").Value,
+                Address = jwtToken.Claims.First(x => x.Type == "address").Value,
+                RoleId = int.Parse(jwtToken.Claims.First(x => x.Type == "userrole").Value)
+            };
+
+            return user;
         }
     }
 }

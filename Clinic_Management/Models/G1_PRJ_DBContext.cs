@@ -129,7 +129,6 @@ namespace Clinic_Management.Models
             {
                 entity.HasKey(e => e.StatusId)
                     .HasName("PK__Appointm__3683B5312675EEF1");
-
                 entity.ToTable("Appointment_Status");
 
                 entity.Property(e => e.StatusId).HasColumnName("status_id");

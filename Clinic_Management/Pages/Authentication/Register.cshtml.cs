@@ -65,11 +65,6 @@ namespace Clinic_Management.Pages.Authentication
         {
         }
 
-        public bool CheckInfo()
-        {
-            return true;
-        }
-
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -77,6 +72,7 @@ namespace Clinic_Management.Pages.Authentication
                 return Page();
             }
 
+            // Check if username or email or phone number already exists
             if (_context.Users.Any(u => u.Username == Username))
             {
                 ModelState.AddModelError("Username", "Username already exists. Please choose a different username.");
@@ -91,29 +87,29 @@ namespace Clinic_Management.Pages.Authentication
 
             if (_context.Users.Any(u => u.PhoneNumber == PhoneNumber))
             {
-                ModelState.AddModelError("PhoneNumber", "Phone number already exists. Please use a different phone number");
+                ModelState.AddModelError("PhoneNumber", "Phone number already exists. Please use a different phone number.");
                 return Page();
             }
 
-            var user = new User
-            {
-                Username = Username,
-                Password = Password,
-                Name = Name,
-                Dob = Dob,
-                PhoneNumber = PhoneNumber,
-                Email = Email,
-                Address = Address,
-                RoleId = RoleId,
-                Status = null
-            };
+            var user = new User();
+            user.Name = Name;
+            user.Dob = Dob;
+            user.PhoneNumber = PhoneNumber;
+            user.Email = Email;
+            user.Address = Address;
+            user.RoleId = RoleId;
+            user.Username = Username;
+            user.Password = Password;
+            user.Status.StatusId = 3;
 
             _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            // Generate and send confirmation email
             var token = Guid.NewGuid().ToString();
             HttpContext.Session.SetString("Confirmation_Email", Email);
             HttpContext.Session.SetString("Confirmation_Token", token);
 
-            
             var confirmationLink = Url.Page(
                 "/Authentication/ConfirmEmail",
                 pageHandler: null,
