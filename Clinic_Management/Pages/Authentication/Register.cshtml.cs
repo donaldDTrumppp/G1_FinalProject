@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
@@ -57,9 +58,10 @@ namespace Clinic_Management.Pages.Authentication
 
         [BindProperty]
         public int RoleId { get; set; } = 4;
-
         [BindProperty]
-        public int Step { get; set; } = 1;
+        public int StatusId { get; set; } = 1;
+
+
 
         public void OnGet()
         {
@@ -72,7 +74,6 @@ namespace Clinic_Management.Pages.Authentication
                 return Page();
             }
 
-            // Check if username or email or phone number already exists
             if (_context.Users.Any(u => u.Username == Username))
             {
                 ModelState.AddModelError("Username", "Username already exists. Please choose a different username.");
@@ -90,6 +91,7 @@ namespace Clinic_Management.Pages.Authentication
                 ModelState.AddModelError("PhoneNumber", "Phone number already exists. Please use a different phone number.");
                 return Page();
             }
+           
 
             var user = new User();
             user.Name = Name;
@@ -99,27 +101,41 @@ namespace Clinic_Management.Pages.Authentication
             user.Address = Address;
             user.RoleId = RoleId;
             user.Username = Username;
-            user.Password = Password;
-            user.Status.StatusId = 3;
+            user.Password = HashPassword(Password);
+            user.StatusId = StatusId;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             // Generate and send confirmation email
-            var token = Guid.NewGuid().ToString();
-            HttpContext.Session.SetString("Confirmation_Email", Email);
-            HttpContext.Session.SetString("Confirmation_Token", token);
+            //var token = Guid.NewGuid().ToString();
+            //HttpContext.Session.SetString("Confirmation_Email", Email);
+            //HttpContext.Session.SetString("Confirmation_Token", token);
 
-            var confirmationLink = Url.Page(
-                "/Authentication/ConfirmEmail",
-                pageHandler: null,
-                values: new { token },
-                protocol: Request.Scheme);
+            //var confirmationLink = Url.Page(
+            //    "/Authentication/ConfirmEmail",
+            //    pageHandler: null,
+            //    values: new { token },
+            //    protocol: Request.Scheme);
 
-            await _mailSender.SendMailAsync(user.Email, "Confirm your email",
-                $"Please confirm your email by <a href='{HtmlEncoder.Default.Encode(confirmationLink)}'>clicking here</a>.");
+            //await _mailSender.SendMailAsync(user.Email, "Confirm your email",
+            //    $"Please confirm your email by <a href='{HtmlEncoder.Default.Encode(confirmationLink)}'>clicking here</a>.");
 
             return RedirectToPage("/Index");
+        }
+
+
+        private string HashPassword(string password)
+        {
+            byte[] salt;
+            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
+            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
+            byte[] hash = pbkdf2.GetBytes(20);
+            byte[] hashBytes = new byte[36];
+            Array.Copy(salt, 0, hashBytes, 0, 16);
+            Array.Copy(hash, 0, hashBytes, 16, 20);
+            string hashedPassword = Convert.ToBase64String(hashBytes);
+            return hashedPassword;
         }
 
     }
