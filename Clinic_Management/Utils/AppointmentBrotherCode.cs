@@ -96,7 +96,6 @@ namespace Clinic_Management.Utils
                 }
                 number = number * AllowedChars.Length + charIndex;
             }
-
             return number;
         }
 
