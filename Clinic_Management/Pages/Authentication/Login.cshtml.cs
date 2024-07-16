@@ -67,7 +67,7 @@ namespace Clinic_Management.Pages.Authentication
 
 
 
-            return Redirect("Home/Home");
+            return Redirect("/Home/Home");
         }
 
 

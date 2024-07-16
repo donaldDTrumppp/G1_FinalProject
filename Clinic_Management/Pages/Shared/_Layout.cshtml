@@ -93,11 +93,12 @@
                                 </span>
                             </li>
                             <li class="ml-6">
-                                <form method="post" asp-page="/Authentication/Logout">
-                                    <button type="submit" class="inline-block font-semibold px-4 py-2 text-white">
-                                        Logout
-                                    </button>
-                                </form>
+                                <div class="navbar-item">
+                                    <form method="post" asp-page="/Authentication/Logout">
+                                        <button type="submit" class="nav-link btn btn-link">Logout</button>
+                                    </form>
+
+                                </div>
                             </li>
                         }
                         else
