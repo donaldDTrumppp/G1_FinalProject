@@ -1,8 +1,7 @@
-﻿using Clinic_Management.Models;
-using Clinic_Management.Utils;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
+using Clinic_Management.Models;
+using Clinic_Management.Pages.MedicalRecords.utils;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
@@ -23,11 +22,29 @@ namespace Clinic_Management.Pages.MedicalRecords
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MedicalRecord>>> GetMedicalRecords()
         {
-            if (_context.MedicalRecords == null)
+          if (_context.MedicalRecords == null)
+          {
+              return NotFound();
+          }
+            return await _context.MedicalRecords.ToListAsync();
+        }
+
+        // GET: api/MedicalRecords/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<MedicalRecord>> GetMedicalRecord(int id)
+        {
+          if (_context.MedicalRecords == null)
+          {
+              return NotFound();
+          }
+            var medicalRecord = await _context.MedicalRecords.FindAsync(id);
+
+            if (medicalRecord == null)
             {
                 return NotFound();
             }
-            return await _context.MedicalRecords.ToListAsync();
+
+            return medicalRecord;
         }
 
         [HttpGet("doctors")]
@@ -58,7 +75,6 @@ namespace Clinic_Management.Pages.MedicalRecords
                 .Include(m => m.SpecialistNavigation)
                 .Include(m => m.StatusNavigation)
                 .Include(d => d.Doctor)
-                .Include(p => p.Patient)
                 .ToList();
             var basicApms = apms.Select(s => new BasicAppointment
             {
@@ -100,24 +116,6 @@ namespace Clinic_Management.Pages.MedicalRecords
             });
         }
 
-        // GET: api/MedicalRecords/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<MedicalRecord>> GetMedicalRecord(int id)
-        {
-            if (_context.MedicalRecords == null)
-            {
-                return NotFound();
-            }
-            var medicalRecord = await _context.MedicalRecords.FindAsync(id);
-
-            if (medicalRecord == null)
-            {
-                return NotFound();
-            }
-
-            return medicalRecord;
-        }
-
         // PUT: api/MedicalRecords/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -128,33 +126,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                 return BadRequest();
             }
 
-            var existingRecord = await _context.MedicalRecords
-                .Include(mr => mr.Appointment)
-                .Include(mr => mr.Patient)
-                .FirstOrDefaultAsync(mr => mr.MedicalrecordId == id);
-
-            if (existingRecord == null)
-            {
-                return NotFound();
-            }
-
-            // Update existing record properties
-            existingRecord.AppointmentId = medicalRecord.AppointmentId;
-            existingRecord.PatientId = medicalRecord.PatientId;
-            existingRecord.DoctorId = medicalRecord.DoctorId;
-            existingRecord.VisitTime = medicalRecord.VisitTime;
-            existingRecord.Symptoms = medicalRecord.Symptoms;
-            existingRecord.Diagnosis = medicalRecord.Diagnosis;
-            existingRecord.Treatment = medicalRecord.Treatment;
-
-            // Load related entities if necessary
-            existingRecord.Appointment = await _context.Appointments.FindAsync(medicalRecord.AppointmentId);
-            existingRecord.Patient = await _context.Patients.FindAsync(medicalRecord.PatientId);
-
-            if (existingRecord.DoctorId.HasValue)
-            {
-                existingRecord.Doctor = await _context.Users.FindAsync(medicalRecord.DoctorId.Value);
-            }
+            _context.Entry(medicalRecord).State = EntityState.Modified;
 
             try
             {
@@ -180,10 +152,10 @@ namespace Clinic_Management.Pages.MedicalRecords
         [HttpPost]
         public async Task<ActionResult<MedicalRecord>> PostMedicalRecord(MedicalRecord medicalRecord)
         {
-            if (_context.MedicalRecords == null)
-            {
-                return Problem("Entity set 'G1_PRJ_DBContext.MedicalRecords'  is null.");
-            }
+          if (_context.MedicalRecords == null)
+          {
+              return Problem("Entity set 'G1_PRJ_DBContext.MedicalRecords'  is null.");
+          }
             _context.MedicalRecords.Add(medicalRecord);
             await _context.SaveChangesAsync();
 
@@ -214,6 +186,8 @@ namespace Clinic_Management.Pages.MedicalRecords
         {
             return (_context.MedicalRecords?.Any(e => e.MedicalrecordId == id)).GetValueOrDefault();
         }
+
+
     }
 
     public class Doctor
@@ -229,8 +203,8 @@ namespace Clinic_Management.Pages.MedicalRecords
         public string Id { get; set; }
         public int Specialization { get; set; }
         public int DoctorId { get; set; }
-        public string DoctorName { get; set; }
-        public string DoctorSpecialization { get; set; }
+        public string? DoctorName { get; set; }
+        public string? DoctorSpecialization { get; set; }
         public int? PatientId { get; set; }
         public string PatientName { get; set; }
         public string PatientAddress { get; set; }
