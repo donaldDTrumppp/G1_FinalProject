@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Http;
 
 namespace Clinic_Management.Pages.Authentication
 {
@@ -26,15 +26,12 @@ namespace Clinic_Management.Pages.Authentication
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        [Required(ErrorMessage = "Please enter your username or email.")] 
+        public string Username { get; set; }
 
-        public string ErrorMessage { get; set; }
-
-        public class InputModel
-        {
-            public string Username { get; set; }
-            public string Password { get; set; }
-        }
+        [BindProperty]
+        [Required(ErrorMessage = "Please enter your password.")]
+        public string Password { get; set; }
 
         public void OnGet()
         {
@@ -42,38 +39,39 @@ namespace Clinic_Management.Pages.Authentication
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!_context.Users.Any(u => u.Username == Username))
+            {
+                ModelState.AddModelError("Username", "Username is invalid.");
+            }
+
+            if (!_context.Users.Any(u => u.Username == Username))
+            {
+                ModelState.AddModelError("Password", "Password is invalid.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
             var user = await _context.Users
-                .Where(u => u.Username == Input.Username && u.Password == Input.Password)
+                .Where(u => (u.Username == Username && u.Password == Password) || (u.Email == Username && u.Password == Password))
                 .FirstOrDefaultAsync();
 
-            if (user == null)
-            {
-                ErrorMessage = "Invalid login attempt.";
-                return Page();
-            }
+            
 
             var role = await _context.Roles
                 .Where(r => r.RoleId == user.RoleId)
                 .Select(r => r.RoleName)
                 .FirstOrDefaultAsync();
 
-            if (role == null)
-            {
-                ErrorMessage = "User role not found.";
-                return Page();
-            }
+            
 
             var token = GenerateJwtToken(user, role);
 
-            
-            HttpContext.Session.SetString("JWTToken", token);
+            HttpContext.Session.SetString("JWToken", token);
+            HttpContext.Session.SetString("Username", user.Username);
 
-            
             return RedirectToPage("/Home/Home");
         }
 
@@ -87,9 +85,15 @@ namespace Clinic_Management.Pages.Authentication
             {
                 Subject = new ClaimsIdentity(new[]
                 {
+                    new Claim("userId", user.UserId.ToString()),
+                    new Claim("name", user.Name),
                     new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(ClaimTypes.Role, roleName)
+                    new Claim("dob", user.Dob.ToString("yyyy-MM-dd")),
+                    new Claim("phoneNumber", user.PhoneNumber),
+                    new Claim("email", user.Email),
+                    new Claim("address", user.Address),
+                    new Claim(ClaimTypes.Role, roleName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(double.Parse(jwtSettings["ExpirationSeconds"])),
                 Issuer = jwtSettings["Issuer"],

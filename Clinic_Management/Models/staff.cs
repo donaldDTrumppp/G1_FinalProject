@@ -9,10 +9,10 @@ namespace Clinic_Management.Models
         public DateTime HireDate { get; set; }
         public string Cccd { get; set; } = null!;
         public string Image { get; set; } = null!;
-        public int? DoctorBranchId { get; set; }
+        public int? DoctorDepartmentId { get; set; }
         public int? DoctorSpecialist { get; set; }
 
-        public virtual Branch? DoctorBranch { get; set; }
+        public virtual Branch? DoctorDepartment { get; set; }
         public virtual Specialist? DoctorSpecialistNavigation { get; set; }
         public virtual User User { get; set; } = null!;
     }
