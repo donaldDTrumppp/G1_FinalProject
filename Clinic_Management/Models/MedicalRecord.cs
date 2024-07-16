@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Clinic_Management.Models
 {
@@ -9,6 +10,8 @@ namespace Clinic_Management.Models
         public int AppointmentId { get; set; }
         public int PatientId { get; set; }
         public int? DoctorId { get; set; }
+
+        [DisplayName("Visit time")]
         public DateTime VisitTime { get; set; }
         public string Symptoms { get; set; } = null!;
         public string? Diagnosis { get; set; }

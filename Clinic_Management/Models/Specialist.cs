@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Clinic_Management.Models
 {
@@ -12,6 +13,8 @@ namespace Clinic_Management.Models
         }
 
         public int SpecialistId { get; set; }
+
+        [DisplayName("Specialist")]
         public string SpecialistName { get; set; } = null!;
 
         public virtual ICollection<Appointment> Appointments { get; set; }

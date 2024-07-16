@@ -42,7 +42,7 @@ namespace Clinic_Management.Pages.MedicalRecords
         [BindProperty(SupportsGet = true)]
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 5;
-        public int totalRecords { get; set; }
+        public int totalRecords { get; set; } = 1;
         #endregion
         public async Task OnGetAsync()
         {
@@ -60,7 +60,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             Branchlist = new SelectList(await branchQuery.ToListAsync(), "BranchId", "BranchName");
 
 
-            var query = _context.MedicalRecords.Include(m => m.Doctor).Include(m => m.Patient).AsQueryable();
+            var query = _context.MedicalRecords.Include(a => a.Appointment).ThenInclude(s => s.SpecialistNavigation).Include(m => m.Doctor).Include(m => m.Patient).AsQueryable();
 
             if (SpecialistFilter.HasValue)
             {
@@ -102,6 +102,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             totalRecords = await query.CountAsync();
 
             // Apply pagination
+            //if (PageIndex - 1 >= totalRecords) PageIndex = totalRecords - 1;
             MedicalRecord = await query.Skip((PageIndex - 1) * PageSize).Take(PageSize).ToListAsync();
         }
     }
