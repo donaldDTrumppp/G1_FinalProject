@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 using Clinic_Management.Utils;
+using System.Text;
+using System.Xml.Serialization;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
@@ -43,7 +45,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             {
                 return NotFound();
             }
-
+            if(medicalRecord.CreatedAt is null) medicalRecord.CreatedAt = DateTime.Now;
             return medicalRecord;
         }
 
@@ -187,7 +189,26 @@ namespace Clinic_Management.Pages.MedicalRecords
             return (_context.MedicalRecords?.Any(e => e.MedicalrecordId == id)).GetValueOrDefault();
         }
 
+        [HttpPost("exportXml")]
+        public IActionResult ExportToXml()
+        {
+            // Sample data
+            var medicalRecords = _context.MedicalRecords
+                .Include(a => a.Appointment).ThenInclude(s => s.SpecialistNavigation)
+                .Include(m => m.Doctor)
+                .Include(m => m.Patient).ToList();
+            var xmlSerializer = new XmlSerializer(typeof(List<MedicalRecord>));
+            using (var memoryStream = new MemoryStream())
+            {
+                xmlSerializer.Serialize(memoryStream, medicalRecords);
+                var xml = Encoding.UTF8.GetString(memoryStream.ToArray());
 
+                var byteArray = Encoding.UTF8.GetBytes(xml);
+                var stream = new MemoryStream(byteArray);
+
+                return File(stream, "application/xml", "medical_records.xml");
+            }
+        }
     }
 
     public class Doctor

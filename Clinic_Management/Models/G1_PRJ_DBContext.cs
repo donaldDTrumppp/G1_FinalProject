@@ -30,12 +30,11 @@ namespace Clinic_Management.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-
-                optionsBuilder.UseSqlServer("server =DESKTOP-OSDDH1R\\SQLEXPRESS; database =G1_PRJ_DB;uid=sa;pwd=haibang20042003;");
-
-            }
+            var builder = new ConfigurationBuilder()
+                              .SetBasePath(Directory.GetCurrentDirectory())
+                              .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfigurationRoot configuration = builder.Build();
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("MyCnn"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

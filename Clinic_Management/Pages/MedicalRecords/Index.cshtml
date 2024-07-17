@@ -6,12 +6,29 @@
 }
 
 <div class="mx-16 my-5 flex justify-between items-center">
-    <p class="text-2xl font-extrabold dark:text-white inline-block">
-        Medical Records
-    </p>
-
     <div class="flex items-center">
-        <div id="toast-success" class="flex @(String.IsNullOrEmpty(Model.Message)? "hidden": "block") animate-[fade-out_2s_ease-out_1s_1_forwards] opacity-1 flex-col fixed z-50 top-5 right-5 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+        <p class="text-2xl font-extrabold dark:text-white inline-block mr-3">
+            Medical Records
+        </p>
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="file" accept=".json,.xml,.xls,.xlsx" style="display: none;" />
+            <button type="button" class="inline-flex items-center gap-2
+            rounded border border-blue-700
+            bg-blue-700 px-8 py-3 text-white
+            hover:bg-transparent hover:text-blue-700
+            focus:outline-none focus:ring active:text-blue-500"
+                    onclick="document.getElementById('fileInput').click();">
+                <span class="text-sm font-medium"> Import </span>
+                <svg class="size-5" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" />
+                    <path d="M9 4h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" />
+                    <path d="M17 17v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2" />
+                </svg>
+            </button>
+        </form>
+    </div>
+    <div class="flex items-center">
+        <div id="toast-success" class="flex @(!String.IsNullOrEmpty(Model.Message) && (Model.TypeMessage == "success" || String.IsNullOrEmpty(Model.TypeMessage)) ? "block": "hidden") animate-[fade-out_2s_ease-out_1s_1_forwards] opacity-1 flex-col fixed z-50 top-5 right-5 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
             <div class="flex flex-row items-center justify-between w-full">
                 <div class="flex flex-row items-center">
                     <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
@@ -36,6 +53,34 @@
                     <div id="animateDiv" class="bg-green-400 h-1.5 rounded-full dark:bg-green-300" style="width: 100%"></div>
                 </div>
             </div>
+        </div>
+
+        <div id="toast-danger" class="flex @(!String.IsNullOrEmpty(Model.Message) && (Model.TypeMessage == "error") ? "block": "hidden") animate-[fade-out_2s_ease-out_1s_1_forwards] opacity-1 flex-col fixed z-50 top-5 right-5 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+            <div class="flex flex-row items-center justify-between w-full">
+                <div class="flex flex-row items-center">
+                    <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
+                        </svg>
+                        <span class="sr-only">Error icon</span>
+                    </div>
+                    <div class="ms-3 text-sm font-normal"><span id="toast-er-message">@Model.Message</span></div>
+                </div>
+                <div>
+                    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-danger" aria-label="Close">
+                        <span class="sr-only">Close</span>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="flex flex-row items-center justify-between w-full">
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mb-1 mt-2 dark:bg-gray-700">
+                    <div id="animateDiv1" class="bg-red-400 h-1.5 rounded-full dark:bg-green-300 animate-[reduce_2s_ease-in-out_0s_1_forwards]" style="width: 100%"></div>
+                </div>
+            </div>
+
         </div>
         <form class="flex items-center" id="filterForm" method="get">
             <div class="mr-4">
@@ -82,8 +127,7 @@
             </a>
         </p>
     </div>
-
-
+    
 </div>
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-5 mx-16">
@@ -155,7 +199,7 @@
                         @Html.DisplayFor(modelItem => patientName)
                     </td>
                     <td class="px-6 py-4 text-right items-center">
-                        <a asp-page="./Edit" asp-route-id="@item.MedicalrecordId">Edit</a> |
+                        <a asp-page="./Edit" asp-route-PageIndex="@Model.PageIndex" asp-route-id="@item.MedicalrecordId">Edit</a> |
                         <a asp-page="./Details" asp-route-id="@item.MedicalrecordId">Details</a> |
                         <svg id="@item.MedicalrecordId" onclick="bfdelete(this)" data-modal-target="deleteModal" data-modal-toggle="deleteModal" class="cursor-pointer h-4 w-4 text-red-500 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">  <polyline points="21 8 21 21 3 21 3 8" />  <rect x="1" y="3" width="22" height="5" />  <line x1="10" y1="12" x2="14" y2="12" /></svg>
                     </td>
@@ -319,7 +363,6 @@
     </div>
 }
 
-
 <!-- Main modal -->
 <div id="deleteModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
     <div class="relative p-4 w-full max-w-md h-full md:h-auto">
@@ -407,4 +450,33 @@
         // Find the closest parent form element and submit it
         selectElement.closest('form').submit();
     }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var toast = document.getElementById("toast-success");
+        if (toast.classList.contains("block")) {
+            document.getElementById('animateDiv').classList.add("reduceWidth");
+            document.getElementById('animateDiv').style.width = '0%';
+        }
+
+        function onTransitionEnd(event) {
+            if (event.propertyName === 'width' && animateDiv.style.width === '0%') {
+                document.getElementById('animateDiv').classList.remove("reduceWidth");
+                document.getElementById('animateDiv').style.width = '100%';
+                console.log(document.getElementById('animateDiv').style.width);
+                //   toast.classList.add("animate-[fade-out_1s_ease-out_0.25s_1]");
+            }
+        }
+
+
+
+        animateDiv.addEventListener('transitionend', onTransitionEnd);
+    });
+</script>
+<script>
+    document.getElementById('fileInput').addEventListener('change', function () {
+        if (this.files && this.files.length > 0) {
+            this.form.submit();
+        }
+    });
 </script>

@@ -1,8 +1,11 @@
 ﻿using Clinic_Management.Models;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Xml.Serialization;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
@@ -15,6 +18,7 @@ namespace Clinic_Management.Pages.MedicalRecords
         }
         public IList<MedicalRecord> MedicalRecord { get; set; }
         public string Message { get; set; } = "";
+        public string TypeMessage { get; set; } = "";
 
         #region Search
         [BindProperty(SupportsGet = true)]
@@ -44,8 +48,10 @@ namespace Clinic_Management.Pages.MedicalRecords
         public int PageSize { get; set; } = 5;
         public int totalRecords { get; set; } = 1;
         #endregion
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string? TypeMessage, string? Message)
         {
+            this.TypeMessage = TypeMessage;
+            this.Message = Message;
             // Get specialists for the dropdown list
             var specialistsQuery = from s in _context.Specialists
                                    select s;
@@ -92,9 +98,6 @@ namespace Clinic_Management.Pages.MedicalRecords
                 case "Patient":
                     query = SortOrder == "desc" ? query.OrderByDescending(r => r.Patient.PatientNavigation.Name) : query.OrderBy(r => r.Patient.PatientNavigation.Name);
                     break;
-                default:
-                    query = query.OrderBy(r => r.VisitTime); // Default
-                    break;
             }
 
             totalRecords = await query.CountAsync();
@@ -102,6 +105,77 @@ namespace Clinic_Management.Pages.MedicalRecords
             // Apply pagination
             //if (PageIndex - 1 >= totalRecords) PageIndex = totalRecords - 1;
             MedicalRecord = await query.Skip((PageIndex - 1) * PageSize).Take(PageSize).ToListAsync();
+        }
+
+        [BindProperty]
+        public IFormFile File { get; set; }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (File == null || File.Length == 0)
+            {
+                ModelState.AddModelError("File", "Please select a file.");
+                return Page();
+            }
+
+            var fileExtension = Path.GetExtension(File.FileName).ToLower();
+
+            using (var stream = new MemoryStream())
+            {
+                await File.CopyToAsync(stream);
+                stream.Position = 0;
+
+                if (fileExtension == ".json")
+                {
+                    // Handle JSON file
+                    using (var reader = new StreamReader(stream))
+                    {
+                        var jsonString = await reader.ReadToEndAsync();
+                        var medicalRecords = JsonConvert.DeserializeObject<List<MedicalRecord>>(jsonString);
+                        // Process medicalRecords
+                    }
+                }
+                else if (fileExtension == ".xml")
+                {
+                    // Handle XML file
+                    var serializer = new XmlSerializer(typeof(List<MedicalRecord>));
+                    var medicalRecords = (List<MedicalRecord>)serializer.Deserialize(stream);
+                    // Process medicalRecords
+                }
+                else if (fileExtension == ".xls" || fileExtension == ".xlsx")
+                {
+                    // Handle Excel file
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1);
+                        var medicalRecords = new List<MedicalRecord>();
+                        foreach (var row in worksheet.RowsUsed().Skip(1)) // Skip header row
+                        {
+                            var medicalRecord = new MedicalRecord
+                            {
+                                MedicalrecordId = row.Cell(1).GetValue<int>(),
+                                AppointmentId = row.Cell(2).GetValue<int?>(),
+                                PatientId = row.Cell(3).GetValue<int?>(),
+                                DoctorId = row.Cell(4).GetValue<int?>(),
+                                VisitTime = row.Cell(5).GetValue<DateTime>(),
+                                CreatedAt = row.Cell(6).GetValue<DateTime?>(),
+                                Symptoms = row.Cell(7).GetValue<string>(),
+                                Diagnosis = row.Cell(8).GetValue<string?>(),
+                                Treatment = row.Cell(9).GetValue<string?>()
+                            };
+                            medicalRecords.Add(medicalRecord);
+                        }
+                        // Process medicalRecords
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("File", "Unsupported file format.");
+                    return Page();
+                }
+            }
+
+            return RedirectToPage("./Index"); // Adjust as needed
         }
     }
 }

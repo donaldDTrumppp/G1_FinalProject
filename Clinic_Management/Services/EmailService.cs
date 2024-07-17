@@ -104,7 +104,7 @@ namespace Clinic_Management.Services
             alternateView = AlternateView.CreateAlternateViewFromString(htmlContent, null, MediaTypeNames.Text.Html);
             alternateView.LinkedResources.Add(linkedResource);
             mailMessage.AlternateViews.Add(alternateView);
-
+            Console.WriteLine("Email Sended to " + to);
             return client.SendMailAsync(mailMessage);
         }
 
