@@ -53,7 +53,7 @@ namespace Clinic_Management.Pages.PatientAppointment
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            Appointment.Status = _context.AppointmentStatuses.FirstOrDefault(i => i.StatusName == "Đang chờ duyệt").StatusId;
+            Appointment.Status = _context.AppointmentStatuses.FirstOrDefault(i => i.StatusName == "Wait for approval").StatusId;
             Appointment.Branch = _context.Branches.FirstOrDefault(i => i.BranchId == Appointment.BranchId);
             Appointment.CreatedAt = DateTime.Now;
             Appointment.RequestedTime = Appointment.RequestedTime.AddHours(Time);

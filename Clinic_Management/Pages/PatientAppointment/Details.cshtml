@@ -24,7 +24,7 @@
                 <span class="font-bold">Code:</span> <span class="text-sm text-gray-900 dark:text-white">@Model.GetCodeById()</span>
             </h3>
         </div>
-        @if (Model.Appointment.StatusNavigation.StatusName == "Đang chờ duyệt")
+        @if (Model.Appointment.StatusNavigation.StatusName == "Wait for approval")
         {
             <div class="flex justify-end">
                 <form id="frm">
