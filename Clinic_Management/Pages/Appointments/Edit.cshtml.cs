@@ -59,13 +59,19 @@ namespace Clinic_Management.Pages.Appointements
             }
             branchList = _context.Branches.ToList();
             specialistList = _context.Specialists.ToList();
-            doctorList = _context.Staff.Include(d => d.DoctorBranch).Include(d => d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
+            doctorList = _context.Staff.Include(d => d.DoctorDepartment).Include(d => d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
             
             var appointment = await _context.Appointments.Include(a => a.Doctor).Include(a => a.Branch)
                 .Include(a => a.SpecialistNavigation).Include(a => a.StatusNavigation)
                 .Include(a => a.Doctor).Include(a => a.Receptionist).FirstOrDefaultAsync(m => m.AppointmentId == id);
-            patient = _context.Users.Include(p => p.MedicalRecordPatients).FirstOrDefault(p => p.UserId == appointment.PatientId);
-            MedicalRecords = _context.MedicalRecords.Where(m => m.PatientId == patient.UserId).ToList();
+            if (appointment.PatientId != 0)
+            {
+                patient = _context.Users.Include(p => p.Patient).Include(p => p.Patient.MedicalRecords).FirstOrDefault(p => p.UserId == appointment.PatientId);
+                if (patient != null) {
+                    MedicalRecords = _context.MedicalRecords.Where(m => m.PatientId == patient.UserId).ToList();
+                }
+                
+            }        
             if (appointment == null)
             {
                 return NotFound();
@@ -74,6 +80,7 @@ namespace Clinic_Management.Pages.Appointements
             {
                 Appointment = appointment;
             }
+            branchId = Appointment.BranchId;
             switch (Appointment.RequestedTime.Hour)
             {
                 case 7:
@@ -114,13 +121,13 @@ namespace Clinic_Management.Pages.Appointements
             StatusList = _context.AppointmentStatuses.ToList();
             branchList = _context.Branches.ToList();
             specialistList = _context.Specialists.ToList();
-            doctorList = _context.Staff.Include(d => d.DoctorBranch).Include(d => d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
+            doctorList = _context.Staff.Include(d => d.DoctorDepartment).Include(d => d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
             var a = _context.Appointments.FirstOrDefault(a => a.AppointmentId == AppointmentId);
 
             bool isAppointmentError = false;
 
             var doctor = _context.Staff.Include(u => u.User).FirstOrDefault(u => u.UserId == doctorId);
-            if (doctor.DoctorBranchId != branchId)
+            if (doctor.DoctorDepartmentId != branchId)
             {
                 appointmentError += "This doctor is currently working on another branch";
                 isAppointmentError = true;

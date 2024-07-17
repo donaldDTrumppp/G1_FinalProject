@@ -21,10 +21,12 @@ namespace Clinic_Management.Models
         public virtual DbSet<Branch> Branches { get; set; } = null!;
         public virtual DbSet<MedicalRecord> MedicalRecords { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
+        public virtual DbSet<Patient> Patients { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Specialist> Specialists { get; set; } = null!;
         public virtual DbSet<Staff> Staff { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserStatus> UserStatuses { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -46,7 +48,7 @@ namespace Clinic_Management.Models
                 entity.Property(e => e.BranchId).HasColumnName("branch_id");
 
                 entity.Property(e => e.CreatedAt)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasColumnName("created_at");
 
                 entity.Property(e => e.Description).HasColumnName("description");
@@ -76,6 +78,10 @@ namespace Clinic_Management.Models
                     .IsUnicode(false)
                     .HasColumnName("patient_phone_number");
 
+                entity.Property(e => e.RealTimeShowUp)
+                    .HasColumnType("datetime")
+                    .HasColumnName("real_time_show_up");
+
                 entity.Property(e => e.ReceptionistId).HasColumnName("receptionist_id");
 
                 entity.Property(e => e.RequestedTime)
@@ -90,40 +96,39 @@ namespace Clinic_Management.Models
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.BranchId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Appointme__branc__7F2BE32F");
+                    .HasConstraintName("FK__Appointme__branc__5EBF139D");
 
                 entity.HasOne(d => d.Doctor)
                     .WithMany(p => p.AppointmentDoctors)
                     .HasForeignKey(d => d.DoctorId)
-                    .HasConstraintName("FK__Appointme__docto__01142BA1");
+                    .HasConstraintName("FK__Appointme__docto__5FB337D6");
 
                 entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.AppointmentPatients)
+                    .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.PatientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Appointme__patie__00200768");
+                    .HasConstraintName("FK__Appointme__patie__60A75C0F");
 
                 entity.HasOne(d => d.Receptionist)
                     .WithMany(p => p.AppointmentReceptionists)
                     .HasForeignKey(d => d.ReceptionistId)
-                    .HasConstraintName("FK__Appointme__recep__02084FDA");
+                    .HasConstraintName("FK__Appointme__recep__619B8048");
 
                 entity.HasOne(d => d.SpecialistNavigation)
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.Specialist)
-                    .HasConstraintName("FK__Appointme__speci__02FC7413");
+                    .HasConstraintName("FK__Appointme__speci__628FA481");
 
                 entity.HasOne(d => d.StatusNavigation)
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.Status)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Appointme__statu__03F0984C");
+                    .HasConstraintName("FK__Appointme__statu__6383C8BA");
             });
 
             modelBuilder.Entity<AppointmentStatus>(entity =>
             {
                 entity.HasKey(e => e.StatusId)
-                    .HasName("PK__Appointm__3683B5316D9A83E1");
+                    .HasName("PK__Appointm__3683B531C898F000");
 
                 entity.ToTable("Appointment_Status");
 
@@ -149,9 +154,16 @@ namespace Clinic_Management.Models
             {
                 entity.ToTable("Medical_Record");
 
+                entity.HasIndex(e => e.AppointmentId, "UQ__Medical___A50828FD214237A8")
+                    .IsUnique();
+
                 entity.Property(e => e.MedicalrecordId).HasColumnName("medicalrecord_id");
 
                 entity.Property(e => e.AppointmentId).HasColumnName("appointment_id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
 
                 entity.Property(e => e.Diagnosis).HasColumnName("diagnosis");
 
@@ -168,21 +180,19 @@ namespace Clinic_Management.Models
                     .HasColumnName("visit_time");
 
                 entity.HasOne(d => d.Appointment)
-                    .WithMany(p => p.MedicalRecords)
-                    .HasForeignKey(d => d.AppointmentId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Medical_R__appoi__06CD04F7");
+                    .WithOne(p => p.MedicalRecord)
+                    .HasForeignKey<MedicalRecord>(d => d.AppointmentId)
+                    .HasConstraintName("FK__Medical_R__appoi__6477ECF3");
 
                 entity.HasOne(d => d.Doctor)
-                    .WithMany(p => p.MedicalRecordDoctors)
+                    .WithMany(p => p.MedicalRecords)
                     .HasForeignKey(d => d.DoctorId)
-                    .HasConstraintName("FK__Medical_R__docto__08B54D69");
+                    .HasConstraintName("FK__Medical_R__docto__656C112C");
 
                 entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.MedicalRecordPatients)
+                    .WithMany(p => p.MedicalRecords)
                     .HasForeignKey(d => d.PatientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Medical_R__patie__07C12930");
+                    .HasConstraintName("FK__Medical_R__patie__66603565");
             });
 
             modelBuilder.Entity<Notification>(entity =>
@@ -209,7 +219,29 @@ namespace Clinic_Management.Models
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.ReceiverId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Notificat__recei__0B91BA14");
+                    .HasConstraintName("FK__Notificat__recei__6754599E");
+            });
+
+            modelBuilder.Entity<Patient>(entity =>
+            {
+                entity.ToTable("Patient");
+
+                entity.Property(e => e.PatientId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("patient_id");
+
+                entity.Property(e => e.HealthInsurance)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("health_insurance");
+
+                entity.Property(e => e.NumberOfVisits).HasColumnName("number_of_visits");
+
+                entity.HasOne(d => d.PatientNavigation)
+                    .WithOne(p => p.Patient)
+                    .HasForeignKey<Patient>(d => d.PatientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Patient__patient__68487DD7");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -237,7 +269,7 @@ namespace Clinic_Management.Models
             modelBuilder.Entity<Staff>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__Staff__B9BE370F0BF2EC1D");
+                    .HasName("PK__Staff__B9BE370F78E8C2EA");
 
                 entity.Property(e => e.UserId)
                     .ValueGeneratedNever()
@@ -248,7 +280,7 @@ namespace Clinic_Management.Models
                     .IsUnicode(false)
                     .HasColumnName("CCCD");
 
-                entity.Property(e => e.DoctorBranchId).HasColumnName("doctor_branch_id");
+                entity.Property(e => e.DoctorDepartmentId).HasColumnName("doctor_department_id");
 
                 entity.Property(e => e.DoctorSpecialist).HasColumnName("doctor_specialist");
 
@@ -258,21 +290,21 @@ namespace Clinic_Management.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.DoctorBranch)
+                entity.HasOne(d => d.DoctorDepartment)
                     .WithMany(p => p.Staff)
-                    .HasForeignKey(d => d.DoctorBranchId)
-                    .HasConstraintName("FK__Staff__doctor_br__787EE5A0");
+                    .HasForeignKey(d => d.DoctorDepartmentId)
+                    .HasConstraintName("FK__Staff__doctor_de__693CA210");
 
                 entity.HasOne(d => d.DoctorSpecialistNavigation)
                     .WithMany(p => p.Staff)
                     .HasForeignKey(d => d.DoctorSpecialist)
-                    .HasConstraintName("FK__Staff__doctor_sp__797309D9");
+                    .HasConstraintName("FK__Staff__doctor_sp__6A30C649");
 
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.Staff)
                     .HasForeignKey<Staff>(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Staff__user_id__7A672E12");
+                    .HasConstraintName("FK__Staff__user_id__6B24EA82");
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -309,7 +341,7 @@ namespace Clinic_Management.Models
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 
-                entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.StatusId).HasColumnName("status_id");
 
                 entity.Property(e => e.Username)
                     .HasMaxLength(50)
@@ -320,7 +352,27 @@ namespace Clinic_Management.Models
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__User__role_id__73BA3083");
+                    .HasConstraintName("FK__User__role_id__6C190EBB");
+
+                entity.HasOne(d => d.Status)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.StatusId)
+                    .HasConstraintName("FK__User__status_id__6D0D32F4");
+            });
+
+            modelBuilder.Entity<UserStatus>(entity =>
+            {
+                entity.HasKey(e => e.StatusId)
+                    .HasName("PK__UserStat__3683B5315A70B6E5");
+
+                entity.ToTable("UserStatus");
+
+                entity.Property(e => e.StatusId).HasColumnName("status_id");
+
+                entity.Property(e => e.StatusName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("status_name");
             });
 
             OnModelCreatingPartial(modelBuilder);

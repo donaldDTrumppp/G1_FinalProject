@@ -118,11 +118,11 @@
                 <p id="specialist-error" style="display: none;color: red"></p>
             </div>
             <div class="relative z-0 w-full mb-5 group">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Branch</label>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department</label>
                 <select id="branch" name="branchId" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     @foreach (var item in Model.branchList)
                     {
-                        @if (Model.branchId == item.BranchId)
+                        @if (Model.Appointment.BranchId == item.BranchId)
                         {
                             <option value="@item.BranchId" selected>@item.BranchName</option>
                         }
@@ -143,11 +143,11 @@
                     {
                         @if (Model.doctorId == item.UserId)
                         {
-                            <option value="@item.UserId" selected><p>@item.User.Name | </p><p>@item.DoctorBranch.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p> </option>
+                            <option value="@item.UserId" selected><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p> </option>
                         }
                         else
                         {
-                            <option value="@item.UserId"><p>@item.User.Name | </p><p>@item.DoctorBranch.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p></option>
+                            <option value="@item.UserId"><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p></option>
                         }
                     }
                 </select>

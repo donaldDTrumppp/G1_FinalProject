@@ -103,6 +103,11 @@
                     <input id="email" value="@Model.email" name="email" type="text" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <p id="email-error" style="display: none;color: red"></p>
                 </div>
+                @* <div class="relative z-0 w-full mb-5 group">
+                    <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Health insurance</label>
+                    <input id="health" value="@Model.health" name="health" type="text" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <p id="health-error" style="display: none;color: red"></p>
+                </div> *@
             </div>
         </div>
     </div>
@@ -161,11 +166,11 @@
                     {
                         @if (Model.doctorId == item.UserId)
                         {
-                            <option value="@item.UserId" selected><p>@item.User.Name | </p><p>@item.DoctorBranch.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p> </option>
+                            <option value="@item.UserId" selected><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p> </option>
                         }
                         else
                         {
-                            <option value="@item.UserId"><p>@item.User.Name | </p><p>@item.DoctorBranch.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p></option>
+                            <option value="@item.UserId"><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p></option>
                         }
                     }
                 </select>
@@ -296,7 +301,7 @@
 
 
 <div id="searchUserModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
-    <div class="relative p-4 w-full max-w-5xl h-full md:h-auto">
+    <div class="relative p-4 w-full max-w-6xl h-full md:h-auto">
         <!-- Modal content -->
         <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
             <button type="button" class="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="searchUserModal">
@@ -335,6 +340,11 @@
                                     Address
                                 </div>
                             </th>
+                            @* <th scope="col" class="px-6 py-3">
+                                <div class="flex items-center">
+                                    Health insurrance
+                                </div>
+                            </th> *@
                             <th></th>
                         </tr>
                     </thead>
@@ -360,6 +370,9 @@
                                 <td class="px-6 py-4 phone" id="tablePatientAddress@(item.UserId)">
                                     @Html.DisplayFor(modelItem => item.Address)
                                 </td>
+                                @* <td class="px-6 py-4 phone" id="tablePatientHealth@(item.UserId)">
+                                    @Html.DisplayFor(modelItem => item.Patient.HealthInsurance)
+                                </td> *@
                                 <td>
                                     <button data-modal-toggle="searchUserModal" id="@item.UserId" onclick="assignSearchData(@item.UserId)" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Choose</button>
                                 </td>
@@ -385,6 +398,7 @@
         var dob = document.getElementById('dob').value.trim();
         var phone = document.getElementById('phonenum').value.trim();
         var email = document.getElementById('email').value.trim();
+        // var health = document.getElementById('health').value.trim();
         if (name.length === 0 || name.length > 50) {
             errorFlag = true;
             document.getElementById('fullname-error').innerHTML = "Must be less than 50 characters and not empty.";
@@ -439,6 +453,18 @@
                 document.getElementById('phone-error').style.display = "none";
             }
         }
+        // if(health !==''){
+        //     var phoneRegex = /^\d{1,29}$/;
+
+        //     if (!phoneRegex.test(phone)) {
+        //         errorFlag = true;
+        //         document.getElementById('health-error').innerHTML = "Phone number must be less than 30 digits.";
+        //         document.getElementById('health-error').style.display = "block";
+        //     } else {
+        //         document.getElementById('health-error').innerHTML = "";
+        //         document.getElementById('health-error').style.display = "none";
+        //     }
+        // }
         if (symptoms.length === 0) {
             errorFlag = true;
             document.getElementById('symptoms-error').innerHTML = "Symptoms are required.";
@@ -479,7 +505,8 @@
         document.getElementById('dob').value = document.getElementById('tablePatientDob' + id).innerHTML.trim();
         document.getElementById('phonenum').value =  document.getElementById('tablePatientPhone' + id).innerHTML.trim();
         document.getElementById('email').value = document.getElementById('tablePatientEmail' + id).innerHTML.trim();
-    }
+        // document.getElementById('health').value = document.getElementById('tablePatientHealth' + id).innerHTML.trim();
+        }
     function searchTable() {
         var input, filter, table, tr, td, i, j, txtValue;
         input = document.getElementById("searchInput");

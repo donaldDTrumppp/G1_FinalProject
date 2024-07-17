@@ -28,11 +28,15 @@ namespace Clinic_Management.Pages.Appointements
                 return NotFound();
             }
 
-            var appointment= await _context.Appointments.Include(a=>a.Doctor).Include(a=>a.Branch)
+            var appointment= await _context.Appointments.Include(a=>a.Doctor).Include(a=>a.Branch).Include(p=>p.Patient)
                 .Include(a=>a.SpecialistNavigation).Include(a=>a.StatusNavigation)
                 .Include(a=>a.Doctor).Include(a=>a.Receptionist).FirstOrDefaultAsync(m => m.AppointmentId == id);
-            patient = _context.Users.Include(p=>p.MedicalRecordPatients).FirstOrDefault(p => p.UserId == appointment.PatientId);
-            MedicalRecords = _context.MedicalRecords.Where(m => m.PatientId == patient.UserId).ToList();
+            patient = _context.Users.Include(p=>p.Patient).Include(p=>p.Patient.MedicalRecords).FirstOrDefault(p => p.UserId == appointment.PatientId);
+            if (patient != null)
+            {
+                MedicalRecords = _context.MedicalRecords.Where(m => m.PatientId == patient.UserId).ToList();
+            }
+            
             if (appointment == null)
             {
                 return NotFound();

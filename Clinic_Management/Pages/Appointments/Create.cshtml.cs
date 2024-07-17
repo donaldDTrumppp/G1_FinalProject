@@ -1,5 +1,4 @@
 ﻿using Clinic_Management.Models;
-using Clinic_Management.Pages.MedicalRecords;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -41,6 +40,9 @@ namespace Clinic_Management.Pages.Appointments
         public string email { get; set; }
 
         [BindProperty]
+        public string health { get; set; }
+
+        [BindProperty]
         public string symptoms { get; set; }
 
         [BindProperty]
@@ -69,8 +71,8 @@ namespace Clinic_Management.Pages.Appointments
         {
             branchList = _context.Branches.ToList();
             specialistList = _context.Specialists.ToList();
-            doctorList = _context.Staff.Include(d => d.DoctorBranch).Include(d => d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
-            patientList = _context.Users.Where(u => u.RoleId == 4).ToList();
+            doctorList = _context.Staff.Include(d => d.DoctorDepartment).Include(d => d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
+            patientList = _context.Users.Include(u=>u.Patient).Where(u => u.RoleId == 4).ToList();
             return Page();
         }
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
@@ -78,8 +80,8 @@ namespace Clinic_Management.Pages.Appointments
         {
             branchList = _context.Branches.ToList();
             specialistList = _context.Specialists.ToList();
-            doctorList = _context.Staff.Include(d=>d.DoctorBranch).Include(d=>d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
-            patientList = _context.Users.Where(u => u.RoleId == 4).ToList();
+            doctorList = _context.Staff.Include(d=>d.DoctorDepartment).Include(d=>d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
+            patientList = _context.Users.Include(u=>u.Patient).Where(u => u.RoleId == 4).ToList();
             bool isPatientError = false;
             bool isAppointmentError = false;
 
@@ -109,7 +111,7 @@ namespace Clinic_Management.Pages.Appointments
             newAppointment.PatientEmail = email;
             //var patient = _context.Users.FirstOrDefault(p => p.UserId == searchPatientID);
             var doctor = _context.Staff.Include(u => u.User).FirstOrDefault(u => u.UserId == doctorId);
-            if (doctor.DoctorBranchId != branchId)
+            if (doctor.DoctorDepartmentId != branchId)
             {
                 appointmentError += "This doctor is currently working on another branch";
                 isAppointmentError = true;
