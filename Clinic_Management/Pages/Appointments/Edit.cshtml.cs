@@ -127,62 +127,65 @@ namespace Clinic_Management.Pages.Appointements
             bool isAppointmentError = false;
 
             var doctor = _context.Staff.Include(u => u.User).FirstOrDefault(u => u.UserId == doctorId);
-            if (doctor.DoctorDepartmentId != branchId)
+            if(doctor != null)
             {
-                appointmentError += "This doctor is currently working on another branch";
-                isAppointmentError = true;
-            }
-
-            if (doctor.DoctorSpecialist != specialistId)
-            {
-                appointmentError += ", This specialist is not suitable for this doctor";
-                isAppointmentError = true;
-            }
-            else
-            {
-                switch (requestedTime)
+                if (doctor?.DoctorDepartmentId != branchId)
                 {
-                    case 1:
-                        requestedDate = requestedDate.Date.AddHours(7);
-                        break;
-                    case 2:
-                        requestedDate = requestedDate.Date.AddHours(8);
-                        break;
-                    case 3:
-                        requestedDate = requestedDate.Date.AddHours(9);
-                        break;
-                    case 4:
-                        requestedDate = requestedDate.Date.AddHours(10);
-                        break;
-                    case 5:
-                        requestedDate = requestedDate.Date.AddHours(13);
-                        break;
-                    case 6:
-                        requestedDate = requestedDate.Date.AddHours(14);
-                        break;
-                    case 7:
-                        requestedDate = requestedDate.Date.AddHours(15);
-                        break;
-                    case 8:
-                        requestedDate = requestedDate.Date.AddHours(16);
-                        break;
-
+                    appointmentError += "This doctor is currently working on another branch";
+                    isAppointmentError = true;
                 }
-                var appointment = _context.Appointments.FirstOrDefault(a => (a.DoctorId == doctorId && a.RequestedTime.Equals(requestedDate) && a.Status == 1) && a.AppointmentId != Appointment.AppointmentId);
-                if (appointment != null)
+
+                if (doctor?.DoctorSpecialist != specialistId)
                 {
-                    appointmentError += "The doctor already has an appointment at this time";
+                    appointmentError += ", This specialist is not suitable for this doctor";
                     isAppointmentError = true;
                 }
                 else
                 {
-                    a.Description = symptoms;
-                    a.DoctorId = doctorId;
-                    a.BranchId = branchId;
-                    a.Specialist = specialistId;
-                    a.RequestedTime = requestedDate;
-                }
+                    switch (requestedTime)
+                    {
+                        case 1:
+                            requestedDate = requestedDate.Date.AddHours(7);
+                            break;
+                        case 2:
+                            requestedDate = requestedDate.Date.AddHours(8);
+                            break;
+                        case 3:
+                            requestedDate = requestedDate.Date.AddHours(9);
+                            break;
+                        case 4:
+                            requestedDate = requestedDate.Date.AddHours(10);
+                            break;
+                        case 5:
+                            requestedDate = requestedDate.Date.AddHours(13);
+                            break;
+                        case 6:
+                            requestedDate = requestedDate.Date.AddHours(14);
+                            break;
+                        case 7:
+                            requestedDate = requestedDate.Date.AddHours(15);
+                            break;
+                        case 8:
+                            requestedDate = requestedDate.Date.AddHours(16);
+                            break;
 
+                    }
+                    var appointment = _context.Appointments.FirstOrDefault(a => (a.DoctorId == doctorId && a.RequestedTime.Equals(requestedDate) && a.Status == 1) && a.AppointmentId != Appointment.AppointmentId);
+                    if (appointment != null)
+                    {
+                        appointmentError += "The doctor already has an appointment at this time";
+                        isAppointmentError = true;
+                    }
+                    else
+                    {
+                        a.Description = symptoms;
+                        a.DoctorId = doctorId;
+                        a.BranchId = branchId;
+                        a.Specialist = specialistId;
+                        a.RequestedTime = requestedDate;
+                    }
+
+                }
             }
             if (isAppointmentError)
             {

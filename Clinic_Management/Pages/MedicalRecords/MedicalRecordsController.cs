@@ -73,10 +73,17 @@ namespace Clinic_Management.Pages.MedicalRecords
         [HttpGet("appointments")]
         public ActionResult<IEnumerable<Appointment>> GetAppointments()
         {
+            //Scheduled
+            //Completed
+            //Cancelled
+            //Rescheduled
+            //Not coming
+            //Wait for approval
             var apms = _context.Appointments
                 .Include(m => m.SpecialistNavigation)
                 .Include(m => m.StatusNavigation)
                 .Include(d => d.Doctor)
+                .Where(a => a.StatusNavigation.StatusName == "Scheduled" || a.StatusNavigation.StatusName == "Rescheduled")
                 .ToList();
             var basicApms = apms.Select(s => new BasicAppointment
             {

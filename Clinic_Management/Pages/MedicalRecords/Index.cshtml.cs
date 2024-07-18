@@ -64,7 +64,9 @@ namespace Clinic_Management.Pages.MedicalRecords
             Branchlist = new SelectList(await branchQuery.ToListAsync(), "BranchId", "BranchName");
 
 
-            var query = _context.MedicalRecords.Include(a => a.Appointment).ThenInclude(s => s.SpecialistNavigation).Include(m => m.Doctor).Include(m => m.Patient).AsQueryable();
+            var query = _context.MedicalRecords
+                .Include(a => a.Appointment).ThenInclude(s => s.SpecialistNavigation)
+                .Include(m => m.Doctor).Include(m => m.Patient).AsQueryable();
 
             if (SpecialistFilter.HasValue)
             {
