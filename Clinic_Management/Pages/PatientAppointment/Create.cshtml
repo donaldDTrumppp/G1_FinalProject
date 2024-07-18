@@ -129,6 +129,10 @@
             <p id="floating_visit_time" class="font-bold text-md-center text-gray-900"></p>
         </div>
         -->
+        @if(Model.User != null)
+        {
+        
+        }
         <div class="mb-5">
             <h3 class="text-lg mb-1 text-gray-900 font-bold">Branch</h3>
             <select name="@Html.NameFor(a => a.Appointment.BranchId)" style="font-weight: 450" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
