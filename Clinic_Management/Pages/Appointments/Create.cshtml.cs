@@ -1,8 +1,11 @@
 ﻿using Clinic_Management.Models;
+using Clinic_Management.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Clinic_Management.Pages.Appointments
 {
@@ -10,9 +13,14 @@ namespace Clinic_Management.Pages.Appointments
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
 
-        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        private readonly EmailService _emailService;
+
+        private readonly IConfiguration _config;
+        public CreateModel(G1_PRJ_DBContext context, EmailService emailService, IConfiguration config)
         {
             _context = context;
+            _emailService = emailService;
+            _config = config;
         }
         public IList<User> patientList { get; set; }
         public IList<Staff> doctorList { get; set; }
@@ -55,7 +63,7 @@ namespace Clinic_Management.Pages.Appointments
         public int doctorId { get; set; }
 
         [BindProperty]
-        public DateTime requestedDate { get; set; }
+        public string requestedDateText { get; set; }
 
         [BindProperty]
         public int requestedTime { get; set; }
@@ -78,6 +86,7 @@ namespace Clinic_Management.Pages.Appointments
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
+            DateTime requestedDate = DateTime.ParseExact(requestedDateText, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             branchList = _context.Branches.ToList();
             specialistList = _context.Specialists.ToList();
             doctorList = _context.Staff.Include(d=>d.DoctorDepartment).Include(d=>d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
@@ -111,63 +120,68 @@ namespace Clinic_Management.Pages.Appointments
             newAppointment.PatientEmail = email;
             //var patient = _context.Users.FirstOrDefault(p => p.UserId == searchPatientID);
             var doctor = _context.Staff.Include(u => u.User).FirstOrDefault(u => u.UserId == doctorId);
-            if (doctor.DoctorDepartmentId != branchId)
+
+            switch (requestedTime)
             {
-                appointmentError += "This doctor is currently working on another branch";
-                isAppointmentError = true;
+                case 1:
+                    requestedDate = requestedDate.Date.AddHours(7);
+                    break;
+                case 2:
+                    requestedDate = requestedDate.Date.AddHours(8);
+                    break;
+                case 3:
+                    requestedDate = requestedDate.Date.AddHours(9);
+                    break;
+                case 4:
+                    requestedDate = requestedDate.Date.AddHours(10);
+                    break;
+                case 5:
+                    requestedDate = requestedDate.Date.AddHours(13);
+                    break;
+                case 6:
+                    requestedDate = requestedDate.Date.AddHours(14);
+                    break;
+                case 7:
+                    requestedDate = requestedDate.Date.AddHours(15);
+                    break;
+                case 8:
+                    requestedDate = requestedDate.Date.AddHours(16);
+                    break;
             }
 
-            if (doctor.DoctorSpecialist != specialistId)
+            if (doctor != null)
             {
-                appointmentError += ", This specialist is not suitable for this doctor";
-                isAppointmentError = true;
-            }
-            else
-            {
-                switch (requestedTime)
+                if (doctor.DoctorDepartmentId != branchId)
                 {
-                    case 1:
-                        requestedDate = requestedDate.Date.AddHours(7);
-                        break;
-                    case 2:
-                        requestedDate = requestedDate.Date.AddHours(8);
-                        break;
-                    case 3:
-                        requestedDate = requestedDate.Date.AddHours(9);
-                        break;
-                    case 4:
-                        requestedDate = requestedDate.Date.AddHours(10);
-                        break;
-                    case 5:
-                        requestedDate = requestedDate.Date.AddHours(13);
-                        break;
-                    case 6:
-                        requestedDate = requestedDate.Date.AddHours(14);
-                        break;
-                    case 7:
-                        requestedDate = requestedDate.Date.AddHours(15);
-                        break;
-                    case 8:
-                        requestedDate = requestedDate.Date.AddHours(16);
-                        break;
-
+                    appointmentError += "This doctor is currently working on another branch";
+                    isAppointmentError = true;
                 }
-                var appointment = _context.Appointments.FirstOrDefault(a => a.DoctorId == doctorId && a.RequestedTime.Equals(requestedDate) && a.Status == 1);
-                if (appointment != null)
+
+                if (doctor.DoctorSpecialist != specialistId)
                 {
-                    appointmentError += "The doctor already has an appointment at this time";
+                    appointmentError += ", This specialist is not suitable for this doctor";
                     isAppointmentError = true;
                 }
                 else
                 {
-                    newAppointment.Description = symptoms;
-                    newAppointment.DoctorId = doctorId;
-                    newAppointment.BranchId = branchId;
-                    newAppointment.Specialist = specialistId;
-                    newAppointment.RequestedTime = requestedDate;
+                    var appointment = _context.Appointments.FirstOrDefault(a => a.DoctorId == doctorId && a.RequestedTime.Equals(requestedDate) && a.Status == 1);
+                    if (appointment != null)
+                    {
+                        appointmentError += "The doctor already has an appointment at this time";
+                        isAppointmentError = true;
+                    }
+                    else
+                    {
+                        newAppointment.DoctorId = doctorId;
+                    }
                 }
-
             }
+
+
+            newAppointment.Description = symptoms;
+            newAppointment.BranchId = branchId;
+            newAppointment.Specialist = specialistId;
+            newAppointment.RequestedTime = requestedDate;
 
             if (isAppointmentError || isPatientError)
             {
@@ -180,6 +194,23 @@ namespace Clinic_Management.Pages.Appointments
                 newAppointment.Status = 1;
                 _context.Appointments.Add(newAppointment);
                 _context.SaveChanges();
+
+                string activeLink = _config["Host"] + _config["Port"] + "/Appointments/Details?id=" + newAppointment.AppointmentId;
+                var htmlContent = await _emailService.GetAppointmentCreatedEmail("appointment_created.html",
+                    newAppointment.Branch.BranchName,
+                    newAppointment.PatientName,
+                    newAppointment.PatientAddress,
+                    newAppointment.PatientDob.ToString(),
+                    newAppointment.PatientPhoneNumber,
+                    newAppointment.PatientEmail,
+                    newAppointment.RequestedTime.ToString(),
+                    newAppointment.SpecialistNavigation.SpecialistName,
+                    newAppointment.Description,
+                    activeLink);
+                _emailService.SendEmailAppointment(newAppointment.PatientEmail,
+                    "[Appointment] Appointment Created Successfully",
+                    htmlContent);
+
                 return RedirectToPage("./Index", new { Message = "Appointment created!" });
             }
             //return Page();

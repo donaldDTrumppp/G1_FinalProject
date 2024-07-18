@@ -61,13 +61,14 @@ namespace Clinic_Management.Utils
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
+           //     Console.WriteLine(jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
 
                 return userId;
             }
-            catch(Exception ex) 
+
+            catch
             {
-                Console.WriteLine(ex.ToString());
                 return -1;
             }
         }
