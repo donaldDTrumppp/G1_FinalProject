@@ -106,7 +106,7 @@ namespace Clinic_Management
             app.UseAuthorization();
 
             app.MapControllers();
-          //  app.UseMiddleware<JwtMiddleware>();
+            app.UseMiddleware<JwtMiddleware>();
 
             app.MapRazorPages();
             app.MapHub<SignalrServer>("/signalrServer");

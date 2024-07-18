@@ -14,7 +14,7 @@ namespace Clinic_Management.Utils
             "/Authentication/Logout",
             "/Index",
             "/PatientAppointment/Create",
-            "/Index",
+            "/",
             "/signalrServer/negotiate",
             "/signalrServer"
         }; 
@@ -90,7 +90,7 @@ namespace Clinic_Management.Utils
         private void RedirectToLogin(HttpContext context)
         {
             var returnUrl = context.Request.Path + context.Request.QueryString;
-
+            
             context.Response.Redirect("/Authentication/Login?returnUrl=" + returnUrl);
         }
     }

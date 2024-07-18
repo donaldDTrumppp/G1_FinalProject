@@ -119,5 +119,6 @@ namespace Clinic_Management.Utils
 
             return _context.Users.FirstOrDefault(u => u.UserId == userId);
         }
+
     }
 }
