@@ -194,6 +194,15 @@ namespace Clinic_Management.Services
             return htmlContent;
         }
 
+        public async Task<string> GetAppointmentReminderEmail(string fileName, string activeLink, string patientName)
+        {
+            var filePath = Path.Combine(_env.WebRootPath, "template", fileName);
+            var htmlContent = await File.ReadAllTextAsync(filePath);
+            htmlContent = htmlContent.Replace("<span id=\"dname\" style=\"font-weight: bold\"></span>", $"<span id=\"dname\" style=\"font-weight: bold\">{patientName}</span>");
+            htmlContent = htmlContent.Replace("<a href=\"\" style=\"color: white !important; text-decoration: none\">Verify Account</a>", $"<a href=\"{activeLink}\" style=\"color: white !important; text-decoration: none\">Verify Account</a>");
+            return htmlContent;
+        }
+
         public async Task<string> GetEditUserEmail(string fileName, string patientName, string patientAddress, string patientDob, string patientPhone, string patientEmail, string activeLink)
         {
             var filePath = Path.Combine(_env.WebRootPath, "template", fileName);

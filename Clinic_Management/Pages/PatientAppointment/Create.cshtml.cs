@@ -21,12 +21,17 @@ namespace Clinic_Management.Pages.PatientAppointment
 
         private readonly NotificationService _notificationService;
 
-        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config, NotificationService notificationService)
+        private readonly UserContextService _userContextService;
+
+        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config, NotificationService notificationService, UserContextService userContextService, List<Branch> branchs, int time)
         {
             _context = context;
             _emailService = emailService;
             _config = config;
-            _notificationService = notificationService; 
+            _notificationService = notificationService;
+            _userContextService = userContextService;
+            Branchs = branchs;
+            Time = time;
         }
 
         public List<Branch> Branchs { get; set; }
@@ -34,10 +39,14 @@ namespace Clinic_Management.Pages.PatientAppointment
         [BindProperty]
         public int Time { get; set; }
 
+        [BindProperty]
+        public User User { get; set; }
+
         public List<Specialist> Specialists { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
+            User = _userContextService.GetUserFromContext();
             Branchs = await _context.Branches.Distinct().ToListAsync();
             Specialists = await _context.Specialists.Distinct().ToListAsync();
             ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchId");

@@ -25,6 +25,7 @@ namespace Clinic_Management
             builder.Services.AddTransient<UserContextService>();
             builder.Services.AddTransient<NotificationService>();
             builder.Services.AddSignalR();
+            builder.Services.AddHostedService<BackgroundWorkerService>();
 
             var configuration = builder.Configuration;
 
