@@ -26,7 +26,7 @@ namespace Clinic_Management.Utils
         {
             var path = context.Request.Path.ToString();
 
-            Console.WriteLine("current path: " + path);
+            //Console.WriteLine("current path: " + path);
 
             // Check if the request path is in the excluded paths
             if (_excludedPaths.Contains(path, StringComparer.OrdinalIgnoreCase))
@@ -69,12 +69,10 @@ namespace Clinic_Management.Utils
                 // Check if token has expired
                 if (jwtToken.ValidTo < DateTime.UtcNow)
                 {
-                    Console.WriteLine("Het time");
                     context.Response.Cookies.Delete("AuthToken");
                     RedirectToLogin(context);
                     return;
                 }
-                Console.WriteLine("Chua het time");
             }
             catch
             {
