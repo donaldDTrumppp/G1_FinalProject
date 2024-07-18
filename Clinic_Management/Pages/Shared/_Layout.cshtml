@@ -1,4 +1,7 @@
-﻿﻿
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Http
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,12 +95,34 @@
                                 </svg>
                             </a>
                         </li>
+                        @if (HttpContextAccessor.HttpContext.Request.Cookies["AuthToken"] != null && 
+                            HttpContextAccessor.HttpContext.Request.Cookies["Username"] != null)
+                        {
+                            <li class="ml-6">
+                                <span class="inline-block font-semibold px-4 py-2 text-white">
+                                    <a asp-page="/Profile/Index" class="text-white hover:text-gray-300 ml-2">
+                                        Hello, @HttpContextAccessor.HttpContext.Request.Cookies["Username"]
+                                    </a>
+                                </span>
+                            </li>
+                            <li class="ml-6">
+                                <div class="navbar-item">
+                                    <form method="post" asp-page="/Authentication/Logout">
+                                        <button type="submit" class="nav-link btn btn-link">Logout</button>
+                                    </form>
 
-                        <li class="ml-6">
-                            <a asp-page="/Authentication/Login" class="inline-block font-semibold px-4 py-2 text-white text-white">
-                                Sign in / Sign up
-                            </a>
-                        </li>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="ml-6">
+                                <a asp-page="/Authentication/Login" class="inline-block font-semibold px-4 py-2 text-white">
+                                    Sign in / Sign up
+                                </a>
+                            </li>
+                        }
+
                     </ul>
                 </div>
             </div>
@@ -297,7 +322,7 @@
     </main>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131505823-4"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
