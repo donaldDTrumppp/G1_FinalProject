@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -21,6 +21,7 @@ namespace Clinic_Management.Models
         public virtual DbSet<Branch> Branches { get; set; } = null!;
         public virtual DbSet<MedicalRecord> MedicalRecords { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
+        public virtual DbSet<NotificationType> NotificationTypes { get; set; } = null!;
         public virtual DbSet<Patient> Patients { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Specialist> Specialists { get; set; } = null!;
@@ -30,11 +31,11 @@ namespace Clinic_Management.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var builder = new ConfigurationBuilder()
-                              .SetBasePath(Directory.GetCurrentDirectory())
-                              .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            IConfigurationRoot configuration = builder.Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("MyCnn"));
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server =DESKTOP-OSDDH1R\\SQLEXPRESS; database =G1_PRJ_DB;uid=sa;pwd=haibang20042003;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -209,17 +210,46 @@ namespace Clinic_Management.Models
                     .HasColumnType("datetime")
                     .HasColumnName("datetime");
 
+                entity.Property(e => e.IsRead).HasColumnName("is_read");
+
                 entity.Property(e => e.Link)
                     .HasMaxLength(100)
                     .HasColumnName("link");
 
                 entity.Property(e => e.ReceiverId).HasColumnName("receiver_id");
 
+                entity.Property(e => e.Subject)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("subject");
+
+                entity.Property(e => e.Type).HasColumnName("type");
+
                 entity.HasOne(d => d.Receiver)
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.ReceiverId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Notificat__recei__48CFD27E");
+
+                entity.HasOne(d => d.TypeNavigation)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => d.Type)
+                    .HasConstraintName("FK__Notificati__type__5DCAEF64");
+            });
+
+            modelBuilder.Entity<NotificationType>(entity =>
+            {
+                entity.HasKey(e => e.TypeId)
+                    .HasName("PK__Notifica__2C0005983EB584C5");
+
+                entity.ToTable("NotificationType");
+
+                entity.Property(e => e.TypeId).HasColumnName("type_id");
+
+                entity.Property(e => e.TypeName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("type_name");
             });
 
             modelBuilder.Entity<Patient>(entity =>

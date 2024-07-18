@@ -1,4 +1,5 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @using Microsoft.AspNetCore.Http
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -29,7 +30,34 @@
 <body class="antialiased bg-white font-sans text-gray-900">
 
     <main class="w-full">
-
+        <div id="toast-notification" class="w-full opacity-0 max-w-xs p-4 fixed bottom-5 right-5 text-gray-900 bg-white rounded-lg shadow dark:bg-gray-800 dark:text-gray-300" role="alert">
+            <div class="flex items-center mb-3">
+                <span class="mb-1 text-sm font-semibold text-gray-900 dark:text-white">New notification</span>
+                <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white justify-center items-center flex-shrink-0 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-notification" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex items-center">
+                <div class="relative inline-block shrink-0">
+                    <img class="w-12 h-12 rounded-full" id="newimage" src="~/Images/message.png" alt="Jese Leos image" />
+                    <span class="absolute bottom-0 right-0 inline-flex items-center justify-center w-6 h-6 bg-blue-600 rounded-full">
+                        <svg class="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18" fill="currentColor">
+                            <path d="M18 4H16V9C16 10.0609 15.5786 11.0783 14.8284 11.8284C14.0783 12.5786 13.0609 13 12 13H9L6.846 14.615C7.17993 14.8628 7.58418 14.9977 8 15H11.667L15.4 17.8C15.5731 17.9298 15.7836 18 16 18C16.2652 18 16.5196 17.8946 16.7071 17.7071C16.8946 17.5196 17 17.2652 17 17V15H18C18.5304 15 19.0391 14.7893 19.4142 14.4142C19.7893 14.0391 20 13.5304 20 13V6C20 5.46957 19.7893 4.96086 19.4142 4.58579C19.0391 4.21071 18.5304 4 18 4Z" fill="currentColor" />
+                            <path d="M12 0H2C1.46957 0 0.960859 0.210714 0.585786 0.585786C0.210714 0.960859 0 1.46957 0 2V9C0 9.53043 0.210714 10.0391 0.585786 10.4142C0.960859 10.7893 1.46957 11 2 11H3V13C3 13.1857 3.05171 13.3678 3.14935 13.5257C3.24698 13.6837 3.38668 13.8114 3.55279 13.8944C3.71889 13.9775 3.90484 14.0126 4.08981 13.996C4.27477 13.9793 4.45143 13.9114 4.6 13.8L8.333 11H12C12.5304 11 13.0391 10.7893 13.4142 10.4142C13.7893 10.0391 14 9.53043 14 9V2C14 1.46957 13.7893 0.960859 13.4142 0.585786C13.0391 0.210714 12.5304 0 12 0Z" fill="currentColor" />
+                        </svg>
+                        <span class="sr-only">Message icon</span>
+                    </span>
+                </div>
+                <div class="ms-3 text-sm font-normal">
+                    <div id="newsubject" class="text-sm font-semibold text-gray-900 dark:text-white">Bonnie Green</div>
+                    <div id="newcomment" class="text-sm font-normal">commented on your photo</div>
+                    <span class="text-xs font-medium text-blue-600 dark:text-blue-500">a few seconds ago</span>
+                </div>
+            </div>
+        </div>
         <!-- start header -->
         <header class="absolute top-0 left-0 w-full z-50 px-4 sm:px-8 lg:px-16 bg-blue-teal-gradient relative bg-blue-600">
             <div class="hidden md:flex justify-between items-center py-2 border-b text-sm py-3"
@@ -100,6 +128,7 @@
                         {
                             <li class="ml-6">
                                 <span class="inline-block font-semibold px-4 py-2 text-white">
+
                                     <a asp-page="/Profile/Index" class="text-white hover:text-gray-300 ml-2">
                                         Hello, @HttpContextAccessor.HttpContext.Request.Cookies["Username"]
                                     </a>
@@ -150,7 +179,7 @@
                             <li><a class="py-2 inline-block md:text-white md:hidden lg:block font-semibold" href="#">About Us</a></li>
                             <li class="md:ml-4">
                                 <a class="py-2 inline-block md:text-white md:px-2 font-semibold"
-                                   href="#">Treatments</a>
+                                   asp-page="/Appointments">Appointment</a>
                             </li>
                             <li class="md:ml-4">
                                 <a class="py-2 inline-block md:text-white md:px-2 font-semibold"
@@ -165,14 +194,59 @@
                                     Medical Records
                                 </a>
                             </li>
+                            <li>
+                                <div class="relative ml-4 cursor-pointer">
+
+                                    <div class="p-2">
+                                        @if (HttpContextAccessor.HttpContext.Request.Cookies["AuthToken"] != null &&
+                                        HttpContextAccessor.HttpContext.Request.Cookies["Username"] != null)
+                                        {
+                                            <button onclick="disableNt()" id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification" type="button">
+                                                <div style="width: 10px; height: 10px; display: none" id="nt" class="absolute left-0 top-0  bg-red-500 rounded-full">
+                                                    <span class="text-sm text-white p-1"></span>
+                                                </div>
+                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                     fill="white"
+                                                     class="text-gray-600 w-6 h-6"
+                                                     viewBox="0 0 16 16">
+                                                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z" />
+                                                </svg>
+                                            </button>
+                                        }
+                                        <!-- Dropdown menu -->
+
+                                    </div>
+                                </div>
+                            </li>
+
                             <li class="md:ml-6 mt-3 md:mt-0">
                                 <a class="inline-block font-semibold px-4 py-2 text-white bg-blue-600 md:bg-transparent md:text-white border border-white rounded"
-                                   href="/PatientAppointment/Create">
-                                    Book
-                                    Appointment
+                                   asp-page="/PatientAppointment/Create">
+                                    Book Appointment
                                 </a>
                             </li>
                         </ul>
+
+                        <div id="dropdownNotification" style="max-height: 392px; overflow-y: auto" class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-800 dark:divide-gray-700" aria-labelledby="dropdownNotificationButton">
+                            <div class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
+                                Notifications
+                            </div>
+                            <div class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <div id="notify">
+                                </div>
+
+                                <div role="status" id="loading" style="display: flex; justify-content: center; margin-bottom: 5px">
+                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                                    </svg>
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+
                     </nav>
                 </div>
             </div>
@@ -320,9 +394,226 @@
         </footer>
         <!-- end footer -->
     </main>
+    <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script>
 
+        function disableNt() {
+            document.getElementById("nt").style.display = "none";
+        }
+
+        async function getToken() {
+            const response = await fetch('/api/Authentication');
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                if (data != null) {
+                    var connection = new signalR.HubConnectionBuilder()
+                        .withUrl("/signalrServer?access_token=" + data.token, { accessTokenFactory: () => data.Token })
+                        .build();
+
+                    connection.start().then(function () {
+                        connection.on("LoadNotifications", function (notification) {
+                            console.log("Nhận thông báo mới:", notification);
+                            var image = "";
+                            switch (notification.typeNavigation.typeName) {
+                                case "Appointment": {
+                                    image = "/Images/appointment.jpg";
+                                    break;
+                                }
+                                case "Medical": {
+                                    image = "/Images/medical-record.png";
+                                    break;
+                                }
+                                case "System": {
+                                    image = "/Images/message.png";
+                                    break;
+                                }
+                            }
+                            var ntimage = document.getElementById('newimage');
+                            ntimage.src = image;
+                            document.getElementById("newsubject").innerHTML = notification.subject;
+                            document.getElementById("newcomment").innerHTML = notification.content;
+                            console.log(ntimage.src);
+                            console.log(document.getElementById("newsubject").innerHTML);
+                            console.log(document.getElementById("newcomment").innerHTML);
+                            if (document.getElementById("toast-notification").classList.contains("animate-[fade-out_2s_ease-out_1s_1_forwards]")) {
+                                document.getElementById("toast-notification").classList.remove("animate-[fade-out_2s_ease-out_1s_1_forwards]")
+                            }
+                            void document.getElementById("toast-notification").offsetWidth;
+                            document.getElementById("toast-notification").classList.add("animate-[fade-out_2s_ease-out_1s_1_forwards]")
+                            document.getElementById("nt").style.display = "block";
+
+                            var resultDiv = document.getElementById('notify');
+                            var a = resultDiv.innerHTML;
+                            var b;
+                            b = '<div style="width: 8px; height: 8px; margin-left: 4px; margin-top: 18px" class="absolute left-1 top-0  bg-red-500 rounded-full">'
+                                + '<span class="text-sm text-white p-1"></span>'
+                                + '</div>';
+
+
+                            resultDiv.innerHTML = "";
+                            resultDiv.innerHTML += '<div style="position: relative">' + b + '<a onclick="UpdateNotification(' + notification.notificationId + ', \'' + notification.link + '\')"  class="flex cursor-pointer px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">'
+                                + '<div class="flex-shrink-0">'
+                                + '<img class="rounded-full w-11 h-11" src = "' + image + '" alt = "Jese image">'
+                                + '<div class="absolute flex items-center justify-center w-5 h-5 ms-6 -mt-5 bg-blue-600 border border-white rounded-full dark:border-gray-800">'
+                                + '<svg class="w-2 h-2 text-white" aria-hidden="true" xmlns = "http://www.w3.org/2000/svg" fill = "currentColor" viewBox = "0 0 18 18">'
+                                + '<path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/>'
+                                + '<path d="M4.439 9a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239Z"/>'
+                                + '</svg>'
+                                + '</div>'
+                                + '</div>'
+                                + '<div class="w-full ps-3">'
+                                + '<div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400" style = "text-align: start !important">'
+                                + '<div class="flex justify-between">'
+                                + '<div class="font-semibold text-gray-900 dark:text-white">' + notification.subject + '</div>'
+                                + '<div>' + formatDate(notification.datetime) + '</div>'
+                                + '</div>'
+                                + '<div>' + notification.content + '</div>'
+                                + '</div>'
+                                + '</div>'
+                                + '</a>';
+                            resultDiv.innerHTML += a;
+                        });
+                    }).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+                return data.Token;
+            } else {
+                console.error('Failed to get token');
+                return null;
+            }
+        }
+        getToken();
+
+
+        var page = 1;
+        GetNotification();
+
+        async function UpdateNotification(id, link) {
+
+            try {
+                const response = await fetch('/api/Notification/' + id, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                window.location.href = link;
+                console.log(response);
+            } catch (error) {
+                console.error('Fetch error:', error);
+            };
+
+        }
+
+        async function GetNotification() {
+            try {
+                const response = await fetch('/api/Notification/' + page, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                var json = await response.json();
+                var resultDiv = document.getElementById('notify');
+                json.forEach(notify => {
+                    var image = "";
+                    switch (notify.typeNavigation.typeName) {
+                        case "Appointment": {
+                            image = "/Images/appointment.jpg";
+                            break;
+                        }
+                        case "Medical": {
+                            image = "/Images/medical-record.png";
+                            break;
+                        }
+                        case "System": {
+                            image = "/Images/message.png";
+                            break;
+                        }
+                    }
+                    var b;
+                    if (notify.isRead == false) {
+                        b = '<div style="width: 8px; height: 8px; margin-left: 4px; margin-top: 18px" class="absolute left-1 top-0  bg-red-500 rounded-full">'
+                            + '<span class="text-sm text-white p-1"></span>'
+                            + '</div>';
+                    }
+                    else {
+                        b = '<div style="width: 8px; height: 8px; margin-left: 4px; margin-top: 18px; display: none" class="absolute left-1 top-0  bg-red-500 rounded-full">'
+                            + '<span class="text-sm text-white p-1"></span>'
+                            + '</div>';
+                    }
+                    resultDiv.innerHTML += '<div style="position: relative">' + b + '<a onclick="UpdateNotification(' + notify.notificationId + ', \'' + notify.link + '\')"  class="flex cursor-pointer px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">'
+                        + '<div class="flex-shrink-0">'
+                        + '<img class="rounded-full w-11 h-11" src = "' + image + '" alt = "Jese image">'
+                        + '<div class="absolute flex items-center justify-center w-5 h-5 ms-6 -mt-5 bg-blue-600 border border-white rounded-full dark:border-gray-800">'
+                        + '<svg class="w-2 h-2 text-white" aria-hidden="true" xmlns = "http://www.w3.org/2000/svg" fill = "currentColor" viewBox = "0 0 18 18">'
+                        + '<path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/>'
+                        + '<path d="M4.439 9a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239Z"/>'
+                        + '</svg>'
+                        + '</div>'
+                        + '</div>'
+                        + '<div class="w-full ps-3">'
+                        + '<div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400" style = "text-align: start !important">'
+                        + '<div class="flex justify-between">'
+                        + '<div class="font-semibold text-gray-900 dark:text-white">' + notify.subject + '</div>'
+                        + '<div>' + formatDate(notify.datetime) + '</div>'
+                        + '</div>'
+                        + '<div>' + notify.content + '</div>'
+                        + '</div>'
+                        + '</div>'
+                        + '</a></div>';
+                });
+                if (json.length == 0) {
+                    loadingDiv.style.display = "none";
+                }
+                console.log(json);
+            } catch (error) {
+                console.error('Fetch error:', error);
+            };
+        }
+
+        const loadingDiv = document.getElementById('loading');
+
+        // Tạo một instance của IntersectionObserver
+        const observer = new IntersectionObserver(entries => {
+            // Xử lý khi phần tử loading vào vùng nhìn thấy
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    page++;
+                    console.log("Loading");
+                    GetNotification();
+                    // Thực hiện các hành động khác tại đây
+                }
+            });
+        }, {
+            root: document.getElementById("dropdownNotification"), // Chỉ theo dõi trong phạm vi của div cha có khả năng scroll
+            threshold: 0.5 // Chỉ kích hoạt khi phần tử loading có 50% nằm trong vùng nhìn thấy
+        });
+
+        observer.observe(loadingDiv);
+
+        function formatDate(inputDate) {
+            const date = new Date(inputDate);
+
+            if (isNaN(date.getTime())) {
+                throw new Error('Invalid date format');
+            }
+
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(-2);
+
+            return `${day}/${month}/${year}`;
+        }
+    </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    
+    <script src="https://unpkg.com/flowbite@1.5.1/dist/flowbite.js"></script>
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131505823-4"></script>
     <script>
         window.dataLayer = window.dataLayer || [];

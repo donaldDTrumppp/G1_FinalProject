@@ -13,7 +13,10 @@ namespace Clinic_Management.Utils
             "/Authentication/Register",
             "/Authentication/Logout",
             "/Index",
-            "/"
+            "/PatientAppointment/Create",
+            "/Index",
+            "/signalrServer/negotiate",
+            "/signalrServer"
         }; 
 
         public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
@@ -69,12 +72,10 @@ namespace Clinic_Management.Utils
                 // Check if token has expired
                 if (jwtToken.ValidTo < DateTime.UtcNow)
                 {
-                    Console.WriteLine("Het time");
                     context.Response.Cookies.Delete("AuthToken");
                     RedirectToLogin(context);
                     return;
                 }
-                Console.WriteLine("Chua het time");
             }
             catch
             {

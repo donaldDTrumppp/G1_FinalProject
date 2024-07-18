@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        body {
+            overflow-x: hidden
+        }
+
+        .my-footer {
+            background-color: #1a202c;
+            color: #ffffff;
+            padding: 48px 16px;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 24px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .column {
+            flex: 1 1 100%;
+            max-width: 80%;
+            text-align: left;
+        }
+
+            .column h3,
+            .column h5 {
+                font-weight: bold;
+                font-size: 1.5rem;
+                margin-bottom: 16px;
+            }
+
+            .column p {
+                color: #cbd5e0;
+                line-height: 1.5;
+            }
+
+        .subscribe-form {
+            margin-top: 24px;
+        }
+
+            .subscribe-form label {
+                color: #cbd5e0;
+                font-size: 0.875rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+                display: block;
+            }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+            .input-wrapper input[type="email"] {
+                width: 100%;
+                padding: 12px;
+                background-color: #edf2f7;
+                color: #4a5568;
+                border: 1px solid #edf2f7;
+                border-radius: 4px;
+                transition: border-color 0.3s ease;
+            }
+
+                .input-wrapper input[type="email"]:focus {
+                    outline: none;
+                    border-color: #63b3ed;
+                }
+
+            .input-wrapper button {
+                position: absolute;
+                top: 50%;
+                right: 12px;
+                transform: translateY(-50%);
+                background-color: #38a169;
+                color: #ffffff;
+                padding: 12px 24px;
+                font-weight: bold;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+                .input-wrapper button:hover {
+                    background-color: #2c7a52;
+                }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+            ul li {
+                margin-bottom: 8px;
+            }
+
+                ul li a {
+                    color: #cbd5e0;
+                    text-decoration: none;
+                    opacity: 0.75;
+                    transition: opacity 0.3s ease;
+                    display: block;
+                }
+
+                    ul li a:hover {
+                        opacity: 1;
+                    }
+
+        .social-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+            .social-icons li {
+                list-style-type: none;
+            }
+
+                .social-icons li a {
+                    color: #cbd5e0;
+                    transition: color 0.3s ease;
+                }
+
+                    .social-icons li a:hover {
+                        color: #ffffff;
+                    }
+
+        .copyright {
+            color: #cbd5e0;
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 768px) {
+
+
+            .column {
+                flex: 1 1 25%;
+                max-width: 25%;
+            }
+
+            .input-wrapper input[type="email"] {
+                width: calc(100% - 80px);
+            }
+
+            .input-wrapper button {
+                right: 12px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+
+
+            .column {
+                flex: 1 1 20%;
+                max-width: 20%;
+            }
+
+            .input-wrapper input[type="email"] {
+                width: calc(100% - 120px);
+            }
+
+            .input-wrapper button {
+                right: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header style="margin-top: 1.5rem; margin-bottom: 1.5rem; max-width: 60rem; margin-left: auto; margin-right: auto; position: relative; ">
+        <div style="margin-bottom: 10px; padding-left: 20px; padding-bottom: 1.5rem; padding-top: 1.5rem; background-color: #357bbf">
+            <a style="color: #fff; font-weight: 700; font-size: 1.5rem; ">
+                Basiha Medical
+            </a>
+        </div>
+        <div style="font-size: 20px; color: black; margin-bottom: 10px">
+            Dear <span id="dname" style="font-weight: bold"></span>,
+        </div>
+        <div style="font-size: 20px; color: black; margin-bottom: 25px">
+            We are Basiha Medical Center. We regret to inform you that due to some issues, your medical record on <span id="time" style="font-weight: bold"></span> has been canceled. We will contact you with the latest information as soon as possible. We apologize for the inconvenience and sincerely thank you for your understanding.
+
+        </div>
+        <img src="cid:image" style="width: 100%; object-fit: cover;" />
+
+    </header>
+
+    <footer style="margin-top: 1.5rem; margin-bottom: 1.5rem; max-width: 60rem; margin-left: auto; margin-right: auto; position: relative; ">
+        <img src="cid:footer" style="width: 100%; object-fit: cover;" />
+    </footer>
+</body>
+</html>

@@ -12,7 +12,7 @@
             <h1 class="text-3xl mb-1 text-gray-900 font-bold">Appointment Details</h1>
         </div>
         <div class="flex justify-end">
-            @if (Model.Appointment.Status == 1 || Model.Appointment.Status == 6)
+            @if (Model.Appointment.StatusNavigation.StatusName == "Wait for approval" || Model.Appointment.StatusNavigation.StatusName == "Scheduled")
             {
                 <button type="button" id="btnDelete" data-modal-target="deleteModal" data-modal-toggle="deleteModal" class="my-2 ml-2 text-red-700 border border-red-700 hover:bg-red-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Cancel Appointment</button>
             }
@@ -24,7 +24,7 @@
                 <span class="font-bold">Code:</span> <span class="text-sm text-gray-900 dark:text-white">@Model.GetCodeById()</span>
             </h3>
         </div>
-        @if (Model.Appointment.StatusNavigation.StatusName == "Đang chờ duyệt")
+        @if (Model.Appointment.StatusNavigation.StatusName == "Wait for approval" || Model.Appointment.StatusNavigation.StatusName == "Cancelled")
         {
             <div class="flex justify-end">
                 <form id="frm">

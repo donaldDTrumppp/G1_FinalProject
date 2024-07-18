@@ -1,0 +1,326 @@
+﻿@page
+@model Clinic_Management.Pages.Appointements.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<div id="toast-danger" class="flex @(String.IsNullOrEmpty(Model.errorMessage)? "hidden": "block") animate-[fade-out_2s_ease-out_1s_1_forwards] opacity-1 flex-col fixed z-50 top-5 right-5 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+    <div class="flex flex-row items-center justify-between w-full">
+        <div class="flex flex-row items-center">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
+                </svg>
+                <span class="sr-only">Error icon</span>
+            </div>
+            <div class="ms-3 text-sm font-normal"><span id="toast-er-message">An error has occured</span></div>
+        </div>
+        <div>
+            <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-danger" aria-label="Close">
+                <span class="sr-only">Close</span>
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div class="flex flex-row items-center justify-between w-full">
+        <div class="w-full bg-gray-200 rounded-full h-1.5 mb-1 mt-2 dark:bg-gray-700">
+            <div id="animateDiv1" class="bg-red-400 h-1.5 rounded-full dark:bg-green-300 animate-[reduce_2s_ease-in-out_0s_1_forwards]" style="width: 100%"></div>
+        </div>
+    </div>
+</div>
+<form id="form" method="post" class="max-w-2xl mx-auto">
+    <input style="display: none" type="text" name="AppointmentId" value="@Model.Appointment.AppointmentId"/>
+    <p class="text-2xl font-extrabold dark:text-white inline-block">
+        Appointment Details
+    </p>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">Patient Info</h3>
+        <div class="grid md:grid-cols-2 md:gap-6">
+            <div class="relative z-0 w-full mb-5 group">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fullname</label>
+                <input type="text" value="@Model.Appointment.PatientName" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+            </div>
+            <div class="relative z-0 w-full mb-5 group">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+                <input type="text" value="@Model.Appointment.PatientAddress" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+            </div>
+        </div>
+        <div class="grid md:grid-cols-2 md:gap-6">
+            <div class="relative z-0 w-full mb-5 group">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
+                <input type="text" value="@Model.Appointment.PatientDob.ToString("dd/MM/yyyy")" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+            </div>
+            <div class="relative z-0 w-full mb-5 group">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
+                <input type="tel" value="@Model.Appointment.PatientPhoneNumber" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+            </div>
+        </div>
+        <div class="grid md:grid-cols-2 md:gap-6">
+            <div class="relative z-0 w-full mb-5 group">
+                <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                <input type="text" value="@Model.Appointment.PatientEmail" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+            </div>
+            <div class="relative z-0 w-full mb-5 group">
+                <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Medical records</label>
+                @if (Model.MedicalRecords != null)
+                {
+                    @if (Model.MedicalRecords.Count > 0)
+                    {
+                        <div class="flex justify-between">
+                            <input type="text" value="@Model.MedicalRecords.Count records" aria-label="disabled input" class="rounded-bl-lg bg-gray-100 rounded-l-lg border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full" disabled>
+                            <a style="margin:0" asp-page="./Index" class="ml-4 my-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-r-lg text-sm px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex justify-between">
+                            <input type="text" value="Patient has no medical record" aria-label="disabled input" class="rounded-bl-lg bg-gray-100 text-gray-400 rounded-lg border-gray-300  text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full" disabled>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="flex justify-between">
+                        <input type="text" value="Patient has no medical record" aria-label="disabled input" class="rounded-bl-lg bg-gray-100 text-gray-400 rounded-lg border-gray-300  text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full" disabled>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">symptoms</h3>
+        <textarea name="symptoms" rows="4" class="block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>@Model.Appointment.Description</textarea>
+    </div>
+    <div>
+        <h3 class="text-lg mb-1 text-gray-900 font-bold">Appointment</h3>
+        <div>
+            <p style="color:red">@Model.appointmentError</p>
+        </div>
+        <div class="grid md:grid-cols-2 md:gap-6">
+            <div class="relative z-0 w-full mb-5 group">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Specialist</label>
+                <select id="specialist" name="specialistId" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    @foreach (var item in Model.specialistList)
+                    {
+                        @if (Model.specialistId == item.SpecialistId)
+                        {
+                            <option value="@item.SpecialistId" selected>@item.SpecialistName</option>
+                        }
+                        else
+                        {
+                            <option value="@item.SpecialistId">@item.SpecialistName</option>
+                        }
+
+                    }
+                </select>
+                <p id="specialist-error" style="display: none;color: red"></p>
+            </div>
+            <div class="relative z-0 w-full mb-5 group">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department</label>
+                <select id="branch" name="branchId" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    @foreach (var item in Model.branchList)
+                    {
+                        @if (Model.Appointment.BranchId == item.BranchId)
+                        {
+                            <option value="@item.BranchId" selected>@item.BranchName</option>
+                        }
+                        else
+                        {
+                            <option value="@item.BranchId">@item.BranchName</option>
+                        }
+                    }
+                </select>
+                <p id="branch-error" style="display: none;color: red"></p>
+            </div>
+        </div>
+        <div class="grid md:grid-cols-2 md:gap-6">
+            <div class="relative z-0 w-full mb-5 group">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Doctor</label>
+                <select id="doctor" name="doctorId" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    @foreach (var item in Model.doctorList)
+                    {
+                        @if (Model.doctorId == item.UserId)
+                        {
+                            <option value="@item.UserId" selected><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p> </option>
+                        }
+                        else
+                        {
+                            <option value="@item.UserId"><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p></option>
+                        }
+                    }
+                </select>
+                <p id="doctor-error" style="display: none;color: red">@Model.doctorError</p>
+            </div>
+            <div class="grid md:grid-cols-2 md:gap-6">
+                <div class="relative z-0 w-full mb-5 group">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Requested date</label>
+                    <div class="relative max-w-sm">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                            </svg>
+                        </div>
+                        @{
+                            var compareDate = new DateTime(1900, 1, 1);
+                            var currentDate = new DateOnly();
+                        }
+
+                       <input datepicker datepicker-format="dd/mm/yyyy" name="requestedDate" value="@Model.Appointment.RequestedTime.ToString("dd/MM/yyyy")" id="requestDate" type="text" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
+                    </div>
+                    <p id="requestedDate-error" style="display: none;color: red"></p>
+                </div>
+                <div class="relative z-0 w-full mb-5 group">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Requested Time</label>
+                    <select id="requestTime" name="requestedTime" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        @if (Model.requestedTime == 1 || Model.requestedTime == 0)
+                        {
+                            <option value="1" selected>7:00 - 8:00</option>
+                            <option value="2">8:00 - 9:00</option>
+                            <option value="3">9:00 - 10:00</option>
+                            <option value="4">10:00 - 11:00</option>
+                            <option value="5">13:00 - 14:00</option>
+                            <option value="6">14:00 - 15:00</option>
+                            <option value="7">15:00 - 16:00</option>
+                            <option value="8">16:00 - 17:00</option>
+                        }
+                        else if (Model.requestedTime == 2)
+                        {
+                            <option value="1">7:00 - 8:00</option>
+                            <option value="2" selected>8:00 - 9:00</option>
+                            <option value="3">9:00 - 10:00</option>
+                            <option value="4">10:00 - 11:00</option>
+                            <option value="5">13:00 - 14:00</option>
+                            <option value="6">14:00 - 15:00</option>
+                            <option value="7">15:00 - 16:00</option>
+                            <option value="8">16:00 - 17:00</option>
+                        }
+                        else if (Model.requestedTime == 3)
+                        {
+                            <option value="1">7:00 - 8:00</option>
+                            <option value="2">8:00 - 9:00</option>
+                            <option value="3" selected>9:00 - 10:00</option>
+                            <option value="4">10:00 - 11:00</option>
+                            <option value="5">13:00 - 14:00</option>
+                            <option value="6">14:00 - 15:00</option>
+                            <option value="7">15:00 - 16:00</option>
+                            <option value="8">16:00 - 17:00</option>
+                        }
+                        else if (Model.requestedTime == 4)
+                        {
+                            <option value="1">7:00 - 8:00</option>
+                            <option value="2">8:00 - 9:00</option>
+                            <option value="3">9:00 - 10:00</option>
+                            <option value="4" selected>10:00 - 11:00</option>
+                            <option value="5">13:00 - 14:00</option>
+                            <option value="6">14:00 - 15:00</option>
+                            <option value="7">15:00 - 16:00</option>
+                            <option value="8">16:00 - 17:00</option>
+                        }
+                        else if (Model.requestedTime == 5)
+                        {
+                            <option value="1">7:00 - 8:00</option>
+                            <option value="2">8:00 - 9:00</option>
+                            <option value="3">9:00 - 10:00</option>
+                            <option value="4">10:00 - 11:00</option>
+                            <option value="5" selected>13:00 - 14:00</option>
+                            <option value="6">14:00 - 15:00</option>
+                            <option value="7">15:00 - 16:00</option>
+                            <option value="8">16:00 - 17:00</option>
+                        }
+                        else if (Model.requestedTime == 6)
+                        {
+                            <option value="1">7:00 - 8:00</option>
+                            <option value="2">8:00 - 9:00</option>
+                            <option value="3">9:00 - 10:00</option>
+                            <option value="4">10:00 - 11:00</option>
+                            <option value="5">13:00 - 14:00</option>
+                            <option value="6" selected>14:00 - 15:00</option>
+                            <option value="7">15:00 - 16:00</option>
+                            <option value="8">16:00 - 17:00</option>
+                        }
+                        else if (Model.requestedTime == 7)
+                        {
+                            <option value="1">7:00 - 8:00</option>
+                            <option value="2">8:00 - 9:00</option>
+                            <option value="3">9:00 - 10:00</option>
+                            <option value="4">10:00 - 11:00</option>
+                            <option value="5">13:00 - 14:00</option>
+                            <option value="6">14:00 - 15:00</option>
+                            <option value="7" selected>15:00 - 16:00</option>
+                            <option value="8">16:00 - 17:00</option>
+                        }
+                        else if (Model.requestedTime == 8)
+                        {
+                            <option value="1">7:00 - 8:00</option>
+                            <option value="2">8:00 - 9:00</option>
+                            <option value="3">9:00 - 10:00</option>
+                            <option value="4">10:00 - 11:00</option>
+                            <option value="5">13:00 - 14:00</option>
+                            <option value="6">14:00 - 15:00</option>
+                            <option value="7">15:00 - 16:00</option>
+                            <option value="8" selected>16:00 - 17:00</option>
+                        }
+                    </select>
+                    <p id="requestedTime-error" style="display: none;color: red"></p>
+                </div>
+            </div>
+        </div>
+        <div class="grid md:grid-cols-2 md:gap-6">
+            <div class="relative z-0 w-full mb-5 group">
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
+                <select name="AppointmentStatus" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    
+                    @foreach (var s in Model.StatusList)
+                    {
+                        @if (s.StatusId == Model.Appointment.Status)
+                        {
+                            <option value="@s.StatusId" selected>@s.StatusName</option>
+                        }
+                        else
+                        {
+                            <option value="@s.StatusId">@s.StatusName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-end items-center">
+        <button type="button" onclick="window.location.href='./Index'" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Back</button>
+        <button type="Submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Save</button>
+    </div>
+    
+</form>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+
+<script>
+    function test() {
+        var toast = document.getElementById("toast-danger");
+        toast.classList.remove("animate-[fade-out_2s_ease-out_1s_1_forwards]");
+        void toast.offsetWidth;
+        toast.classList.add("animate-[fade-out_2s_ease-out_1s_1_forwards]");
+        document.getElementById('animateDiv').classList.add("reduceWidth");
+        document.getElementById('animateDiv').style.width = '0%';
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var toast = document.getElementById("toast-danger");
+        if (toast.classList.contains("block")) {
+            document.getElementById('animateDiv').classList.add("reduceWidth");
+            document.getElementById('animateDiv').style.width = '0%';
+        }
+
+        function onTransitionEnd(event) {
+            if (event.propertyName === 'width' && animateDiv.style.width === '0%') {
+                document.getElementById('animateDiv').classList.remove("reduceWidth");
+                document.getElementById('animateDiv').style.width = '100%';
+                console.log(document.getElementById('animateDiv').style.width);
+                //   toast.classList.add("animate-[fade-out_1s_ease-out_0.25s_1]");
+
+            }
+        }
+        animateDiv.addEventListener('transitionend', onTransitionEnd);
+    });
+</script>
