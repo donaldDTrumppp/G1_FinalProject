@@ -4,6 +4,7 @@ using Clinic_Management.Services;
 using Clinic_Management.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
@@ -29,8 +30,9 @@ namespace Clinic_Management
 
             var configuration = builder.Configuration;
 
-            //builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
-            //option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
+
+            builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
+            option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSession(options =>
             {
@@ -81,8 +83,8 @@ namespace Clinic_Management
 
             builder.Services.AddAuthorization(options =>
             {
-                options.AddPolicy("StaffPolicy", policy => policy.RequireRole("Bác sĩ", "Lễ tân"));
-                options.AddPolicy("PatientPolicy", policy => policy.RequireRole("Bệnh nhân"));
+                options.AddPolicy("StaffPolicy", policy => policy.RequireRole("Doctor", "Receptionist"));
+                options.AddPolicy("PatientPolicy", policy => policy.RequireRole("Patient"));
             });
 
             var app = builder.Build();
@@ -103,6 +105,7 @@ namespace Clinic_Management
             app.UseAuthorization();
 
             app.MapControllers();
+            app.UseMiddleware<JwtMiddleware>();
 
             app.MapRazorPages();
             app.MapHub<SignalrServer>("/signalrServer");
