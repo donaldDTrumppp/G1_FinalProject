@@ -3,6 +3,7 @@ using Clinic_Management.Models;
 using Clinic_Management.Services;
 using Clinic_Management.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
@@ -20,6 +21,10 @@ namespace Clinic_Management
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<G1_PRJ_DBContext>();
             builder.Services.AddTransient<EmailService>();
+            builder.Services.AddTransient<SignalrServer>();
+            builder.Services.AddTransient<UserContextService>();
+            builder.Services.AddTransient<NotificationService>();
+            builder.Services.AddSignalR();
 
             var configuration = builder.Configuration;
 
@@ -35,7 +40,6 @@ namespace Clinic_Management
 
             var jwtSettings = configuration.GetSection("JwtOptions");
             var key = Encoding.UTF8.GetBytes(jwtSettings["SigningKey"]);
-
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -54,7 +58,25 @@ namespace Clinic_Management
                     ValidAudience = jwtSettings["Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(key)
                 };
-            });
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        // If the request is for our SignalR hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/signalrServer")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            }
+            );
 
             builder.Services.AddAuthorization(options =>
             {
@@ -82,6 +104,8 @@ namespace Clinic_Management
             app.MapControllers();
 
             app.MapRazorPages();
+            app.MapHub<SignalrServer>("/signalrServer");
+
             app.MapGet("/", context =>
             {
                 context.Response.Redirect("/Index");

@@ -29,10 +29,16 @@ namespace Clinic_Management.Pages.PatientAppointment
 
         private readonly EmailService _emailService;
 
-        public IndexModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService)
+        private readonly UserContextService _userService;
+
+        private readonly NotificationService _notificationService;
+
+        public IndexModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, UserContextService service, NotificationService notificationService)
         {
             _context = context;
             _emailService = emailService;
+            _userService = service;
+            _notificationService = notificationService;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -117,14 +123,11 @@ namespace Clinic_Management.Pages.PatientAppointment
                     query = query.OrderBy(r => r.CreatedAt); // Default
                     break;
             }
-
             Specialists = await _context.Specialists.Distinct().ToListAsync();
             Branchs = await _context.Branches.Distinct().ToListAsync();
             Status = await _context.AppointmentStatuses.Distinct().ToListAsync();
             TotalRecords = await query.CountAsync();
             Appointment = await query.Skip((this.PageIndex - 1) * PageSize).Take(PageSize).ToListAsync();
-            var htmlContent = await _emailService.GetForgotPasswordEmail("forgot_password.html", "https://www.facebook.com/", "Tran Hai Bang");
-            _emailService.SendEmailNoHeader("tranhaibang665@gmail.com", "[Account Register] Verify Account", htmlContent);
         }
 
         

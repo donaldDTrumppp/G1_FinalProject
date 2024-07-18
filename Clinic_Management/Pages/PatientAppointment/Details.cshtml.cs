@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 using Clinic_Management.Utils;
+using Clinic_Management.Services;
 
 namespace Clinic_Management.Pages.PatientAppointment
 {
@@ -16,9 +17,15 @@ namespace Clinic_Management.Pages.PatientAppointment
 
         private AppointmentBrotherCode _appointmentBrotherCode;
 
-        public DetailsModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        private readonly IConfiguration _config;
+
+        private readonly NotificationService _notificationService;
+
+        public DetailsModel(Clinic_Management.Models.G1_PRJ_DBContext context, IConfiguration config, NotificationService notificationService)
         {
             _context = context;
+            _config = config;
+            _notificationService = notificationService;
         }
 
         public List<Branch> Branchs { get; set; }
@@ -88,7 +95,6 @@ namespace Clinic_Management.Pages.PatientAppointment
                 
                 return Page();
             }
-            Console.WriteLine(Appointment.RequestedTime + " " + Time);
             Appointment.RequestedTime = new DateTime(Appointment.RequestedTime.Year, Appointment.RequestedTime.Month, Appointment.RequestedTime.Day, 0, 0, 0);
             Appointment.RequestedTime = Appointment.RequestedTime.AddHours(Time);
             _context.Attach(Appointment).State = EntityState.Modified;
@@ -96,6 +102,8 @@ namespace Clinic_Management.Pages.PatientAppointment
             try
             {
                 await _context.SaveChangesAsync();
+                string activeLinkNoti = _config["Host"] + _config["Port"] + "/Appointments/Details?id=" + Appointment.AppointmentId;
+                await _notificationService.SendAppointmentNotificationToAllReceptionist(Appointment.BranchId, "A patient has requested an appointment", activeLinkNoti);
             }
             catch (DbUpdateConcurrencyException)
             {

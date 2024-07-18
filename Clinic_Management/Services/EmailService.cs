@@ -127,7 +127,7 @@ namespace Clinic_Management.Services
             return htmlContent;
         }
 
-        public async Task<string> GetAppointmentEditedEmail(string fileName, string branchName, string patientName, string patientAddress, string patientDob, string patientPhone, string patientEmail, string requestedTime, string specialist, string description, string activeLink, string doctorName, string receptionistName, string status)
+        public async Task<string> GetAppointmentApprovedEmail(string fileName, string branchName, string patientName, string patientAddress, string patientDob, string patientPhone, string patientEmail, string requestedTime, string specialist, string description, string activeLink, string doctorName, string receptionistName, string status)
         {
             var filePath = Path.Combine(_env.WebRootPath, "template", fileName);
             var htmlContent = await File.ReadAllTextAsync(filePath);
@@ -148,6 +148,15 @@ namespace Clinic_Management.Services
             return htmlContent;
         }
 
+        public async Task<string> GetAppointmentRejectedEmail(string fileName, string patientName, string activeLink)
+        {
+            var filePath = Path.Combine(_env.WebRootPath, "template", fileName);
+            var htmlContent = await File.ReadAllTextAsync(filePath);
+            htmlContent = htmlContent.Replace("<span id=\"dname\" style=\"font-weight: bold\"></span>", $"<span id=\"dname\" style=\"font-weight: bold\">{patientName}</span>");
+            htmlContent = htmlContent.Replace("<a href=\"\">here.</a>", $"<a href=\"{activeLink}\">here.</a>");
+            return htmlContent;
+        }
+
         public async Task<string> GetAppointmentCancelledEmail(string fileName, string branchName, string requestedTime, string patientName)
         {
             var filePath = Path.Combine(_env.WebRootPath, "template", fileName);
@@ -155,6 +164,15 @@ namespace Clinic_Management.Services
             htmlContent = htmlContent.Replace("<span id=\"dname\" style=\"font-weight: bold\"></span>", $"<span id=\"dname\" style=\"font-weight: bold\">{patientName}</span>");
             htmlContent = htmlContent.Replace("<span id=\"branch\" style=\"font-weight: bold\"></span>", $"<span id=\"branch\" style=\"font-weight: bold\">{branchName}</span>");
             htmlContent = htmlContent.Replace("<span id=\"time\" style=\"font-weight: bold\"></span>", $"<span id=\"time\" style=\"font-weight: bold\">{requestedTime}</span>");
+            return htmlContent;
+        }
+
+        public async Task<string> GetMedicalRecordDeletedEmail(string fileName, string patientName, DateTime visitTime)
+        {
+            var filePath = Path.Combine(_env.WebRootPath, "template", fileName);
+            var htmlContent = await File.ReadAllTextAsync(filePath);
+            htmlContent = htmlContent.Replace("<span id=\"dname\" style=\"font-weight: bold\"></span>", $"<span id=\"dname\" style=\"font-weight: bold\">{patientName}</span>");
+            htmlContent = htmlContent.Replace("<span id=\"time\" style=\"font-weight: bold\"></span>", $"<span id=\"time\" style=\"font-weight: bold\">{visitTime}</span>");
             return htmlContent;
         }
 

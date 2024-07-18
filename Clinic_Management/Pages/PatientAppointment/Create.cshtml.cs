@@ -19,11 +19,14 @@ namespace Clinic_Management.Pages.PatientAppointment
 
         private readonly IConfiguration _config;
 
-        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config)
+        private readonly NotificationService _notificationService;
+
+        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config, NotificationService notificationService)
         {
             _context = context;
             _emailService = emailService;
             _config = config;
+            _notificationService = notificationService; 
         }
 
         public List<Branch> Branchs { get; set; }
@@ -69,6 +72,8 @@ namespace Clinic_Management.Pages.PatientAppointment
             _context.Appointments.Add(Appointment);
             await _context.SaveChangesAsync();
             string activeLink = _config["Host"] + _config["Port"] + "/PatientAppointment/Details?id=" + Appointment.AppointmentId + "&PageIndex=" + PageIndex;
+            string activeLinkNoti = _config["Host"] + _config["Port"] + "/Appointments/Details?id=" + Appointment.AppointmentId;
+            await _notificationService.SendAppointmentNotificationToAllReceptionist(Appointment.BranchId, "A patient has requested an appointment", activeLinkNoti);
             var htmlContent = await _emailService.GetAppointmentCreatedEmail("appointment_created.html", Appointment.Branch.BranchName, Appointment.PatientName, Appointment.PatientAddress, Appointment.PatientDob.ToString(), Appointment.PatientPhoneNumber, Appointment.PatientEmail, Appointment.RequestedTime.ToString(), Appointment.SpecialistNavigation.SpecialistName, Appointment.Description, activeLink);
             _emailService.SendEmailAppointment(Appointment.PatientEmail, "[Appointment] Appointment Booked Successfully", htmlContent);
 

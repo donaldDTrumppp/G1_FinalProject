@@ -65,10 +65,8 @@ namespace Clinic_Management.Pages.Authentication
             HttpContext.Session.SetString("JWToken", token);
             HttpContext.Session.SetString("Username", user.Username);
 
-            Console.WriteLine(token);
-            return new JsonResult(new { Token = HttpContext.Session.GetString("JwtToken")
-            });
-            //return Redirect("/Home/Home");
+       
+            return Redirect("/Home/Home");
         }
 
 
