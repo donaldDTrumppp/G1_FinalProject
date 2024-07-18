@@ -9,8 +9,8 @@ namespace Clinic_Management.Pages.Authentication
         [HttpGet]
         public IActionResult GetToken()
         {
-            var token = HttpContext.Session.GetString("JWToken");
-          
+            //var token = HttpContext.Session.GetString("JWToken");
+            var token = Request.Cookies["AuthToken"];
             return Ok(new { Token = token });
         }
     }

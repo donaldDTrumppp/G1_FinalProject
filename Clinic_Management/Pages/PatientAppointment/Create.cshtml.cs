@@ -23,15 +23,14 @@ namespace Clinic_Management.Pages.PatientAppointment
 
         private readonly UserContextService _userContextService;
 
-        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config, NotificationService notificationService, UserContextService userContextService, List<Branch> branchs, int time)
+        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config, NotificationService notificationService, UserContextService userContextService)
         {
             _context = context;
             _emailService = emailService;
             _config = config;
             _notificationService = notificationService;
             _userContextService = userContextService;
-            Branchs = branchs;
-            Time = time;
+     
         }
 
         public List<Branch> Branchs { get; set; }
@@ -46,7 +45,7 @@ namespace Clinic_Management.Pages.PatientAppointment
 
         public async Task<IActionResult> OnGetAsync()
         {
-            User = _userContextService.GetUserFromContext();
+           // User = _userContextService.GetUserFromContext();
             Branchs = await _context.Branches.Distinct().ToListAsync();
             Specialists = await _context.Specialists.Distinct().ToListAsync();
             ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchId");
@@ -70,7 +69,7 @@ namespace Clinic_Management.Pages.PatientAppointment
             Appointment.CreatedAt = DateTime.Now;
             Appointment.RequestedTime = Appointment.RequestedTime.AddHours(Time);
             Appointment.SpecialistNavigation = _context.Specialists.FirstOrDefault(i => i.SpecialistId == Appointment.Specialist);
-            if (!ModelState.IsValid || _context.Appointments == null || Appointment == null)
+            if ( _context.Appointments == null || Appointment == null)
             {
                 return Page();
             }

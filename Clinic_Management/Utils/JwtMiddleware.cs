@@ -13,7 +13,10 @@ namespace Clinic_Management.Utils
             "/Authentication/Register",
             "/Authentication/Logout",
             "/Index",
-            "/"
+            "/PatientAppointment/Create",
+            "/Index",
+            "/signalrServer/negotiate",
+            "/signalrServer"
         }; 
 
         public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
@@ -26,7 +29,7 @@ namespace Clinic_Management.Utils
         {
             var path = context.Request.Path.ToString();
 
-            //Console.WriteLine("current path: " + path);
+            Console.WriteLine("current path: " + path);
 
             // Check if the request path is in the excluded paths
             if (_excludedPaths.Contains(path, StringComparer.OrdinalIgnoreCase))

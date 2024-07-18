@@ -198,7 +198,8 @@
                                 <div class="relative ml-4 cursor-pointer">
 
                                     <div class="p-2">
-                                        @if (HttpContextAccessor.HttpContext.Session.GetString("Username") != null)
+                                        @if (HttpContextAccessor.HttpContext.Request.Cookies["AuthToken"] != null &&
+                                        HttpContextAccessor.HttpContext.Request.Cookies["Username"] != null)
                                         {
                                             <button onclick="disableNt()" id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification" type="button">
                                                 <div style="width: 10px; height: 10px; display: none" id="nt" class="absolute left-0 top-0  bg-red-500 rounded-full">

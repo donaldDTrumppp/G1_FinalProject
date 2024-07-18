@@ -25,6 +25,7 @@ namespace Clinic_Management
             builder.Services.AddTransient<SignalrServer>();
             builder.Services.AddTransient<UserContextService>();
             builder.Services.AddTransient<NotificationService>();
+            builder.Services.AddTransient<Authentication>();
             builder.Services.AddSignalR();
             builder.Services.AddHostedService<BackgroundWorkerService>();
 
@@ -105,7 +106,7 @@ namespace Clinic_Management
             app.UseAuthorization();
 
             app.MapControllers();
-            app.UseMiddleware<JwtMiddleware>();
+          //  app.UseMiddleware<JwtMiddleware>();
 
             app.MapRazorPages();
             app.MapHub<SignalrServer>("/signalrServer");

@@ -43,23 +43,33 @@ namespace Clinic_Management.Utils
             return tokenHandler.WriteToken(token);
         }
 
-        public int GetUserIdFromToken(string token, string signingKey)
+        public int GetUserIdFromToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(signingKey);
-
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            var key = Encoding.UTF8.GetBytes(_configuration["JwtOptions:SigningKey"]);
+            try
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _configuration["JwtOptions:Issuer"],
+                    ValidAudience = _configuration["JwtOptions:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                }, out SecurityToken validatedToken);
 
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "userId").Value);
-            return userId;
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
+
+                return userId;
+            }
+            catch(Exception ex) 
+            {
+                Console.WriteLine(ex.ToString());
+                return -1;
+            }
         }
 
         public string GetUsernameFromToken(string token)

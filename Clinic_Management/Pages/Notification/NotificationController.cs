@@ -1,5 +1,6 @@
 ﻿using Clinic_Management.Models;
 using Clinic_Management.Services;
+using Clinic_Management.Utils;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,19 +14,21 @@ namespace Clinic_Management.Pages.Notification
 
         private readonly G1_PRJ_DBContext _context;
 
-        private readonly UserContextService _userService;
+        private readonly Clinic_Management.Utils.Authentication _authentication;
 
-        public NotificationController(G1_PRJ_DBContext context, UserContextService userService)
+        public NotificationController(G1_PRJ_DBContext context, Clinic_Management.Utils.Authentication authentication)
         {
             _context = context;
-            _userService = userService;
+            _authentication = authentication;
         }
 
         [HttpGet("{page}")]
         public async Task<ActionResult<List<Clinic_Management.Models.Notification>>> GetNotifications(int page)
         {
-
-            User user = _userService.GetUserFromContext();
+            var token = HttpContext.Request.Cookies["AuthToken"];
+            User user = _context.Users.FirstOrDefault(u => u.UserId == _authentication.GetUserIdFromToken(token));
+            Console.WriteLine("Notification Controller");
+            Console.WriteLine(_authentication.GetUserIdFromToken(token));
             if (user == null)
             {
                 return NotFound();

@@ -129,10 +129,7 @@
             <p id="floating_visit_time" class="font-bold text-md-center text-gray-900"></p>
         </div>
         -->
-        @if(Model.User != null)
-        {
-        
-        }
+   
         <div class="mb-5">
             <h3 class="text-lg mb-1 text-gray-900 font-bold">Branch</h3>
             <select name="@Html.NameFor(a => a.Appointment.BranchId)" style="font-weight: 450" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -247,8 +244,8 @@
                     <a asp-page="./Index" class="ml-2 h-25 text-blue-700  border border-blue-700 hover:bg-blue-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Back</a>
                 </div>
                 <div>
-                    <button type="button" onclick="phoneAuth()" id="btnSubmit" class="ml-2 h-25 cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create</button>
-
+                    <!--<button type="button" onclick="phoneAuth()" id="btnSubmit" class="ml-2 h-25 cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create</button>-->
+                    <button type="submit" id="btnSubmit" class="ml-2 h-25 cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create</button>
                 </div>
             </div>
         </div>
@@ -272,24 +269,25 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js";
     // TODO: Add SDKs for Firebase products that you want to use
-    // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
 
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-        apiKey: "AIzaSyBZz4ebKXndDgmmmHXoRuNkTU44B_zh_uo",
-        authDomain: "basiha-medical-74e16.firebaseapp.com",
-        projectId: "basiha-medical-74e16",
-        storageBucket: "basiha-medical-74e16.appspot.com",
-        messagingSenderId: "501525144075",
-        appId: "1:501525144075:web:c28ccd6351743277b4dd0e",
-        measurementId: "G-L5WT5J8PC6"
+        apiKey: "AIzaSyBRd5bTqtnunUXWwnwpm_VVplkSSBZQt9o",
+        authDomain: "basiha-medical-37e74.firebaseapp.com",
+        projectId: "basiha-medical-37e74",
+        storageBucket: "basiha-medical-37e74.appspot.com",
+        messagingSenderId: "541023299159",
+        appId: "1:541023299159:web:1b9a60e9bf4146d3b4e512",
+        measurementId: "G-VLVQQR9FVH"
     };
 
     // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
+
+
 
 </script>
 
