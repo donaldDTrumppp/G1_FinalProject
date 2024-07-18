@@ -1,16 +1,9 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using Clinic_Management.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using Clinic_Management.Utils;
 
 namespace Clinic_Management.Pages.Authentication
 {
@@ -18,11 +11,13 @@ namespace Clinic_Management.Pages.Authentication
     {
         private readonly G1_PRJ_DBContext _context;
         private readonly IConfiguration _configuration;
+        private readonly Utils.Authentication authentication;
 
         public LoginModel(G1_PRJ_DBContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
+            authentication = new Utils.Authentication(context, configuration);
         }
 
         [BindProperty]
@@ -33,11 +28,12 @@ namespace Clinic_Management.Pages.Authentication
         [Required(ErrorMessage = "Please enter your password.")]
         public string Password { get; set; }
 
-        public void OnGet()
+        public void OnGet(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             if (!_context.Users.Any(u => u.Username == Username))
             {
@@ -60,44 +56,13 @@ namespace Clinic_Management.Pages.Authentication
                 .Select(r => r.RoleName)
                 .FirstOrDefaultAsync();
 
-            var token = GenerateJwtToken(user, role);
-
-            HttpContext.Session.SetString("JWToken", token);
-            HttpContext.Session.SetString("Username", user.Username);
+            var token = authentication.GenerateJwtToken(user, role);
+            Response.Cookies.Append("AuthToken", token);
+            Response.Cookies.Append("Username", user.Name);
 
             Console.WriteLine(token);
-            return new JsonResult(new { Token = token });
-            //return Redirect("/Home/Home");
+            //return new JsonResult(new { Token = token });
+            return Redirect(returnUrl ?? "/Index");
         }
-
-
-        private string GenerateJwtToken(User user, string roleName)
-        {
-            var jwtSettings = _configuration.GetSection("JwtOptions");
-            var key = Encoding.UTF8.GetBytes(jwtSettings["SigningKey"]);
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("userId", user.UserId.ToString()),
-                    new Claim("name", user.Name),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                    new Claim("dob", user.Dob.ToString("yyyy-MM-dd")),
-                    new Claim("phoneNumber", user.PhoneNumber),
-                    new Claim("email", user.Email),
-                    new Claim("address", user.Address),
-                    new Claim("userrole", user.RoleId.ToString())
-                    
-                }),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-        
     }
 }

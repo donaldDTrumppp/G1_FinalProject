@@ -16,10 +16,8 @@ namespace Clinic_Management.Pages.Authentication
 
         public async Task<IActionResult> OnPostAsync()
         {
-            _httpContextAccessor.HttpContext.Session.Remove("JWToken");
-            _httpContextAccessor.HttpContext.Session.Remove("Username");
-
-
+            HttpContext.Response.Cookies.Delete("AuthToken");
+            HttpContext.Response.Cookies.Delete("Username");
             return Redirect("/Index");
         }
     }

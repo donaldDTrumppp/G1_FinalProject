@@ -58,8 +58,8 @@ namespace Clinic_Management
 
             builder.Services.AddAuthorization(options =>
             {
-                options.AddPolicy("StaffPolicy", policy => policy.RequireRole("Bác sĩ", "Lễ tân"));
-                options.AddPolicy("PatientPolicy", policy => policy.RequireRole("Bệnh nhân"));
+                options.AddPolicy("StaffPolicy", policy => policy.RequireRole("Doctor", "Receptionist"));
+                options.AddPolicy("PatientPolicy", policy => policy.RequireRole("Patient"));
             });
 
             var app = builder.Build();
@@ -80,6 +80,7 @@ namespace Clinic_Management
             app.UseAuthorization();
 
             app.MapControllers();
+            app.UseMiddleware<JwtMiddleware>();
 
             app.MapRazorPages();
             app.MapGet("/", context =>
