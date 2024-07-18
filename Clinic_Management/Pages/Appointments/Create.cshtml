@@ -480,8 +480,9 @@
             document.getElementById('requestedDate-error').innerHTML = "Request date is required.";
             document.getElementById('requestedDate-error').style.display = "block";
         } else {
-            var reqDate = new Date(requestedDate);
+            var reqDate = parseDate(requestedDate);
             var currDate = new Date();
+            console.log(reqDate + " ==== " + currDate);
             currDate.setHours(0, 0, 0, 0);
             if (reqDate <= currDate) {
                 errorFlag = true;
@@ -497,6 +498,13 @@
         }
     }
 
+    function parseDate(dateStr) {
+        var parts = dateStr.split('/');
+        var day = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10) - 1; // Month is zero-based in JavaScript Date
+        var year = parseInt(parts[2], 10);
+        return new Date(year, month, day);
+    }
 
     function assignSearchData(id) {
         document.getElementById('searchPatientID').value = id;
