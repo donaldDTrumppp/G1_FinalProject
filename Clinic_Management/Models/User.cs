@@ -23,8 +23,8 @@ namespace Clinic_Management.Models
         public string? Username { get; set; }
         public string? Password { get; set; }
         public int? StatusId { get; set; }
-
-        public virtual Role Role { get; set; } = null!;
+        public bool? Gender { get; set; }
+        public virtual Role? Role { get; set; } = null!;
         public virtual UserStatus? Status { get; set; }
         public virtual Patient? Patient { get; set; }
         public virtual Staff? Staff { get; set; }

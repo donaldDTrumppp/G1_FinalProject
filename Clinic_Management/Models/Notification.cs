@@ -16,6 +16,7 @@ namespace Clinic_Management.Models
         public int? Type { get; set; }
         [JsonIgnore]
         public virtual User Receiver { get; set; } = null!;
+        [JsonIgnore]
         public virtual NotificationType? TypeNavigation { get; set; }
     }
 }

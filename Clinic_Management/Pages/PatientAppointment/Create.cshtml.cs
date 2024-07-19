@@ -104,6 +104,8 @@ namespace Clinic_Management.Pages.PatientAppointment
             {
                 return RedirectToPage("./Create", new { Message = "Create appointment request successfully! Please check your email" });
             }
+
+            
         }
     }
 }

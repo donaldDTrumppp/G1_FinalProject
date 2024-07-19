@@ -1,0 +1,218 @@
+﻿@page
+@model Clinic_Management.Pages.Admin.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="mx-16 my-5 flex justify-between items-center">
+    <p class="text-2xl font-extrabold dark:text-white inline-block">
+        Appointments
+    </p>
+
+    <div class="flex items-center">
+
+        <form class="flex items-center max-w-fit mr-4">
+            <select asp-for="StatusId" class="bg-gray-50 mr-2 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option value="0" selected>All Status</option>
+                @foreach (var item in Model.UserStatuses)
+                {
+                    <option title="@item.StatusName" class="w-full" value="@item.StatusId"><div title="@item.StatusName">@item.StatusName</div></option>
+                }
+
+            </select>
+
+            <select asp-for="RoleId" class="bg-gray-50 mr-2 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option value="0" selected>All Branch</option>
+                @foreach (var item in Model.Roles)
+                {
+                    <option title="@item.RoleName" class="w-full" value="@item.RoleId">@item.RoleName</option>
+                }
+            </select>
+
+
+            <input style="display: none" asp-for="SortOrder" value="@Model.SortOrder" />
+            <input style="display: none" asp-for="SortField" value="@Model.SortField" />
+            <button type="submit" class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+                <span class="sr-only">Search</span>
+            </button>
+        </form>
+
+        <p class="inline-block">
+            <a asp-page="Create"
+               class="inline-flex items-center gap-2
+                    rounded border border-blue-700
+                    bg-blue-700 px-8 py-3 text-white
+                    hover:bg-transparent hover:text-blue-700
+                    focus:outline-none focus:ring active:text-blue-500">
+                <span class="text-sm font-medium"> Book Appointment </span>
+
+                <svg class="size-5 rtl:rotate-180" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <line x1="12" y1="5" x2="12" y2="19" />  <line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </a>
+        </p>
+    </div>
+</div>
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-5 mx-16 ">
+    <table hidden="@(Model.TotalRecords == 0)" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
+                        <div class="flex items-center">
+                            Name
+
+                        </div>
+
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Username
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
+                        Password
+
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
+                        Email
+
+                    </div>
+                </th>
+
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
+                        Phone
+
+                    </div>
+                </th>
+
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
+                        Role
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <div class="flex items-center">
+                        Status
+                    </div>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Users)
+            {
+                <tr id="root-@item.UserId" class="bg-white border-b dark:bg-gray-800 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </th>
+                    <td class="px-6 py-4">
+                        @Html.DisplayFor(modelItem => item.Username)
+                    </td>
+                    <td class="px-6 py-4">
+                        @Html.DisplayFor(modelItem => item.Password)
+                    </td>
+                    <td class="px-6 py-4">
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td class="px-6 py-4">
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+
+                    <td class="px-6 py-4">
+                        @Html.DisplayFor(modelItem => item.Role.RoleName)
+                    </td>
+                    <td class="px-6 py-4">
+                        @Html.DisplayFor(modelItem => item.Status.StatusName)
+                    </td>
+                    <td class="px-6 py-4 text-right items-center">
+                        <a asp-page="./Details" asp-route-id="@item.UserId" asp-route-PageIndex="@Model.PageIndex">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="flex items-center justify-center w-full h-full">
+        <img class="w-1/2 h-1/2 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" hidden="@(Model.TotalRecords != 0)" src="~/Images/NoResult.png" />
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Dob)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Password)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Role)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Users)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dob)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Password)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role.RoleId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status.StatusId)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.UserId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.UserId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.UserId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
