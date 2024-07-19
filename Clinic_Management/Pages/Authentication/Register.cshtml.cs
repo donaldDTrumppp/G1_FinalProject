@@ -66,7 +66,7 @@ namespace Clinic_Management.Pages.Authentication
         public string Address { get; set; }
 
         [BindProperty]
-        public int RoleId { get; set; } = 4;
+        public int RoleId { get; set; } = 1;
         [BindProperty]
         public int StatusId { get; set; } = 3;
 
@@ -116,6 +116,9 @@ namespace Clinic_Management.Pages.Authentication
             };
 
             _context.Users.Add(user);
+            Patient patient = new Patient();
+            patient.PatientId = user.UserId;
+            _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
             var token = TokenMail.GenerateToken(user.UserId, user.Email);
             var confirmationLink = Url.Page(
