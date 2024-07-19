@@ -6,16 +6,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
+using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Clinic_Management.Pages.Appointements
+namespace Clinic_Management.Pages.Appointments
 {
+    [Authorize(Policy = "StaffPolicy")]
     public class IndexModel : PageModel
     {
         private readonly G1_PRJ_DBContext _context;
-
-        public IndexModel(G1_PRJ_DBContext context)
+        private readonly Clinic_Management.Utils.Authentication authentication;
+        private readonly IConfiguration _configuration;
+        public IndexModel(G1_PRJ_DBContext context, IConfiguration config)
         {
             _context = context;
+            _configuration = config;
+            authentication = new Clinic_Management.Utils.Authentication(context, config);
         }
 
         [BindProperty(SupportsGet = true)]
@@ -40,10 +46,14 @@ namespace Clinic_Management.Pages.Appointements
         public int PageSize { get; set; } = 5;
         public int totalRecords { get; set; }
         public String Message { get; set; }
+        public int roleID { get; set; }
         public async Task OnGetAsync(string action, int id,string Message)
         {
+            string token = HttpContext.Request.Cookies["AuthToken"];
+            User u = authentication.GetUserFromToken(token);
+            roleID = u.RoleId;
             this.Message = Message;
-            var query = _context.Appointments.Include(a => a.Doctor).Include(a => a.Patient).Include(a => a.Branch).Include(a => a.SpecialistNavigation).Include(a => a.StatusNavigation).AsQueryable();
+            var query = _context.Appointments.Include(a => a.Doctor).Include(a => a.Patient).Include(a => a.Branch).Include(a => a.SpecialistNavigation).Include(a => a.StatusNavigation).AsQueryable();         
 
             if (!string.IsNullOrEmpty(SearchString))
             {
@@ -80,7 +90,50 @@ namespace Clinic_Management.Pages.Appointements
             BranchList = _context.Branches.ToList();
             StatusList = _context.AppointmentStatuses.ToList();
         }
-        
+        public IActionResult OnGetExport()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var query = _context.Appointments.Include(a => a.Doctor).Include(a => a.Patient).Include(a => a.Branch).Include(a => a.SpecialistNavigation).Include(a => a.StatusNavigation).AsQueryable();
+                var worksheet = workbook.Worksheets.Add("Appointment");
+                var currentRow = 1;
+
+                // Add headers
+                worksheet.Cell(currentRow, 1).Value = "Patient Name";
+                worksheet.Cell(currentRow, 2).Value = "Branch";
+                worksheet.Cell(currentRow, 3).Value = "Requestedtime";
+                worksheet.Cell(currentRow, 4).Value = "Doctor";
+                worksheet.Cell(currentRow, 4).Value = "Status";
+
+                // Add data rows
+                foreach (var item in query)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = item.PatientName;
+                    worksheet.Cell(currentRow, 2).Value = item.Branch.BranchName;
+                    worksheet.Cell(currentRow, 3).Value = item.RequestedTime.ToString();
+                    if (item.Doctor != null)
+                    {
+                        worksheet.Cell(currentRow, 4).Value = item.Doctor.Name;
+                    }
+                    else
+                    {
+                        worksheet.Cell(currentRow, 4).Value = "N/A";
+                    }
+                    
+                    worksheet.Cell(currentRow, 5).Value = item.StatusNavigation.StatusName;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Appointments.xlsx");
+                }
+            }
+            return RedirectToAction("/Index");
+        }
+
     }
    
 }
