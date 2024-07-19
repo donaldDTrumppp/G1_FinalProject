@@ -13,11 +13,14 @@ namespace Clinic_Management.Pages.Authentication
         private readonly IConfiguration _configuration;
         private readonly Utils.Authentication authentication;
 
-        public LoginModel(G1_PRJ_DBContext context, IConfiguration configuration)
+        private readonly PasswordService _passwordService;
+
+        public LoginModel(G1_PRJ_DBContext context, IConfiguration configuration, PasswordService passwordService)
         {
             _context = context;
             _configuration = configuration;
             authentication = new Utils.Authentication(context, configuration);
+            _passwordService = passwordService;
         }
 
         [BindProperty]
@@ -28,26 +31,31 @@ namespace Clinic_Management.Pages.Authentication
         [Required(ErrorMessage = "Please enter your password.")]
         public string Password { get; set; }
 
-        public void OnGet(string returnUrl = null)
+        [BindProperty]
+        public string Message { get; set; }
+
+        public void OnGet(string Message, string returnUrl = null)
         {
+            this.Message = Message;
             ViewData["ReturnUrl"] = returnUrl;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            
             if (!_context.Users.Any(u => u.Username == Username))
             {
                 ModelState.AddModelError("Username", "Username is invalid.");
                 return Page();
             }
-            if (!_context.Users.Any(u => u.Password == Password))
+            if (!_context.Users.Any(u => u.Password == _passwordService.HashPassword(Password)))
             {
                 ModelState.AddModelError("Password", "Password is invalid.");
                 return Page();
             }
-
+            
             var user = await _context.Users
-                .Where(u => (u.Username == Username && u.Password == Password) || (u.Email == Username && u.Password == Password))
+                .Where(u => (u.Username == Username && u.Password == _passwordService.HashPassword(Password)) || (u.Email == Username && u.Password == Password))
                 .FirstOrDefaultAsync();
 
             if (user.StatusId == 1)
@@ -57,7 +65,7 @@ namespace Clinic_Management.Pages.Authentication
                 .Select(r => r.RoleName)
                 .FirstOrDefaultAsync();
 
-                var token = authentication.GenerateJwtToken(user, role);
+                var token = authentication.GenerateJwtToken(user);
                 Response.Cookies.Append("AuthToken", token);
                 Response.Cookies.Append("Username", user.Name);
 

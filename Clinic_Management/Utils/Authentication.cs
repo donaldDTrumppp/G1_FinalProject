@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Clinic_Management.Utils
@@ -120,6 +121,18 @@ namespace Clinic_Management.Utils
             int userId = int.Parse(jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
 
             return _context.Users.Include(s => s.Status).FirstOrDefault(u => u.UserId == userId);
+        }
+
+        public string HashPassword(string password)
+        {
+            MD5 md5 = MD5.Create();
+            byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(password));
+            StringBuilder hashSb = new StringBuilder();
+            foreach (byte b in hash)
+            {
+                hashSb.Append(b.ToString("X2"));
+            }
+            return hashSb.ToString();
         }
 
     }
