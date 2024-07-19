@@ -7,34 +7,34 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 
-namespace Clinic_Management.Pages.MedicalRecords
+namespace Clinic_Management.Pages.Admin
 {
     public class DetailsModel : PageModel
     {
-        private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
+        private readonly G1_PRJ_DBContext _context;
 
-        public DetailsModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        public DetailsModel(G1_PRJ_DBContext context)
         {
             _context = context;
         }
 
-        public MedicalRecord MedicalRecord { get; set; } = default!;
+      public User User { get; set; } = default!; 
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.MedicalRecords == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var medicalrecord = await _context.MedicalRecords.FirstOrDefaultAsync(m => m.MedicalrecordId == id);
-            if (medicalrecord == null)
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.UserId == id);
+            if (user == null)
             {
                 return NotFound();
             }
-            else
+            else 
             {
-                MedicalRecord = medicalrecord;
+                User = user;
             }
             return Page();
         }

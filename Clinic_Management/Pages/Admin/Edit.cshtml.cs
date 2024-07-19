@@ -8,39 +8,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 
-namespace Clinic_Management.Pages.PatientAppointment
+namespace Clinic_Management.Pages.Admin
 {
     public class EditModel : PageModel
     {
-        private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
+        private readonly G1_PRJ_DBContext _context;
 
-        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        public EditModel(G1_PRJ_DBContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-        public Appointment Appointment { get; set; } = default!;
+        public User User { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Appointments == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var appointment =  await _context.Appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
-            if (appointment == null)
+            var user =  await _context.Users.FirstOrDefaultAsync(m => m.UserId == id);
+            if (user == null)
             {
                 return NotFound();
             }
-            Appointment = appointment;
-           ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchId");
-           ViewData["DoctorId"] = new SelectList(_context.Users, "UserId", "UserId");
-           ViewData["PatientId"] = new SelectList(_context.Users, "UserId", "UserId");
-           ViewData["ReceptionistId"] = new SelectList(_context.Users, "UserId", "UserId");
-           ViewData["Specialist"] = new SelectList(_context.Specialists, "SpecialistId", "SpecialistId");
-           ViewData["Status"] = new SelectList(_context.AppointmentStatuses, "StatusId", "StatusId");
+            User = user;
+           ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId");
+           ViewData["StatusId"] = new SelectList(_context.UserStatuses, "StatusId", "StatusId");
             return Page();
         }
 
@@ -53,7 +49,7 @@ namespace Clinic_Management.Pages.PatientAppointment
                 return Page();
             }
 
-            _context.Attach(Appointment).State = EntityState.Modified;
+            _context.Attach(User).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +57,7 @@ namespace Clinic_Management.Pages.PatientAppointment
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AppointmentExists(Appointment.AppointmentId))
+                if (!UserExists(User.UserId))
                 {
                     return NotFound();
                 }
@@ -74,9 +70,9 @@ namespace Clinic_Management.Pages.PatientAppointment
             return RedirectToPage("./Index");
         }
 
-        private bool AppointmentExists(int id)
+        private bool UserExists(int id)
         {
-          return (_context.Appointments?.Any(e => e.AppointmentId == id)).GetValueOrDefault();
+          return (_context.Users?.Any(e => e.UserId == id)).GetValueOrDefault();
         }
     }
 }

@@ -7,52 +7,52 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 
-namespace Clinic_Management.Pages.PatientAppointment
+namespace Clinic_Management.Pages.Admin
 {
     public class DeleteModel : PageModel
     {
-        private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
+        private readonly G1_PRJ_DBContext _context;
 
-        public DeleteModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        public DeleteModel(G1_PRJ_DBContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-      public Appointment Appointment { get; set; } = default!;
+      public User User { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Appointments == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.UserId == id);
 
-            if (appointment == null)
+            if (user == null)
             {
                 return NotFound();
             }
             else 
             {
-                Appointment = appointment;
+                User = user;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Appointments == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
-            var appointment = await _context.Appointments.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
 
-            if (appointment != null)
+            if (user != null)
             {
-                Appointment = appointment;
-                _context.Appointments.Remove(Appointment);
+                User = user;
+                _context.Users.Remove(User);
                 await _context.SaveChangesAsync();
             }
 

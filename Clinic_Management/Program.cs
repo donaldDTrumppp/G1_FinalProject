@@ -1,9 +1,10 @@
 //using Clinic_Management.Models;
 using Clinic_Management.Models;
 using Clinic_Management.Services;
-using Clinic_Management.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
+using System.Text;
 
 namespace Clinic_Management
 {
@@ -15,13 +16,13 @@ namespace Clinic_Management
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddDbContext<G1_PRJ_DBContext>();
+            //builder.Services.AddDbContext<G1_PRJ_DBContext>();
             builder.Services.AddTransient<ISMSService, SMSService>();
 
             var configuration = builder.Configuration;
 
-            //builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
-            //option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
+            builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
+            option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
