@@ -13,12 +13,11 @@ namespace Clinic_Management.Pages.Authentication
             _context = context;
         }
 
-        [BindProperty]
+        [TempData]
         public string Message { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string token, string Message)
+        public async Task<IActionResult> OnGetAsync(string token)
         {
-            this.Message = Message;
             if (string.IsNullOrEmpty(token))
             {
                 Message = "Invalid token.";
@@ -52,7 +51,7 @@ namespace Clinic_Management.Pages.Authentication
             await _context.SaveChangesAsync();
 
             Message = "Your email has been verified successfully. You can now log in.";
-            return RedirectToPage("/Authentication/Login", new {Message = "Verify successfully. You can now login"});
+            return RedirectToPage("/Authentication/Login");
         }
     }
 }

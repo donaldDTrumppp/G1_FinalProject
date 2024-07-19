@@ -1,5 +1,4 @@
-﻿using Clinic_Management.Models;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -18,30 +17,24 @@ namespace Clinic_Management.Utils
             "/Authentication/Logout",
             "/Index",
             "/PatientAppointment/Create",
-            "/",
-            "/api/Authentication",
+            "/Index",
             "/signalrServer/negotiate",
-            "/signalrServer",
-            "/Home/404",
-            "/Home/403"
-        };
-
-        private readonly Clinic_Management.Utils.Authentication _authentication;
+            "/signalrServer"
+        }; 
 
         public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
             _configuration = configuration;
-         //   _ = new Authentication(context, configuration);
         }
 
         public async Task Invoke(HttpContext context)
         {
             var path = context.Request.Path.ToString();
-            //Console.WriteLine("current path: " + path);
+
+            Console.WriteLine("current path: " + path);
 
             // Check if the request path is in the excluded paths
-
             if (_excludedPaths.Contains(path, StringComparer.OrdinalIgnoreCase))
             {
                 await _next(context);
@@ -86,16 +79,6 @@ namespace Clinic_Management.Utils
                     RedirectToLogin(context);
                     return;
                 }
-                /*
-                string tokenJwt = context.Request.Cookies["AuthToken"];
-                User u = _authentication.GetUserFromToken(token);
-                if (u == null || u.Status.StatusName != "Active")
-                {
-                    context.Response.Cookies.Delete("AuthToken");
-                    RedirectToLogin(context);
-                    return;
-                }
-                */
             }
             catch
             {
@@ -110,7 +93,7 @@ namespace Clinic_Management.Utils
         private void RedirectToLogin(HttpContext context)
         {
             var returnUrl = context.Request.Path + context.Request.QueryString;
-            
+
             context.Response.Redirect("/Authentication/Login?returnUrl=" + returnUrl);
         }
     }

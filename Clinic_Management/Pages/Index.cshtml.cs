@@ -7,17 +7,14 @@ namespace Clinic_Management.Pages
     {
         private readonly ILogger<IndexModel> _logger;
 
-        public string? Message { get; set; }
-
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
         }
 
-        public async Task OnGetAsync(string? Message)
+        public void OnGet()
         {
-            Console.WriteLine("MS: " + Message);
-            this.Message = Message;
+
         }
     }
 }

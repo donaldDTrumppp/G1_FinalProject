@@ -1,5 +1,6 @@
 using Clinic_Management.Models;
 using Clinic_Management.Services;
+using Clinic_Management.Utilities.MailSender;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -132,7 +133,7 @@ namespace Clinic_Management.Pages.Authentication
             _emailService.SendEmailNoHeader(user.Email, "[Register] Verify Account", htmlContent);
 
             Message = "Registration successful. Please check your email and verify your account within 1 minute.";
-            return RedirectToPage("/Authentication/ConfirmEmail", new { Message = "Register successfully! Please check your email"});
+            return RedirectToPage("/Authentication/ConfirmEmail");
 
          
         }
