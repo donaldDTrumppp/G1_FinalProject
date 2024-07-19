@@ -6,19 +6,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Xml.Serialization;
+using Twilio.TwiML.Voice;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
     public class IndexModel : PageModel
     {
         private readonly G1_PRJ_DBContext _context;
-        public IndexModel(G1_PRJ_DBContext context)
+
+        private readonly Clinic_Management.Utils.Authentication authentication;
+        public IndexModel(G1_PRJ_DBContext context, IConfiguration config)
         {
             _context = context;
+            authentication = new Clinic_Management.Utils.Authentication(context, config);
         }
         public IList<MedicalRecord> MedicalRecord { get; set; }
         public string Message { get; set; } = "";
         public string TypeMessage { get; set; } = "";
+
+        public string role { get; set; } = "";
 
         #region Search
         [BindProperty(SupportsGet = true)]
@@ -48,8 +54,33 @@ namespace Clinic_Management.Pages.MedicalRecords
         public int PageSize { get; set; } = 5;
         public int totalRecords { get; set; } = 1;
         #endregion
-        public async Task OnGetAsync(string? TypeMessage, string? Message)
+        public async System.Threading.Tasks.Task OnGetAsync(string? TypeMessage, string? Message)
         {
+            string token = HttpContext.Request.Cookies["AuthToken"];
+            User u = authentication.GetUserFromToken(token);
+
+            var query = _context.MedicalRecords
+                .Include(a => a.Appointment).ThenInclude(s => s.SpecialistNavigation)
+                .Include(m => m.Doctor).Include(m => m.Patient).AsQueryable();
+
+            if (u != null)
+            {
+                if(u.Role.RoleName == "Patient")
+                {
+
+                }
+                else if (u.Role.RoleName == "Doctor")
+                {
+
+                }
+                else if (u.Role.RoleName == "Receptionist")
+                {
+
+                }
+
+                role = u.Role.RoleName;
+            }
+
             this.TypeMessage = TypeMessage;
             this.Message = Message;
             // Get specialists for the dropdown list
@@ -64,9 +95,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             Branchlist = new SelectList(await branchQuery.ToListAsync(), "BranchId", "BranchName");
 
 
-            var query = _context.MedicalRecords
-                .Include(a => a.Appointment).ThenInclude(s => s.SpecialistNavigation)
-                .Include(m => m.Doctor).Include(m => m.Patient).AsQueryable();
+            
 
             if (SpecialistFilter.HasValue)
             {

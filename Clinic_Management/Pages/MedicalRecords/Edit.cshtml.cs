@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 using Clinic_Management.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
+    [Authorize(Policy = "DoctorPolicy")]
     public class EditModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;

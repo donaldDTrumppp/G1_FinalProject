@@ -4,6 +4,7 @@ using Clinic_Management.Models;
 using Clinic_Management.Utils;
 using System.Text;
 using System.Xml.Serialization;
+using System.Xml;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
@@ -170,6 +171,44 @@ namespace Clinic_Management.Pages.MedicalRecords
 
             return CreatedAtAction("GetMedicalRecord", new { id = medicalRecord.MedicalrecordId }, medicalRecord);
         }
+
+
+        // POST: api/MedicalRecords/importXml
+        [HttpPost("importXml")]
+        public async Task<IActionResult> ImportXml(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            List<MedicalRecord> medicalRecords;
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+                stream.Position = 0;
+                using (var reader = new StreamReader(stream))
+                {
+                    var serializer = new XmlSerializer(typeof(List<MedicalRecord>), new XmlRootAttribute("MedicalRecords"));
+                    medicalRecords = (List<MedicalRecord>)serializer.Deserialize(reader);
+                }
+            }
+
+            if (medicalRecords == null || !medicalRecords.Any())
+            {
+                return BadRequest("Invalid XML data.");
+            }
+
+            foreach (var record in medicalRecords)
+            {
+                _context.MedicalRecords.Add(record);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok("XML data imported successfully.");
+        }
+
 
         // DELETE: api/MedicalRecords/5
         [HttpDelete("{id}")]

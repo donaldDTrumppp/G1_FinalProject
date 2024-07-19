@@ -19,13 +19,10 @@ namespace Clinic_Management.Utils
             "/Home/403"
         };
 
-        private readonly Clinic_Management.Utils.Authentication _authentication;
-
-        public JwtMiddleware(RequestDelegate next, IConfiguration configuration, Clinic_Management.Models.G1_PRJ_DBContext context)
+        public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
             _configuration = configuration;
-            _ = new Authentication(context, configuration);
         }
 
         public async Task Invoke(HttpContext context)
@@ -74,15 +71,6 @@ namespace Clinic_Management.Utils
 
                 // Check if token has expired
                 if (jwtToken.ValidTo < DateTime.UtcNow)
-                {
-                    context.Response.Cookies.Delete("AuthToken");
-                    RedirectToLogin(context);
-                    return;
-                }
-
-                string tokenJwt = context.Request.Cookies["AuthToken"];
-                User u = _authentication.GetUserFromToken(token);
-                if (u == null || u.Status.StatusName != "Active")
                 {
                     context.Response.Cookies.Delete("AuthToken");
                     RedirectToLogin(context);
