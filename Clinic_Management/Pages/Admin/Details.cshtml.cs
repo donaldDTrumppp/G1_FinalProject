@@ -18,16 +18,33 @@ namespace Clinic_Management.Pages.Admin
             _context = context;
         }
 
-      public User User { get; set; } = default!; 
+        public List<Role> roles;
+
+        public List<Branch> Branchs { get; set; }
+
+        public List<Specialist> Specialists { get; set; }
+
+        public User User { get; set; } = default!;
+
+        [BindProperty]
+        public Patient Patient { get; set; }
+
+        [BindProperty]
+        public Staff Staff { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            Specialists = _context.Specialists.ToList();
+            Branchs = _context.Branches.ToList();
+            roles = _context.Roles.ToList();
             if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.UserId == id);
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(m => m.UserId == id);
             if (user == null)
             {
                 return NotFound();
@@ -35,6 +52,15 @@ namespace Clinic_Management.Pages.Admin
             else 
             {
                 User = user;
+                if(User.Role.RoleName == "Patient")
+                {
+                    Patient = _context.Patients.FirstOrDefault(s => s.PatientId == User.UserId);
+                }
+                else
+                {
+                    Staff = _context.Staff.FirstOrDefault(s => s.UserId == User.UserId);
+
+                }
             }
             return Page();
         }

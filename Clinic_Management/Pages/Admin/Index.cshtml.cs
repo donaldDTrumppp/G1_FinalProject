@@ -54,6 +54,7 @@ namespace Clinic_Management.Pages.Admin
 
         public int TotalRecords { get; set; }
 
+        [BindProperty(SupportsGet = true)]
         public string Message { get; set; } = "";
 
         public async Task OnGetAsync(int PageIndex, int RoleId, int StatusId, string SortField, string SortOrder, string Message)

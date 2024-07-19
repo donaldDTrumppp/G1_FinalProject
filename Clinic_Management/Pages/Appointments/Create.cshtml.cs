@@ -90,12 +90,13 @@ namespace Clinic_Management.Pages.Appointments
             
             bool isPatientError = false;
             bool isAppointmentError = false;
-            if (requestedDate.Date < DateTime.Now.Date)
+
+            if (DateTime.Parse(requestedDate.ToString("yyyy-MM-dd")) <  DateTime.Parse(DateTime.Now.Date.ToString("yyyy-MM-dd")))
             {
                 isAppointmentError = true;
                 dateError = "Request date cannot be in the past";
             }
-            if(dob.Date > DateTime.Now.Date)
+            if( DateTime.Parse(dob.ToString("yyyy-MM-dd")) > DateTime.Parse(DateTime.Now.Date.ToString("yyyy-MM-dd")))
             {
                 isPatientError = true;
                 dobError = "DOB cannot be in the future";
@@ -105,23 +106,23 @@ namespace Clinic_Management.Pages.Appointments
             {
                 newAppointment.PatientId = searchPatientID;
             }
-            else
-            {
-                if (_context.Users.FirstOrDefault(u => u.PhoneNumber.Equals(phone)) != null)
-                {
-                    patientError += "Phonenumber existed. ";
-                    isPatientError = true;
-                }
-                if (_context.Users.FirstOrDefault(u => u.Email.Equals(email)) != null)
-                {
-                    patientError += "Email existed. ";
-                    isPatientError = true;
-                }
+            //else
+            //{
+            //    if (_context.Users.FirstOrDefault(u => u.PhoneNumber.Equals(phone)) != null)
+            //    {
+            //        patientError += "Phonenumber existed. ";
+            //        isPatientError = true;
+            //    }
+            //    if (_context.Users.FirstOrDefault(u => u.Email.Equals(email)) != null)
+            //    {
+            //        patientError += "Email existed. ";
+            //        isPatientError = true;
+            //    }
                 
-            }
+            //}
             newAppointment.PatientName = fullname;
             newAppointment.PatientAddress = address;
-            newAppointment.PatientDob = dob;
+            newAppointment.PatientDob = DateTime.Parse(dob.ToString("yyyy-MM-dd"));
             newAppointment.PatientPhoneNumber = phone;
             newAppointment.PatientEmail = email;
             //var patient = _context.Users.FirstOrDefault(p => p.UserId == searchPatientID);
@@ -167,7 +168,7 @@ namespace Clinic_Management.Pages.Appointments
                         break;
 
                 }
-                var appointment = _context.Appointments.FirstOrDefault(a => a.DoctorId == doctorId && a.RequestedTime.Equals(requestedDate) && a.Status == 1);
+                var appointment = _context.Appointments.FirstOrDefault(a => a.DoctorId == doctorId && a.RequestedTime.Equals(DateTime.Parse(requestedDate.ToString("yyyy-MM-dd HH:mm:ss"))) && a.Status == 1);
                 if (appointment != null)
                 {
                     appointmentError += "The doctor already has an appointment at this time. ";
@@ -179,7 +180,7 @@ namespace Clinic_Management.Pages.Appointments
                     newAppointment.DoctorId = doctorId;
                     newAppointment.BranchId = branchId;
                     newAppointment.Specialist = specialistId;
-                    newAppointment.RequestedTime = requestedDate;
+                    newAppointment.RequestedTime = DateTime.Parse(requestedDate.ToString("yyyy-MM-dd HH:mm:ss"));
                 }
 
             }

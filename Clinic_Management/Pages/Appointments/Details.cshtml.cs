@@ -26,8 +26,12 @@ namespace Clinic_Management.Pages.Appointements
         public IList<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
         public string error {  get; set; }
         public string errorMessage {  get; set; }
+        public int roleID {  get; set; }
         public async Task<IActionResult> OnGetAsync(int? id,string error,string errorMessage)
         {
+            string token = HttpContext.Request.Cookies["AuthToken"];
+            User user = authentication.GetUserFromToken(token);
+            roleID = user.RoleId;
             this.error = error;
             this.errorMessage = errorMessage;
 
@@ -60,6 +64,7 @@ namespace Clinic_Management.Pages.Appointements
             var appointment = _context.Appointments.FirstOrDefault(a => a.AppointmentId == id);
             string token = HttpContext.Request.Cookies["AuthToken"];
             User user = authentication.GetUserFromToken(token);
+            roleID = user.RoleId;
             var doctor = _context.Staff.Include(d => d.DoctorDepartment).FirstOrDefault(x => x.UserId == user.UserId);
             bool isError = false;
             if (appointment == null || doctor == null)
