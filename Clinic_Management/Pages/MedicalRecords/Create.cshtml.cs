@@ -88,7 +88,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                 return RedirectToPage("./Index", new { PageIndex = PageIndex, TypeMessage = "success", Message = "Create appointment successfully" });
             } catch(Exception e)
             {
-                return RedirectToPage("./Create", new { TypeMessage = "error",  Message = "Create appointment fail: " + e.Message });
+                return RedirectToPage("/Home/403", new { TypeMessage = "error",  Message = "Create appointment fail: " + e.Message });
             }
         }
     }

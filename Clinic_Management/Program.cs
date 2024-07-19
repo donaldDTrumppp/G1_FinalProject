@@ -102,7 +102,10 @@ namespace Clinic_Management
             {
                 options.AddPolicy("StaffPolicy", policy => policy.RequireRole("Doctor", "Receptionist"));
                 options.AddPolicy("PatientPolicy", policy => policy.RequireRole("Patient"));
+                options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
             });
+
+
 
             var app = builder.Build();
 
@@ -111,6 +114,7 @@ namespace Clinic_Management
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+            app.UseStatusCodePagesWithReExecute("/Errors/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
