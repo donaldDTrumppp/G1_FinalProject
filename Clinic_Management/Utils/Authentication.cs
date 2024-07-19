@@ -118,7 +118,9 @@ namespace Clinic_Management.Utils
             var jwtToken = (JwtSecurityToken)validatedToken;
             int userId = int.Parse(jwtToken.Claims.First(x => x.Type == "userId").Value);
 
-            return _context.Users.FirstOrDefault(u => u.UserId == userId);
+
+            return _context.Users.Include(s => s.Status).Include(r => r.Role).FirstOrDefault(u => u.UserId == userId);
+
         }
 
 

@@ -8,6 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 using System.Composition.Convention;
 
+using Microsoft.AspNetCore.SignalR;
+using Clinic_Management.Hubs;
+using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
+
+
 
 
 namespace Clinic_Management.Pages.Appointements
@@ -39,7 +45,7 @@ namespace Clinic_Management.Pages.Appointements
         public int requestedTime { get; set; }
 
         [BindProperty]
-        public DateTime requestedDate { get; set; }
+        public string requestedDateText { get; set; }
         
         [BindProperty]
         public int doctorId { get; set; }
@@ -123,6 +129,9 @@ namespace Clinic_Management.Pages.Appointements
         }
         public async Task<IActionResult> OnPostAsync(int? AppointmentId)
         {
+
+            DateTime requestedDate = DateTime.ParseExact(requestedDateText, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
             Appointment = await _context.Appointments.Include(a => a.Doctor).Include(a => a.Branch)
                 .Include(a => a.SpecialistNavigation).Include(a => a.StatusNavigation)
                 .Include(a => a.Doctor).Include(a => a.Receptionist).FirstOrDefaultAsync(m => m.AppointmentId == AppointmentId);
@@ -180,6 +189,8 @@ namespace Clinic_Management.Pages.Appointements
 
                     }
                     var appointment = _context.Appointments.FirstOrDefault(a => (a.DoctorId == doctorId && a.RequestedTime.Equals(requestedDate) && a.Status == 1) && a.AppointmentId != Appointment.AppointmentId);
+                    //requestedDate = assignTime();
+                    var appointment = _context.Appointments.FirstOrDefault(a => (a.DoctorId == doctorId && a.RequestedTime.Equals(DateTime.Parse(assignTime(requestedDate).ToString("yyyy-MM-dd HH:mm:ss"))) && a.Status == 1) && a.AppointmentId != Appointment.AppointmentId);
                     if (appointment != null)
                     {
                         appointmentError += "The doctor already has an appointment at this time";
@@ -192,10 +203,46 @@ namespace Clinic_Management.Pages.Appointements
                         a.BranchId = branchId;
                         a.Specialist = specialistId;
                         a.RequestedTime = requestedDate;
+                        if (a.DoctorId != doctorId || a.BranchId != branchId || a.Specialist != specialistId || a.RequestedTime != requestedDate)
+                        {
+                            a.Description = symptoms;
+                            a.DoctorId = doctorId;
+                            a.BranchId = branchId;
+                            a.Specialist = specialistId;
+                            a.RequestedTime = DateTime.Parse(assignTime(requestedDate).ToString("yyyy-MM-dd HH:mm:ss"));
+                            if (a.Status == 1||a.Status==4)
+                            {
+                                a.Status = 4;
+                            }
+                            else
+                            {
+                                a.Status = 1;
+                            }
+                            
+
+                        }                                          
                     }
 
                 }
             }
+
+            else
+            {
+                a.BranchId = branchId;
+                a.Specialist = specialistId;
+                a.RequestedTime = DateTime.Parse(assignTime(requestedDate).ToString("yyyy-MM-dd HH:mm:ss"));
+                a.Description = symptoms;
+                if(a.Status == 1)
+                {
+                    a.Status = 4;
+                }
+                else
+                {
+                    a.Status = 6;
+                }
+            }    
+            
+
             if (isAppointmentError)
             {
                 errorMessage = "Error occurs";
@@ -207,6 +254,40 @@ namespace Clinic_Management.Pages.Appointements
                 await _context.SaveChangesAsync();
                 return RedirectToPage("./Index", new { Message = "Appointment updated!" });
             }
+
+            return Page();
+        }
+        public DateTime assignTime(DateTime requestedDate)
+        {
+            switch (requestedTime)
+            {
+                case 1:
+                    requestedDate = requestedDate.Date.AddHours(7);
+                    break;
+                case 2:
+                    requestedDate = requestedDate.Date.AddHours(8);
+                    break;
+                case 3:
+                    requestedDate = requestedDate.Date.AddHours(9);
+                    break;
+                case 4:
+                    requestedDate = requestedDate.Date.AddHours(10);
+                    break;
+                case 5:
+                    requestedDate = requestedDate.Date.AddHours(13);
+                    break;
+                case 6:
+                    requestedDate = requestedDate.Date.AddHours(14);
+                    break;
+                case 7:
+                    requestedDate = requestedDate.Date.AddHours(15);
+                    break;
+                case 8:
+                    requestedDate = requestedDate.Date.AddHours(16);
+                    break;
+            }
+            return requestedDate;
+
         }
         public async Task<IActionResult> OnGetCancelAppointmentAsync(int id)
         {

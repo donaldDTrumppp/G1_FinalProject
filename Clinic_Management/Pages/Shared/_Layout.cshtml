@@ -123,8 +123,8 @@
                                 </svg>
                             </a>
                         </li>
-                        @if (HttpContextAccessor.HttpContext.Request.Cookies["AuthToken"] != null && 
-                            HttpContextAccessor.HttpContext.Request.Cookies["Username"] != null)
+                        @if (HttpContextAccessor.HttpContext.Request.Cookies["AuthToken"] != null &&
+                        HttpContextAccessor.HttpContext.Request.Cookies["Username"] != null)
                         {
                             <li class="ml-6">
                                 <span class="inline-block font-semibold px-4 py-2 text-white">
@@ -176,21 +176,13 @@
                 <div class="hidden md:block w-full md:w-auto" id="menu">
                     <nav class="w-full bg-white md:bg-transparent rounded shadow-lg px-6 py-4 mt-4 text-center md:p-0 md:mt-0 md:shadow-none">
                         <ul class="md:flex items-center">
-                            <li><a class="py-2 inline-block md:text-white md:hidden lg:block font-semibold" href="#">About Us</a></li>
-                            <li class="md:ml-4">
-                                <a class="py-2 inline-block md:text-white md:px-2 font-semibold"
-                                   asp-page="/Appointments">Appointment</a>
+                            <li>
+                                <a class="py-2 inline-block md:text-white md:hidden lg:block font-semibold" href="/Appointments">
+                                    Appointments
+                                </a>
                             </li>
                             <li class="md:ml-4">
-                                <a class="py-2 inline-block md:text-white md:px-2 font-semibold"
-                                   href="#">Testimonials</a>
-                            </li>
-                            <li class="md:ml-4 md:hidden lg:block">
-                                <a class="py-2 inline-block md:text-white md:px-2 font-semibold"
-                                   href="#">Blog</a>
-                            </li>
-                            <li class="md:ml-4">
-                                <a asp-page="/MedicalRecords/Index" class="py-2 inline-block md:text-white md:px-2 font-semibold">
+                                <a href="/MedicalRecords/Index" class="py-2 inline-block md:text-white md:px-2 font-semibold">
                                     Medical Records
                                 </a>
                             </li>
@@ -221,7 +213,7 @@
 
                             <li class="md:ml-6 mt-3 md:mt-0">
                                 <a class="inline-block font-semibold px-4 py-2 text-white bg-blue-600 md:bg-transparent md:text-white border border-white rounded"
-                                   asp-page="/PatientAppointment/Create">
+                                   href="/PatientAppointment/Create">
                                     Book Appointment
                                 </a>
                             </li>
@@ -613,6 +605,7 @@
     </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script src="https://unpkg.com/flowbite@1.5.1/dist/flowbite.js"></script>
+
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131505823-4"></script>
     <script>

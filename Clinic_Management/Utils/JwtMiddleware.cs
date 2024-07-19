@@ -21,10 +21,18 @@ namespace Clinic_Management.Utils
             "/signalrServer"
         }; 
 
+            "/signalrServer",
+            "/Home/404",
+            "/Home/403"
+        };
+
+
+
         public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
             _configuration = configuration;
+
         }
 
         public async Task Invoke(HttpContext context)
@@ -78,6 +86,7 @@ namespace Clinic_Management.Utils
                     RedirectToLogin(context);
                     return;
                 }
+
             }
             catch
             {

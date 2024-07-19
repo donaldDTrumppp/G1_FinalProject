@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Clinic_Management.Pages.Appointments
 {
@@ -31,7 +32,7 @@ namespace Clinic_Management.Pages.Appointments
         public string address { get; set; }
 
         [BindProperty]
-        public DateTime dob { get; set; }
+        public string dobText { get; set; }
 
         [BindProperty]
         public string phone { get; set; }
@@ -55,7 +56,8 @@ namespace Clinic_Management.Pages.Appointments
         public int doctorId { get; set; }
 
         [BindProperty]
-        public DateTime requestedDate { get; set; }
+        public string requestedDateText { get; set; }
+
 
         [BindProperty]
         public int requestedTime { get; set; }
@@ -78,6 +80,8 @@ namespace Clinic_Management.Pages.Appointments
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
+            DateTime requestedDate = DateTime.ParseExact(requestedDateText, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            DateTime dob = DateTime.ParseExact(dobText, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             branchList = _context.Branches.ToList();
             specialistList = _context.Specialists.ToList();
             doctorList = _context.Staff.Include(d=>d.DoctorDepartment).Include(d=>d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
