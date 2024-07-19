@@ -46,6 +46,36 @@
 
     </div>
 </div>
+@if (Model.Message != null)
+{
+    <div id="toast-success-create" class="flex animate-[fade-out_2s_ease-out_1s_1_forwards] opacity-1 flex-col fixed z-50 top-5 right-5 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+        <div class="flex flex-row items-center justify-between w-full">
+            <div class="flex flex-row items-center">
+                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                    </svg>
+                    <span class="sr-only">Check icon</span>
+                </div>
+                <div class="ms-3 text-sm font-normal">@Model.Message</div>
+            </div>
+            <div>
+                <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-success" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="flex flex-row items-center justify-between w-full">
+            <div class="w-full bg-gray-200 rounded-full h-1.5 mb-1 mt-2 dark:bg-gray-700">
+                <div id="animateDiv-create" class="bg-green-400 h-1.5 rounded-full dark:bg-green-300 animate-[reduce_2s_ease-in-out_0s_1_forwards]" style="width: 100%"></div>
+            </div>
+        </div>
+    </div>
+}
+
 
 <div id="toast-success" class="flex hidden animate-[fade-out_2s_ease-out_1s_1_forwards] opacity-1 flex-col fixed z-50 top-5 right-5 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
     <div class="flex flex-row items-center justify-between w-full">
@@ -129,7 +159,13 @@
             <p id="floating_visit_time" class="font-bold text-md-center text-gray-900"></p>
         </div>
         -->
-   
+        @if (Model.User != null)
+        {
+            <div class="mb-5">
+                <input type="hidden" asp-for="Appointment.PatientId" value="@Model.User.UserId" />
+                <input type="checkbox" style="margin-bottom: 4px" id="fill" onclick="fillInformation('@Model.User.Name', '@Model.User.Address', '@Model.User.Dob', '@Model.User.PhoneNumber', '@Model.User.Email')" /> Use information from this account
+            </div>
+        }
         <div class="mb-5">
             <h3 class="text-lg mb-1 text-gray-900 font-bold">Branch</h3>
             <select name="@Html.NameFor(a => a.Appointment.BranchId)" style="font-weight: 450" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -161,9 +197,9 @@
                 <div class="relative z-0 w-full mb-5 group">
                     <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         Date of Birth <span style="color: red">*</span>
-                        <span id="erdob" asp-validation-for="Appointment.PatientDob" max="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" class="text-danger text-red-500 ml-1"></span>
+                        <span id="erdob" asp-validation-for="Appointment.PatientDob" max="@DateTime.Now.ToString("yyyy-MM-dd")" class="text-danger text-red-500 ml-1"></span>
                     </label>
-                    <input required onblur="validate('dob')" name="@Html.NameFor(a => a.Appointment.PatientDob)" type="datetime-local" id="floating_dob" aria-label="disabled input" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <input required onblur="validate('dob')" name="@Html.NameFor(a => a.Appointment.PatientDob)" type="date" id="floating_dob" aria-label="disabled input" class=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 </div>
                 <div class="relative z-0 w-full mb-5 group">
                     <label for="floating_phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -262,6 +298,35 @@
 
 </script>
 
+<script>
+    function fillInformation(name, address, dob, phone, email) {
+        var ele = document.getElementById("fill");
+        if (ele.checked) {
+            var today = new Date(dob);
+            var yyyy = today.getFullYear();
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so we add 1
+            var dd = String(today.getDate()).padStart(2, '0');
+
+            var formattedDate = `${yyyy}-${mm}-${dd}`;
+            console.log(new Date(dob));
+            console.log(new Date(dob).getMonth() + 1 + "/" + new Date(dob).getDate() + "/" + new Date(dob).getUTCFullYear());
+            document.getElementById("floating_fname").value = name;
+            document.getElementById("floating_address").value = address;
+            document.getElementById("floating_phone").value = phone;
+            document.getElementById("floating_email").value = email;
+            document.getElementById("floating_dob").value = formattedDate;
+        }
+        else {
+            document.getElementById("floating_fname").value = "";
+            document.getElementById("floating_address").value = "";
+            document.getElementById("floating_dob").value = "";
+            document.getElementById("floating_phone").value = "";
+            document.getElementById("floating_email").value = "";
+        }
+        console.log(name, address, dob, phone, email);
+    }
+</script>
+
 <script type="module">
 
     import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js'
@@ -274,13 +339,13 @@
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-        apiKey: "AIzaSyBRd5bTqtnunUXWwnwpm_VVplkSSBZQt9o",
-        authDomain: "basiha-medical-37e74.firebaseapp.com",
-        projectId: "basiha-medical-37e74",
-        storageBucket: "basiha-medical-37e74.appspot.com",
-        messagingSenderId: "541023299159",
-        appId: "1:541023299159:web:1b9a60e9bf4146d3b4e512",
-        measurementId: "G-VLVQQR9FVH"
+        apiKey: "AIzaSyCM1MerSd5LgyjdvCJa7FzaaFEyXO97bbQ",
+        authDomain: "basiha-medical.firebaseapp.com",
+        projectId: "basiha-medical",
+        storageBucket: "basiha-medical.appspot.com",
+        messagingSenderId: "9191358207",
+        appId: "1:9191358207:web:4beb1b4651c799250296ca",
+        measurementId: "G-YLF03P9HB1"
     };
 
     // Initialize Firebase
@@ -288,7 +353,41 @@
     const analytics = getAnalytics(app);
 
 
+</script>
 
+<script>
+    function test() {
+        var toast = document.getElementById("toast-success-create");
+        toast.classList.remove("animate-[fade-out_2s_ease-out_1s_1_forwards]");
+        void toast.offsetWidth;
+        toast.classList.add("animate-[fade-out_2s_ease-out_1s_1_forwards]");
+        document.getElementById('animateDiv-create').classList.add("reduceWidth");
+        document.getElementById('animateDiv-create').style.width = '0%';
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var toast = document.getElementById("toast-success-create");
+        if (toast.classList.contains("block")) {
+            document.getElementById('animateDiv-create').classList.add("reduceWidth");
+            document.getElementById('animateDiv-create').style.width = '0%';
+
+
+        }
+
+        function onTransitionEnd(event) {
+            if (event.propertyName === 'width' && animateDiv.style.width === '0%') {
+                document.getElementById('animateDiv-create').classList.remove("reduceWidth");
+                //    document.getElementById('animateDiv').style.width = '100%';
+                //  console.log(document.getElementById('animateDiv').style.width);
+                //   toast.classList.add("animate-[fade-out_1s_ease-out_0.25s_1]");
+
+            }
+        }
+
+
+
+        animateDiv.addEventListener('transitionend', onTransitionEnd);
+    });
 </script>
 
 <script>

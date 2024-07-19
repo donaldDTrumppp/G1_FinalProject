@@ -30,11 +30,43 @@
         </div>
     </div>
 </div>
-<form id="form" method="post" class="max-w-2xl mx-auto">
+
+<div id="cancelModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <button type="button" class="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="cancelModal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <svg class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+            <p class="mb-4 text-gray-500 dark:text-gray-300">
+                Are you sure you want to decline this appointment? This action cannot be undone.
+            </p>
+            <div class="flex justify-center items-center space-x-4">
+                <button data-modal-toggle="cancelModal" type="button" class="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                    No, cancel
+                </button>
+                <form>
+                    <input type="hidden" id="btnArchive" />
+                    <button data-modal-toggle="cancelModal" type="button" onclick="cancelAppointment()" class="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900">
+                        Yes, I'm sure
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="editForm" method="post" class="max-w-2xl mx-auto">
     <input style="display: none" type="text" name="AppointmentId" value="@Model.Appointment.AppointmentId"/>
     <p class="text-2xl font-extrabold dark:text-white inline-block">
         Appointment Details
     </p>
+    @if (Model.Appointment.Status == 1 || Model.Appointment.Status == 4)
+    {
+        <button type="button" style="float: right; margin-top: 10px" id="@Model.Appointment.AppointmentId" data-modal-target="cancelModal" onclick="document.getElementById('btnArchive').value=@Model.Appointment.AppointmentId" data-modal-toggle="cancelModal" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Cancel</button>
+    }
     <div>
         <h3 class="text-lg mb-1 text-gray-900 font-bold">Patient Info</h3>
         <div class="grid md:grid-cols-2 md:gap-6">
@@ -62,7 +94,7 @@
                 <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
                 <input type="text" value="@Model.Appointment.PatientEmail" aria-label="disabled input" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-dafault dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
             </div>
-            <div class="relative z-0 w-full mb-5 group">
+            @* <div class="relative z-0 w-full mb-5 group">
                 <label for="floating_dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Medical records</label>
                 @if (Model.MedicalRecords != null)
                 {
@@ -86,7 +118,7 @@
                         <input type="text" value="Patient has no medical record" aria-label="disabled input" class="rounded-bl-lg bg-gray-100 text-gray-400 rounded-lg border-gray-300  text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full" disabled>
                     </div>
                 }
-            </div>
+            </div> *@
         </div>
     </div>
     <div>
@@ -138,19 +170,28 @@
         <div class="grid md:grid-cols-2 md:gap-6">
             <div class="relative z-0 w-full mb-5 group">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Doctor</label>
-                <select id="doctor" name="doctorId" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    @foreach (var item in Model.doctorList)
-                    {
-                        @if (Model.doctorId == item.UserId)
+                @if (Model.doctorList.Count > 0)
+                {
+                    <select id="doctor" name="doctorId" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">                   
+                        @foreach (var item in Model.doctorList)
                         {
-                            <option value="@item.UserId" selected><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p> </option>
-                        }
-                        else
-                        {
-                            <option value="@item.UserId"><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p></option>
-                        }
-                    }
-                </select>
+                            @if (Model.doctorId == item.UserId)
+                            {
+                                <option value="@item.UserId" selected><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p> </option>
+                            }
+                            else
+                            {
+                                <option value="@item.UserId"><p>@item.User.Name | </p><p>@item.DoctorDepartment.BranchName | </p><p>@item.DoctorSpecialistNavigation.SpecialistName</p></option>
+                            }
+                        }                                  
+                    </select>
+                }
+                else
+                {
+                    <select id="doctor" name="doctorId" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option value="0" selected>No doctor available</option>
+                    </select>
+                }
                 <p id="doctor-error" style="display: none;color: red">@Model.doctorError</p>
             </div>
             <div class="grid md:grid-cols-2 md:gap-6">
@@ -162,14 +203,9 @@
                                 <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                             </svg>
                         </div>
-                        @{
-                            var compareDate = new DateTime(1900, 1, 1);
-                            var currentDate = new DateOnly();
-                        }
-
                        <input datepicker datepicker-format="dd/mm/yyyy" name="requestedDate" value="@Model.Appointment.RequestedTime.ToString("dd/MM/yyyy")" id="requestDate" type="text" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
                     </div>
-                    <p id="requestedDate-error" style="display: none;color: red"></p>
+                    <p id="requestedDate-error" style="color: red">@Model.dateError</p>
                 </div>
                 <div class="relative z-0 w-full mb-5 group">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Requested Time</label>
@@ -267,7 +303,7 @@
                 </div>
             </div>
         </div>
-        <div class="grid md:grid-cols-2 md:gap-6">
+        @* <div class="grid md:grid-cols-2 md:gap-6">
             <div class="relative z-0 w-full mb-5 group">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
                 <select name="AppointmentStatus" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -285,16 +321,16 @@
                     }
                 </select>
             </div>
-        </div>
+        </div> *@
     </div>
     <div class="flex justify-end items-center">
-        <button type="button" onclick="window.location.href='./Index'" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Back</button>
-        <button type="Submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Save</button>
+        <button type="button" onclick="window.location.href='./Index'" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Back</button>
+        
+        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Save</button>
     </div>
-    
 </form>
-<script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
 <script>
     function test() {
         var toast = document.getElementById("toast-danger");
@@ -324,3 +360,11 @@
         animateDiv.addEventListener('transitionend', onTransitionEnd);
     });
 </script>
+<script>
+    function cancelAppointment() {
+        var id = document.getElementById('btnArchive').value;
+        window.location.href = '/Appointments/Edit?handler=CancelAppointment&id=' + id
+    }
+</script>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/site.js"></script>

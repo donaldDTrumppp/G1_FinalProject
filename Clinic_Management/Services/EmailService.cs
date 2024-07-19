@@ -199,7 +199,16 @@ namespace Clinic_Management.Services
             var filePath = Path.Combine(_env.WebRootPath, "template", fileName);
             var htmlContent = await File.ReadAllTextAsync(filePath);
             htmlContent = htmlContent.Replace("<span id=\"dname\" style=\"font-weight: bold\"></span>", $"<span id=\"dname\" style=\"font-weight: bold\">{patientName}</span>");
-            htmlContent = htmlContent.Replace("<a href=\"\" style=\"color: white !important; text-decoration: none\">Verify Account</a>", $"<a href=\"{activeLink}\" style=\"color: white !important; text-decoration: none\">Verify Account</a>");
+            htmlContent = htmlContent.Replace("<a href=\"\">here.</a>", $"<a href=\"{activeLink}\">here.</a>");
+            return htmlContent;
+        }
+
+        public async Task<string> GetAppointmentNotComingEmail(string fileName, DateTime date, string patientName)
+        {
+            var filePath = Path.Combine(_env.WebRootPath, "template", fileName);
+            var htmlContent = await File.ReadAllTextAsync(filePath);
+            htmlContent = htmlContent.Replace("<span id=\"dname\" style=\"font-weight: bold\"></span>", $"<span id=\"dname\" style=\"font-weight: bold\">{patientName}</span>");
+            htmlContent = htmlContent.Replace("<span id=\"time\" style=\"font-weight: bold\"></span>", $"<span id=\"time\" style=\"font-weight: bold\">{date}</span>");
             return htmlContent;
         }
 

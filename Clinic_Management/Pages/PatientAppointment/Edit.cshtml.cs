@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
-using Clinic_Management.Services;
 
 namespace Clinic_Management.Pages.PatientAppointment
 {
@@ -15,14 +14,9 @@ namespace Clinic_Management.Pages.PatientAppointment
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
 
-        private readonly IConfiguration _config;
-
-        private readonly NotificationService _notificationService;
-
-        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, IConfiguration config, NotificationService notificationService)
+        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context)
         {
             _context = context;
-            _notificationService = notificationService;
         }
 
         [BindProperty]
@@ -64,7 +58,6 @@ namespace Clinic_Management.Pages.PatientAppointment
             try
             {
                 await _context.SaveChangesAsync();
-                
             }
             catch (DbUpdateConcurrencyException)
             {

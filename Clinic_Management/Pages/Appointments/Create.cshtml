@@ -89,7 +89,7 @@
                         }
 
                     </div>
-                    <p id="dob-error" style="display: none;color: red"></p>
+                    <p id="dob-error" style="color: red">@Model.dobError</p>
                 </div>
                 <div class="relative z-0 w-full mb-5 group">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
@@ -194,7 +194,7 @@
                             <input datepicker datepicker-format="dd/mm/yyyy" name="requestedDate" value="@Model.requestedDate" id="requestDate" type="text" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
                         }
                     </div>
-                    <p id="requestedDate-error" style="display: none;color: red"></p>
+                    <p id="requestedDate-error" style="color: red">@Model.dateError</p>
                 </div>
                 <div class="relative z-0 w-full mb-5 group">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Requested Time</label>
@@ -294,7 +294,7 @@
         </div>
     </div>
     <div class="flex justify-end items-center">
-        <button type="button" onclick="window.location.href='./Index'" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Back</button>
+        <button type="button" onclick="window.location.href='./Index'" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Back</button>
         <button type="Button" onclick="checkInputData()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Save</button>
     </div>
 </form>
@@ -385,7 +385,8 @@
         </div>
     </div>
 </div>
-
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/site.js"></script>
 <script>
     function checkInputData() {
         var symptoms = document.getElementById('symptoms').value.trim();
@@ -419,23 +420,6 @@
             document.getElementById('address-error').style.display = "none";
         }
 
-        if (dob === '') {
-            errorFlag = true;
-            document.getElementById('dob-error').innerHTML = "Date of birth is required.";
-            document.getElementById('dob-error').style.display = "block";
-        } else {
-            var dobDate = new Date(dob);
-            var currentDate = new Date();
-            currentDate.setHours(0, 0, 0, 0);
-            if (dobDate >= currentDate) {
-                errorFlag = true;
-                document.getElementById('dob-error').innerHTML = "Date of birth cannot be in the future.";
-                document.getElementById('dob-error').style.display = "block";
-            } else {
-                document.getElementById('dob-error').innerHTML = "";
-                document.getElementById('dob-error').style.display = "none";
-            }
-        }
 
         if (phone === '') {
             errorFlag = true;
@@ -472,24 +456,6 @@
         } else {
             document.getElementById('symptoms-error').innerHTML = "";
             document.getElementById('symptoms-error').style.display = "none";
-        }
-
-        if (requestedDate === '') {
-            errorFlag = true;
-            document.getElementById('requestedDate-error').innerHTML = "Request date is required.";
-            document.getElementById('requestedDate-error').style.display = "block";
-        } else {
-            var reqDate = new Date(requestedDate);
-            var currDate = new Date();
-            currDate.setHours(0, 0, 0, 0);
-            if (reqDate <= currDate) {
-                errorFlag = true;
-                document.getElementById('requestedDate-error').innerHTML = "Request date cannot be in the past.";
-                document.getElementById('requestedDate-error').style.display = "block";
-            } else {
-                document.getElementById('requestedDate-error').innerHTML = "";
-                document.getElementById('requestedDate-error').style.display = "none";
-            }
         }
         if (errorFlag === false) {
             document.getElementById('createForm').submit();
