@@ -16,7 +16,7 @@ namespace Clinic_Management.Utils
             _context = context;
             _configuration = configuration;
         }
-        public string GenerateJwtToken(User user, string roleName)
+        public string GenerateJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtOptions");
             var key = Encoding.UTF8.GetBytes(jwtSettings["SigningKey"]);
@@ -25,11 +25,11 @@ namespace Clinic_Management.Utils
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserId.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
-                new Claim(JwtRegisteredClaimNames.Name, user.Name),
-                new Claim("roleId", user.RoleId.ToString())
-            };
+            new Claim(JwtRegisteredClaimNames.NameId, user.UserId.ToString()),
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
+            new Claim(JwtRegisteredClaimNames.Name, user.Name),
+            new Claim("role", _context.Roles.FirstOrDefault(r => r.RoleId == user.RoleId).RoleName)
+        };
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JwtOptions:Issuer"],
@@ -43,23 +43,33 @@ namespace Clinic_Management.Utils
             return tokenHandler.WriteToken(token);
         }
 
-        public int GetUserIdFromToken(string token, string signingKey)
+        public int GetUserIdFromToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(signingKey);
-
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            var key = Encoding.UTF8.GetBytes(_configuration["JwtOptions:SigningKey"]);
+            try
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _configuration["JwtOptions:Issuer"],
+                    ValidAudience = _configuration["JwtOptions:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                }, out SecurityToken validatedToken);
 
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "userId").Value);
-            return userId;
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                Console.WriteLine(jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
+                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
+
+                return userId;
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         public string GetUsernameFromToken(string token)
@@ -90,10 +100,10 @@ namespace Clinic_Management.Utils
             }
         }
 
-        public User GetUserFromToken(string token, string signingKey)
+        public User GetUserFromToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(signingKey);
+            var key = Encoding.UTF8.GetBytes(_configuration["JwtOptions:SigningKey"]);
 
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
@@ -105,7 +115,7 @@ namespace Clinic_Management.Utils
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
-            int userId = int.Parse(jwtToken.Claims.First(x => x.Type == "userId").Value);
+            int userId = int.Parse(jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
 
             return _context.Users.FirstOrDefault(u => u.UserId == userId);
         }

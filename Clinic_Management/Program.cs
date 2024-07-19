@@ -1,3 +1,4 @@
+using Clinic_Management.Hubs;
 using Clinic_Management.Models;
 using Clinic_Management.Models;
 using Clinic_Management.Services;
@@ -83,12 +84,13 @@ namespace Clinic_Management
             app.UseMiddleware<JwtMiddleware>();
 
             app.MapRazorPages();
+            //app.MapHub<AppointmentHubs>("/appointmentHubs");
             app.MapGet("/", context =>
             {
                 context.Response.Redirect("/Index");
                 return Task.CompletedTask;
             });
-
+            
             app.Run();
 
         }
