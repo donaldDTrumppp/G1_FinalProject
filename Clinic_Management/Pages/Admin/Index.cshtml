@@ -23,11 +23,17 @@
             </select>
 
             <select asp-for="RoleId" class="bg-gray-50 mr-2 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                <option value="0" selected>All Branch</option>
+                <option value="0" selected>All Roles</option>
                 @foreach (var item in Model.Roles)
                 {
                     <option title="@item.RoleName" class="w-full" value="@item.RoleId">@item.RoleName</option>
                 }
+            </select>
+
+            <select asp-for="Gender" class="bg-gray-50 mr-2 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option value="0" selected>Xang pha nhot'</option>
+                <option value="1" selected>Male</option>
+                <option value="2" selected>Female</option>
             </select>
 
 
@@ -64,20 +70,33 @@
                     <div class="flex items-center">
                         <div class="flex items-center">
                             Name
+                            <a asp-page="./Index"
+                               id="User"
+                               asp-route-SortField="User"
+                               asp-route-SortOrder="@(Model.SortField == "User" && Model.SortOrder == "asc" ? "desc" : "asc")"
+                               asp-route-StatusId="@Model.StatusId"
+                               asp-route-RoleId="@Model.RoleId"
+                               asp-route-PageIndex="1">
+                            </a>
 
                         </div>
 
                     </div>
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Username
-                </th>
-                <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
-                        Password
-
+                        Username
+                        <a asp-page="./Index"
+                           id="Username"
+                           asp-route-SortField="Username"
+                           asp-route-SortOrder="@(Model.SortField == "Username" && Model.SortOrder == "asc" ? "desc" : "asc")"
+                           asp-route-StatusId="@Model.StatusId"
+                           asp-route-RoleId="@Model.RoleId"
+                           asp-route-PageIndex="1">
+                        </a>
                     </div>
                 </th>
+
                 <th scope="col" class="px-6 py-3">
                     <div class="flex items-center">
                         Email
@@ -116,9 +135,6 @@
                         @Html.DisplayFor(modelItem => item.Username)
                     </td>
                     <td class="px-6 py-4">
-                        @Html.DisplayFor(modelItem => item.Password)
-                    </td>
-                    <td class="px-6 py-4">
                         @Html.DisplayFor(modelItem => item.Email)
                     </td>
                     <td class="px-6 py-4">
@@ -128,11 +144,14 @@
                     <td class="px-6 py-4">
                         @Html.DisplayFor(modelItem => item.Role.RoleName)
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4" id="status-@item.UserId">
+
                         @Html.DisplayFor(modelItem => item.Status.StatusName)
                     </td>
                     <td class="px-6 py-4 text-right items-center">
                         <a asp-page="./Details" asp-route-id="@item.UserId" asp-route-PageIndex="@Model.PageIndex">Details</a>
+                        <svg id="@item.UserId" onclick="document.getElementById('btnArchive').value=@item.UserId" data-modal-target="deleteModal" data-modal-toggle="deleteModal" class="cursor-pointer h-4 w-4 text-red-500 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">  <polyline points="21 8 21 21 3 21 3 8" />  <rect x="1" y="3" width="22" height="5" />  <line x1="10" y1="12" x2="14" y2="12" /></svg>
+                       
                     </td>
                 </tr>
             }
@@ -143,76 +162,280 @@
     </div>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Dob)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Role)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Users)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Dob)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Username)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Password)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Role.RoleId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status.StatusId)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.UserId">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.UserId">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.UserId">Delete</a>
-                </td>
-            </tr>
+<!-- Main modal -->
+<div id="deleteModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+
+            <button type="button" class="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="deleteModal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <svg class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+            <p class="mb-4 text-gray-500 dark:text-gray-300">
+                Are you sure you want to archive this record? This action cannot be undone.
+            </p>
+            <div class="flex justify-center items-center space-x-4">
+                <button data-modal-toggle="deleteModal" type="button" class="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                    No, cancel
+                </button>
+                <form>
+                    <input type="hidden" id="btnArchive" />
+                    <button data-modal-toggle="deleteModal" type="button" onclick="ChangeUserStatus()" class="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900">
+                        Yes, I'm sure
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    var totalPages = (int)Math.Ceiling((double)@Model.TotalRecords / @Model.PageSize);
+    var currentPage = @Model.PageIndex;
+}
+
+@if (totalPages > 1)
+{
+    <div class="mx-16 mb-5">
+        <ol class="flex justify-center gap-1 text-md font-medium">
+            @if (currentPage > 1)
+            {
+                <li>
+                    <a asp-page="./Index"
+                       id="User"
+                       asp-route-SortField="User"
+                       asp-route-SortOrder="@Model.SortField"
+                       asp-route-StatusId="@Model.StatusId"
+                       asp-route-RoleId="@Model.RoleId"
+                       asp-route-PageIndex="1"
+                       class="inline-flex size-8 items-center justify-center rounded border border-gray-500 bg-white text-gray-900 rtl:rotate-180">
+                        <span class="sr-only">First Page</span>
+                        <svg class="h-4 w-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <polyline points="11 7 6 12 11 17" />  <polyline points="17 7 12 12 17 17" /></svg>
+                    </a>
+                </li>
+                <li>
+                    <a asp-page="./Index"
+                       id="User"
+                       asp-route-SortField="User"
+                       asp-route-SortOrder="@Model.SortField"
+                       asp-route-StatusId="@Model.StatusId"
+                       asp-route-RoleId="@Model.RoleId"
+                       asp-route-PageIndex="@(currentPage-1)"
+                       class="inline-flex size-8 items-center justify-center rounded border border-gray-500 bg-white text-gray-900 rtl:rotate-180">
+                        <span class="sr-only">Prev Page</span>
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-4 w-4"
+                             viewBox="0 0 20 20"
+                             fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                  clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </li>
+            }
+
+            @if (totalPages <= 5)
+            {
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    @if (i == currentPage)
+                    {
+                        <li class="block size-8 rounded border-blue-600 bg-blue-600 text-center leading-8 text-white">
+                            @i
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a asp-page="./Index"
+                               id="User"
+                               asp-route-SortField="User"
+                               asp-route-SortOrder="@Model.SortField"
+                               asp-route-StatusId="@Model.StatusId"
+                               asp-route-RoleId="@Model.RoleId"
+                               asp-route-PageIndex="@i"
+                               class="page-link block size-8 rounded border border-gray-500 bg-white text-center leading-8 text-gray-900">
+                                @i
+                            </a>
+                        </li>
+                    }
+                }
+            }
+            else
+            {
+                @if (currentPage > 3)
+                {
+                    @for (int i = currentPage - 2; i <= (totalPages > currentPage + 2 ? currentPage + 2 : totalPages); i++)
+                    {
+                        @if (i == currentPage)
+                        {
+                            <li class="block size-8 rounded border-blue-600 bg-blue-600 text-center leading-8 text-white">
+                                @i
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a asp-page="./Index"
+                                   id="User"
+                                   asp-route-SortField="User"
+                                   asp-route-SortOrder="@Model.SortField"
+                                   asp-route-StatusId="@Model.StatusId"
+                                   asp-route-RoleId="@Model.RoleId"
+                                   asp-route-PageIndex="@i"
+                                   class="page-link block size-8 rounded border border-gray-500 bg-white text-center leading-8 text-gray-900">
+                                    @i
+                                </a>
+                            </li>
+                        }
+                    }
+                }
+                else
+                {
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        @if (i == currentPage)
+                        {
+                            <li class="block size-8 rounded border-blue-600 bg-blue-600 text-center leading-8 text-white">
+                                @i
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a asp-page="./Index"
+                                   id="User"
+                                   asp-route-SortField="User"
+                                   asp-route-SortOrder="@Model.SortField"
+                                   asp-route-StatusId="@Model.StatusId"
+                                   asp-route-RoleId="@Model.RoleId"
+                                   asp-route-PageIndex="@i"
+                                   class="page-link block size-8 rounded border border-gray-500 bg-white text-center leading-8 text-gray-900">
+                                    @i
+                                </a>
+                            </li>
+                        }
+                    }
+                }
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <li>
+                    <a asp-page="./Index"
+                       id="User"
+                       asp-route-SortField="User"
+                       asp-route-SortOrder="@Model.SortField"
+                       asp-route-StatusId="@Model.StatusId"
+                       asp-route-RoleId="@Model.RoleId"
+                       asp-route-PageIndex="@(currentPage+1)"
+                       class="inline-flex size-8 items-center justify-center rounded border border-gray-500 bg-white text-gray-900 rtl:rotate-180">
+                        <span class="sr-only">Next Page</span>
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-4 w-4"
+                             viewBox="0 0 20 20"
+                             fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                  clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </li>
+                <li>
+                    <a asp-page="./Index"
+                       id="User"
+                       asp-route-SortField="User"
+                       asp-route-SortOrder="@Model.SortField"
+                       asp-route-StatusId="@Model.StatusId"
+                       asp-route-RoleId="@Model.RoleId"
+                       asp-route-PageIndex="@(totalPages)"
+                       class="inline-flex size-8 items-center justify-center rounded border border-gray-500 bg-white text-gray-900 rtl:rotate-180">
+                        <span class="sr-only">Last Page</span>
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">  <polyline points="13 17 18 12 13 7" />  <polyline points="6 17 11 12 6 7" /></svg>
+                    </a>
+                </li>
+            }
+        </ol>
+    </div>
+}
+<script src="~/js/createjs.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+<script>
+    function ChangeUserStatus() {
+        var userId = document.getElementById("btnArchive").value;
+        fetch('/api/Admin/status/' + userId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        }).then(user => {
+            if (user == 1) {
+                document.getElementById("status-" + userId).innerHTML = "Active";
+            }else{
+                document.getElementById("status-" + userId).innerHTML = "Deactive";
+            }
+        }).catch(error => {
+            console.error('Fetch error:', error);
+            alert('Failed to update appointment status.');
+        });
+    }
+
+
+    window.onload = () => {
+        const defaultSort = `<svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                                    </svg>`;
+        var rtime = document.getElementById('User');
+        var vtime = document.getElementById('Username');
+
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('SortField')) {
+            const sortField = url.searchParams.get('SortField');
+            const sortOrder = url.searchParams.get('SortOrder');
+            var sort = '';
+            if (sortOrder == 'desc') {
+                sort = `<svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z" clip-rule="evenodd" />
+                            </svg>`;
+            } else {
+                sort = `<svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                          <path fill-rule="evenodd" d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z" clip-rule="evenodd"/>
+                        </svg>`;
+            }
+            switch (sortField) {
+                case 'User':
+                    rtime.innerHTML = sort;
+                    vtime.innerHTML = defaultSort;
+                    doc.innerHTML = defaultSort;
+                    pat.innerHTML = defaultSort;
+                    break;
+                case 'Username':
+                    rtime.innerHTML = defaultSort;
+                    vtime.innerHTML = sort;
+                    doc.innerHTML = defaultSort;
+                    pat.innerHTML = defaultSort;
+                    break;
+                default:
+                    rtime.innerHTML = defaultSort;
+                    vtime.innerHTML = defaultSort;
+                    doc.innerHTML = defaultSort;
+                    pat.innerHTML = defaultSort;
+                    break;
+            }
+        } else {
+            rtime.innerHTML = defaultSort;
+            vtime.innerHTML = defaultSort;
+            doc.innerHTML = defaultSort;
+            pat.innerHTML = defaultSort;
         }
-    </tbody>
-</table>
+
+    }
+</script>

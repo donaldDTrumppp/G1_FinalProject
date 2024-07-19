@@ -37,10 +37,11 @@ namespace Clinic_Management.Pages.Admin
 
         [BindProperty(SupportsGet = true)]
         public int StatusId { get; set; } = 0;
+        public int Gender { get; set; } = 0;
 
         public IList<User> Users { get; set; } = default!;
-        public List<Role> Roles { get;set; }
-        public List<UserStatus> UserStatuses { get;set; }
+        public IList<Role> Roles { get;set; }
+        public IList<UserStatus> UserStatuses { get;set; }
 
         [BindProperty(SupportsGet = true)]
         public string SortField { get; set; }
@@ -64,24 +65,48 @@ namespace Clinic_Management.Pages.Admin
             this.SortField = SortField;
             this.SortOrder = SortOrder;
 
-            // Fetch the Users query first
-            var usersQuery = _context.Users
-                .Include(u => u.Role)
-                .Include(u => u.Status)
-                .Include(u => u.Patient)
-                .Include(u => u.Staff)
-                .ToListAsync();
+            var query = _context.Users
+            .Include(u => u.Role)
+            .Include(u => u.Status)
+            .Include(u => u.Patient)
+            .Include(u => u.Staff)
+            .AsQueryable();
 
-            // Fetch the Roles and UserStatuses asynchronously
-            var rolesTask = _context.Roles.ToListAsync();
-            var userStatusesTask = _context.UserStatuses.ToListAsync();
+            if (StatusId != 0)
+            {
+                query = query.Where(a => a.Status.StatusId == StatusId);
+            }
 
-            // Await the tasks to complete
-            var users = await usersQuery;
-            Roles = await rolesTask;
-            UserStatuses = await userStatusesTask;
-            //TotalRecords = await query.CountAsync();
-            //Users = await query.Skip((this.PageIndex - 1) * PageSize).Take(PageSize).ToListAsync();
+            if (RoleId != 0)
+            {
+                query = query.Where(a => a.Role.RoleId == RoleId);
+            }
+            //TODO: add gay gender
+            //if (Gender != 0)
+            //{
+            //    query = query.Where(a => a. == RoleId);
+            //}
+
+            switch (SortField)
+            {
+                
+                case "User":
+                    query = SortOrder == "desc" ? query.OrderByDescending(r => r.Name) : query.OrderBy(r => r.Name);
+                    break;
+                case "Username":
+                    query = SortOrder == "desc" ? query.OrderByDescending(r => r.Username) : query.OrderBy(r => r.Username);
+                    break;
+                default:
+                    query = query.OrderBy(r => r.UserId); // Default
+                    break;
+            }
+
+            
+
+            TotalRecords = await query.CountAsync();
+            Users = await query.Skip((this.PageIndex - 1) * PageSize).Take(PageSize).ToListAsync();
+            Roles = await _context.Roles.ToListAsync();
+            UserStatuses = await _context.UserStatuses.ToListAsync();
         }
     }
 }

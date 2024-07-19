@@ -19,6 +19,7 @@ namespace Clinic_Management
             //builder.Services.AddDbContext<G1_PRJ_DBContext>();
             builder.Services.AddTransient<ISMSService, SMSService>();
 
+
             var configuration = builder.Configuration;
 
             builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
@@ -35,7 +36,7 @@ namespace Clinic_Management
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            
             app.UseRouting();
 
             app.UseAuthorization();
