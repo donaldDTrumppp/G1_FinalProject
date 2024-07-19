@@ -71,7 +71,7 @@ namespace Clinic_Management.Pages.MedicalRecords
                 int PageIndex = TotalRecord % 5 == 0 ? TotalRecord / 5 : (TotalRecord / 5 + 1);
 
                 string activeLinkNoti = _config["Host"] + _config["Port"] + "/MedicalRecords/Details?id=" + MedicalRecord.MedicalrecordId;
-                await _notificationService.SendMedicalRecordNotification(MedicalRecord.PatientId.GetValueOrDefault(), $"A medical record has CREATED by doctor {MedicalRecord.Doctor.Name}", activeLinkNoti);
+                await _notificationService.SendMedicalRecordNotification((int)MedicalRecord.PatientId, $"A medical record has CREATED by doctor {MedicalRecord.Doctor.Name}", activeLinkNoti);
 
                 string activeLink = _config["Host"] + _config["Port"] + "/MedicalRecords/Details?id=" + MedicalRecord.MedicalrecordId;
                 var htmlContent = await _emailService.GetMedicalRecordEmail("medical_record_created.html", 
