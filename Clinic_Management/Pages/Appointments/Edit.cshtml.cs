@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 using System.Composition.Convention;
+using Clinic_Management.Services;
 
 namespace Clinic_Management.Pages.Appointements
 {
@@ -14,9 +15,18 @@ namespace Clinic_Management.Pages.Appointements
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
 
-        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        private readonly NotificationService _notificationService;
+
+        private readonly EmailService _emailService;
+
+        private readonly IConfiguration _config;
+
+        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, NotificationService notificationService, EmailService emailService, IConfiguration config)
         {
             _context = context;
+            _notificationService = notificationService;
+            _emailService = emailService;
+            _config = config;
         }
 
         public Appointment Appointment { get; set; } = default!;
@@ -196,6 +206,26 @@ namespace Clinic_Management.Pages.Appointements
             {
                 _context.Appointments.Update(a);
                 await _context.SaveChangesAsync();
+                string activeLink = _config["Host"] + _config["Port"] + "/PatientAppointment/Details?id=" + a.AppointmentId;
+                var htmlContent = await _emailService.GetAppointmentCreatedEmail("appointment_edited.html",
+                    a.Branch.BranchName,
+                    a.PatientName,
+                    a.PatientAddress,
+                    a.PatientDob.ToString(),
+                    a.PatientPhoneNumber,
+                    a.PatientEmail,
+                    a.RequestedTime.ToString(),
+                    a.SpecialistNavigation.SpecialistName,
+                    a.Description,
+                    activeLink);
+                _emailService.SendEmailAppointment(a.PatientEmail,
+                    "[Appointment] Appointment Edited",
+                    htmlContent);
+
+                if (a.PatientId != null)
+                {
+                    _notificationService.SendAppointmentNotification((int)a.PatientId, "Your new appointment has been created", activeLink);
+                }
                 return RedirectToPage("./Index", new { Message = "Appointment updated!" });
             }
         }

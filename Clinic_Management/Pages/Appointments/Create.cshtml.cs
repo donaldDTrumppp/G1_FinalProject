@@ -16,11 +16,14 @@ namespace Clinic_Management.Pages.Appointments
         private readonly EmailService _emailService;
 
         private readonly IConfiguration _config;
-        public CreateModel(G1_PRJ_DBContext context, EmailService emailService, IConfiguration config)
+
+        private readonly NotificationService _notificationService;
+        public CreateModel(G1_PRJ_DBContext context, EmailService emailService, IConfiguration config, NotificationService notificationService)
         {
             _context = context;
             _emailService = emailService;
             _config = config;
+            _notificationService = notificationService;
         }
         public IList<User> patientList { get; set; }
         public IList<Staff> doctorList { get; set; }
@@ -80,7 +83,7 @@ namespace Clinic_Management.Pages.Appointments
             branchList = _context.Branches.ToList();
             specialistList = _context.Specialists.ToList();
             doctorList = _context.Staff.Include(d => d.DoctorDepartment).Include(d => d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
-            patientList = _context.Users.Include(u=>u.Patient).Where(u => u.RoleId == 4).ToList();
+            patientList = _context.Users.Include(u => u.Patient).Where(u => u.RoleId == 4).ToList();
             return Page();
         }
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
@@ -89,8 +92,8 @@ namespace Clinic_Management.Pages.Appointments
             DateTime requestedDate = DateTime.ParseExact(requestedDateText, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             branchList = _context.Branches.ToList();
             specialistList = _context.Specialists.ToList();
-            doctorList = _context.Staff.Include(d=>d.DoctorDepartment).Include(d=>d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
-            patientList = _context.Users.Include(u=>u.Patient).Where(u => u.RoleId == 4).ToList();
+            doctorList = _context.Staff.Include(d => d.DoctorDepartment).Include(d => d.DoctorSpecialistNavigation).Include(d => d.User).Where(d => d.User.RoleId == 2).ToList();
+            patientList = _context.Users.Include(u => u.Patient).Where(u => u.RoleId == 4).ToList();
             bool isPatientError = false;
             bool isAppointmentError = false;
 
@@ -111,7 +114,7 @@ namespace Clinic_Management.Pages.Appointments
                     patientError += ", Email existed!";
                     isPatientError = true;
                 }
-                
+
             }
             newAppointment.PatientName = fullname;
             newAppointment.PatientAddress = address;
@@ -195,7 +198,7 @@ namespace Clinic_Management.Pages.Appointments
                 _context.Appointments.Add(newAppointment);
                 _context.SaveChanges();
 
-                string activeLink = _config["Host"] + _config["Port"] + "/Appointments/Details?id=" + newAppointment.AppointmentId;
+                string activeLink = _config["Host"] + _config["Port"] + "/PatientAppointment/Details?id=" + newAppointment.AppointmentId;
                 var htmlContent = await _emailService.GetAppointmentCreatedEmail("appointment_created.html",
                     newAppointment.Branch.BranchName,
                     newAppointment.PatientName,
@@ -211,6 +214,10 @@ namespace Clinic_Management.Pages.Appointments
                     "[Appointment] Appointment Created Successfully",
                     htmlContent);
 
+                if (newAppointment.PatientId != null)
+                {
+                    _notificationService.SendAppointmentNotification((int)newAppointment.PatientId, "Your new appointment has been created", activeLink);
+                }
                 return RedirectToPage("./Index", new { Message = "Appointment created!" });
             }
             //return Page();

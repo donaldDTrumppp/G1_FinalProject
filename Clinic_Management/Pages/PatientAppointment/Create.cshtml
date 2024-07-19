@@ -163,7 +163,7 @@
         {
             <div class="mb-5">
                 <input type="hidden" asp-for="Appointment.PatientId" value="@Model.User.UserId" />
-                <input type="checkbox" id="fill" onclick="fillInformation('@Model.User.Name', '@Model.User.Address', '@Model.User.Dob', '@Model.User.PhoneNumber', '@Model.User.Email')" /> Use information from this account
+                <input type="checkbox" style="margin-bottom: 4px" id="fill" onclick="fillInformation('@Model.User.Name', '@Model.User.Address', '@Model.User.Dob', '@Model.User.PhoneNumber', '@Model.User.Email')" /> Use information from this account
             </div>
         }
         <div class="mb-5">
