@@ -1,4 +1,5 @@
 ﻿using Clinic_Management.Models;
+using Clinic_Management.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,10 +16,17 @@ namespace Clinic_Management.Pages.Appointments
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
         private readonly Clinic_Management.Utils.Authentication authentication;
         private readonly IConfiguration _configuration;
-        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context,IConfiguration config)
+        private readonly EmailService _emailService;
+        private readonly NotificationService _notificationService;
+        private readonly IConfiguration _config;
+
+        public CreateModel(Clinic_Management.Models.G1_PRJ_DBContext context,IConfiguration config, EmailService emailService, NotificationService notificationService, IConfiguration configu)
         {
             _context = context;
             _configuration = config;
+            _config = configu;
+            _emailService = emailService;
+            _notificationService = notificationService;
             authentication = new Clinic_Management.Utils.Authentication(context, config);
         }
         public IList<User> patientList { get; set; }
@@ -209,7 +217,13 @@ namespace Clinic_Management.Pages.Appointments
                 newAppointment.CreatedAt = DateTime.Now;
                 _context.Appointments.Add(newAppointment);
                 _context.SaveChanges();
-                
+                string activeLink = _config["Host"] + _config["Port"] + "/PatientAppointment/Details?id=" + newAppointment.PatientId;
+                var htmlContent = await _emailService.GetAppointmentApprovedEmail("appointment_approved.html", newAppointment.Branch.BranchName, newAppointment.PatientName, newAppointment.PatientAddress, newAppointment.PatientDob.ToString(), newAppointment.PatientPhoneNumber, newAppointment.PatientEmail, newAppointment.RequestedTime.ToString(), newAppointment.SpecialistNavigation.SpecialistName, newAppointment.Description, activeLink, newAppointment.Doctor.Name, newAppointment.Receptionist.Name, "Approved");
+                _emailService.SendEmailAppointment(newAppointment.PatientEmail, "[Appointment Approved] Your Appointment Has Been Approved", htmlContent);
+                if(newAppointment.PatientId != null)
+                {
+                    _notificationService.SendAppointmentNotification((int)newAppointment.PatientId, "Your appointment has been approved", activeLink);
+                }
                 return RedirectToPage("./Index", new { Message = "Appointment created!" });
 
             }

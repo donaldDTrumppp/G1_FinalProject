@@ -98,7 +98,7 @@ namespace Clinic_Management.Pages.PatientAppointment
             Appointment.RequestedTime = new DateTime(Appointment.RequestedTime.Year, Appointment.RequestedTime.Month, Appointment.RequestedTime.Day, 0, 0, 0);
             Appointment.RequestedTime = Appointment.RequestedTime.AddHours(Time);
             _context.Attach(Appointment).State = EntityState.Modified;
-
+            Appointment.Status = 6;
             try
             {
                 await _context.SaveChangesAsync();

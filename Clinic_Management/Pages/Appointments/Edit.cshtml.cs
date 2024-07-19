@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.SignalR;
 using Clinic_Management.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
+using Clinic_Management.Services;
 
 namespace Clinic_Management.Pages.Appointments
 {
@@ -20,11 +21,15 @@ namespace Clinic_Management.Pages.Appointments
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
         private readonly Clinic_Management.Utils.Authentication authentication;
         private readonly IConfiguration _configuration;
-        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, IConfiguration config)
+        private readonly EmailService _emailService;
+        private readonly NotificationService _notificationService;
+        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, IConfiguration config, EmailService emailService, NotificationService notificationService)
         {
             _context = context;
             _configuration = config;
             authentication = new Clinic_Management.Utils.Authentication(context, config);
+            _emailService = emailService;
+            _notificationService = notificationService;
         }
 
         public Appointment Appointment { get; set; } = default!;
@@ -214,6 +219,14 @@ namespace Clinic_Management.Pages.Appointments
                 a.ReceptionistId = u.UserId;
                 _context.Appointments.Update(a);
                 await _context.SaveChangesAsync();
+                string activeLink = _configuration["Host"] + _configuration["Port"] + "/PatientAppointment/Details?id=" + a.AppointmentId;
+
+                var htmlContent = await _emailService.GetAppointmentApprovedEmail("appointment_approved.html", a.Branch.BranchName, a.PatientName, a.PatientAddress, a.PatientDob.ToString(), a.PatientPhoneNumber, a.PatientEmail, a.RequestedTime.ToString(), a.SpecialistNavigation.SpecialistName, a.Description, activeLink, a.Doctor.Name, a.Receptionist.Name, "Approved");
+                _emailService.SendEmailAppointment(a.PatientEmail, "[Appointment Approved] Your Appointment Has Been Approved", htmlContent);
+                if (a.PatientId != null)
+                {
+                    _notificationService.SendAppointmentNotification((int)a.PatientId, "Your appointment has been approved", activeLink);
+                }
                 return RedirectToPage("./Index", new { Message = "Appointment updated!"});
             }
             return Page();
@@ -266,6 +279,14 @@ namespace Clinic_Management.Pages.Appointments
             {
                 appointment.Status = 7;
                 await _context.SaveChangesAsync();
+            }
+            string activeLink = _configuration["Host"] + _configuration["Port"] + "/PatientAppointment/Details?id=" + appointment.AppointmentId;
+
+            var htmlContent = await _emailService.GetAppointmentRejectedEmail("appointment_rejected.html", appointment.PatientName, activeLink);
+            _emailService.SendEmailAppointment(appointment.PatientEmail, "[Appointment Approved] Your Appointment Has Been Rejected", htmlContent);
+            if (appointment.PatientId != null)
+            {
+                _notificationService.SendAppointmentNotification((int)appointment.PatientId, "Your appointment has been declined", activeLink);
             }
             return RedirectToPage("./Index", new { Message = "Appointment declined!" });
         }
