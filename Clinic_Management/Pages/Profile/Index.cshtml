@@ -1,0 +1,89 @@
+﻿@page
+@model Clinic_Management.Pages.Profile.IndexModel
+@{
+    ViewData["Title"] = "Profile";
+}
+<div style="padding: 20px 0px 20px 0px">
+    <div class="max-w-2xl mx-auto">
+        <div class="mb-5 grid md:grid-cols-2 md:gap-6 flex items-center">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">User Profile</h2>
+            </div>
+            <div class="flex justify-end">
+                <form id="frm">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input onclick="sbmit('@(!Model.Mode)')" type="checkbox" class="sr-only peer" @(Model.Mode ? "checked" : "") />
+                        <div class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Edit Mode</span>
+                    </label>
+                </form>
+            </div>
+        </div>
+
+        <form id="form" method="post">
+            <input type="hidden" asp-for="UserProfile.UserId" />
+            <input type="hidden" asp-for="UserProfile.Role.RoleId" />
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1">Username:</label>
+                    <input type="text" asp-for="UserProfile.Username" class="border border-gray-300 !text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled="@(!Model.Mode)" />
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1">Name:</label>
+                    <input type="text" asp-for="UserProfile.Name" class="border border-gray-300 !text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled="@(!Model.Mode)" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1">Date of Birth:</label>
+                    <input type="date" asp-for="UserProfile.Dob" class="border border-gray-300 !text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled="@(!Model.Mode)" />
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1">Phone Number:</label>
+                    <input type="tel" asp-for="UserProfile.PhoneNumber" class="border border-gray-300 !text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled="@(!Model.Mode)" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1">Email:</label>
+                    <input type="email" asp-for="UserProfile.Email" class="border border-gray-300 !text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled="@(!Model.Mode)" />
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1">Address:</label>
+                    <input type="text" asp-for="UserProfile.Address" class="border border-gray-300 !text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled="@(!Model.Mode)" />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold mb-1">Health Insurance:</label>
+                <input type="text" asp-for="PatientProfile.HealthInsurance" class="border border-gray-300 !text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-default dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled="@(!Model.Mode)" />
+            </div>
+
+            <div class="flex justify-end mt-6">
+                @if (Model.Mode)
+                {
+                    <div class="flex justify-end mt-6">
+                        <a asp-page="./Index" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 mr-2">Back</a>
+                        <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800">Save</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="flex justify-end mt-6">
+                        <a asp-page="/Profile/ChangePassword" class="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800">Change Password</a>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function sbmit(mode) {
+        var url = new URL(window.location.href);
+        url.searchParams.set('Mde', mode);
+        window.location.href = url.toString();
+    }
+</script>

@@ -50,19 +50,26 @@ namespace Clinic_Management.Pages.Authentication
                 .Where(u => (u.Username == Username && u.Password == Password) || (u.Email == Username && u.Password == Password))
                 .FirstOrDefaultAsync();
 
-
-            var role = await _context.Roles
+            if (user.StatusId == 1)
+            {
+                var role = await _context.Roles
                 .Where(r => r.RoleId == user.RoleId)
                 .Select(r => r.RoleName)
                 .FirstOrDefaultAsync();
 
-            var token = authentication.GenerateJwtToken(user);
-            Response.Cookies.Append("AuthToken", token);
-            Response.Cookies.Append("Username", user.Name);
+                var token = authentication.GenerateJwtToken(user, role);
+                Response.Cookies.Append("AuthToken", token);
+                Response.Cookies.Append("Username", user.Name);
 
-            Console.WriteLine(token);
-            //return new JsonResult(new { Token = token });
-            return Redirect(returnUrl ?? "/Index");
+                Console.WriteLine(token);
+                //return new JsonResult(new { Token = token });
+                return Redirect(returnUrl ?? "/Index");
+            }
+            else
+            {
+                return Page();
+            }
+            
         }
     }
 }

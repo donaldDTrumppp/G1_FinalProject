@@ -1,4 +1,68 @@
 ﻿@page
 @model Clinic_Management.Pages.Authentication.ConfirmEmailModel
 @{
+    ViewData["Title"] = "Confirm Email";
 }
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    .confirm-email-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 20px;
+        height: 50vh;
+    }
+
+    .confirm-email-box {
+        width: 100%;
+        max-width: 600px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .confirmation-message {
+        padding: 20px;
+        font-size: 1rem;
+        color: #333;
+        text-align: center;
+    }
+
+    .resend-button {
+        width: 100%;
+        background-color: #1c64f2;
+        color: white;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+        .resend-button:hover {
+            background-color: #1a5bc1;
+        }
+</style>
+
+<div class="confirm-email-container">
+    <div class="confirm-email-box">
+        <h2>Email Confirmation</h2>
+        <p class="confirmation-message">
+            A verification link has been sent to your email. Please check your email and confirm your email to complete registration.
+        </p>
+        <form method="post" asp-page-handler="ResendVerification">
+            <button type="submit" class="resend-button">Re-send verification link</button>
+        </form>
+    </div>
+</div>

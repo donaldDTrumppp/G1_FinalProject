@@ -12,6 +12,8 @@ namespace Clinic_Management.Utils
         private readonly string[] _excludedPaths = {
             "/Authentication/Login",
             "/Authentication/Register",
+            "/Authentication/ConfirmEmail",
+            "/Authentication/ResetPassword",
             "/Authentication/Logout",
             "/Index",
             "/PatientAppointment/Create",
