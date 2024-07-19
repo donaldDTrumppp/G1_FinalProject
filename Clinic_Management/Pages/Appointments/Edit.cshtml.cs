@@ -9,9 +9,11 @@ using Clinic_Management.Models;
 using System.Composition.Convention;
 using Microsoft.AspNetCore.SignalR;
 using Clinic_Management.Hubs;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Clinic_Management.Pages.Appointements
+namespace Clinic_Management.Pages.Appointments
 {
+    [Authorize(Policy = "StaffPolicy")]
     public class EditModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;

@@ -1,4 +1,5 @@
 ﻿using Clinic_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Clinic_Management.Pages.Appointments
 {
+    [Authorize(Policy = "StaffPolicy")]
+
     public class CreateModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;

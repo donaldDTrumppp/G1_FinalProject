@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Clinic_Management.Pages.Appointements
+namespace Clinic_Management.Pages.Appointments
 {
+    [Authorize(Policy = "StaffPolicy")]
     public class DetailsModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;

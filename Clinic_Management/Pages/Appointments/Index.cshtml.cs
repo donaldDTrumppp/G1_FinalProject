@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Models;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Clinic_Management.Pages.Appointements
+namespace Clinic_Management.Pages.Appointments
 {
+    [Authorize(Policy = "StaffPolicy")]
     public class IndexModel : PageModel
     {
         private readonly G1_PRJ_DBContext _context;
