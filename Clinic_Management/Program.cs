@@ -1,4 +1,5 @@
-﻿//using Clinic_Management.Models;
+
+using Clinic_Management.Hubs;
 using Clinic_Management.Models;
 using Clinic_Management.Services;
 using Clinic_Management.Utils;
@@ -133,12 +134,13 @@ namespace Clinic_Management
             app.MapRazorPages();
             app.MapHub<SignalrServer>("/signalrServer");
 
+
             app.MapGet("/", context =>
             {
                 context.Response.Redirect("/Index");
                 return Task.CompletedTask;
             });
-
+            
             app.Run();
 
         }
