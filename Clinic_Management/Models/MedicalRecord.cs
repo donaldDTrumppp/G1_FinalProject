@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 
 namespace Clinic_Management.Models
 {
@@ -16,13 +15,8 @@ namespace Clinic_Management.Models
         public string? Diagnosis { get; set; }
         public string? Treatment { get; set; }
 
-        [XmlIgnore]
         public virtual Appointment? Appointment { get; set; }
-
-        [XmlIgnore]
         public virtual User? Doctor { get; set; }
-
-        [XmlIgnore]
         public virtual Patient? Patient { get; set; }
     }
 }
