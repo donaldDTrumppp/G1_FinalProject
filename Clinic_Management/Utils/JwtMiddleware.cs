@@ -13,6 +13,7 @@ namespace Clinic_Management.Utils
             "/Authentication/Login",
             "/Authentication/Register",
             "/Authentication/ConfirmEmail",
+            "/Authentication/ForgotPassword",
             "/Authentication/ResetPassword",
             "/Authentication/Logout",
             "/Index",
