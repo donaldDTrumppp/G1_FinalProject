@@ -9,21 +9,21 @@ using Clinic_Management.Models;
 using System.Composition.Convention;
 using Microsoft.AspNetCore.SignalR;
 using Clinic_Management.Hubs;
-using Microsoft.AspNetCore.Authorization;
 
-namespace Clinic_Management.Pages.Appointments
+namespace Clinic_Management.Pages.Appointements
 {
-    [Authorize(Policy = "StaffPolicy")]
     public class EditModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
         private readonly Clinic_Management.Utils.Authentication authentication;
         private readonly IConfiguration _configuration;
-        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, IConfiguration config)
+        private readonly IHubContext<AppointmentHubs> _signalRHub;
+        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, IConfiguration config, IHubContext<AppointmentHubs> signalRhub)
         {
             _context = context;
             _configuration = config;
             authentication = new Clinic_Management.Utils.Authentication(context, config);
+            _signalRHub= signalRhub;
         }
 
         public Appointment Appointment { get; set; } = default!;
@@ -256,6 +256,7 @@ namespace Clinic_Management.Pages.Appointments
                 appointment.Status = 3;
                 await _context.SaveChangesAsync();
             }
+            await _signalRHub.Clients.All.SendAsync("LoadAppointment");
             return RedirectToPage("./Index", new { Message = "Appointment canceled!" });
         }
         public async Task<IActionResult> OnGetDeclineAppointmentAsync(int id)
@@ -265,6 +266,7 @@ namespace Clinic_Management.Pages.Appointments
             {
                 appointment.Status = 7;
                 await _context.SaveChangesAsync();
+                await _signalRHub.Clients.All.SendAsync("LoadAppointment");
             }
             return RedirectToPage("./Index", new { Message = "Appointment declined!" });
         }
