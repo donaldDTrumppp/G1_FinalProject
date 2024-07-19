@@ -12,15 +12,13 @@ namespace Clinic_Management.Utils
             "/Authentication/Login",
             "/Authentication/Register",
             "/Authentication/ConfirmEmail",
+            "/Authentication/ForgotPassword",
             "/Authentication/ResetPassword",
             "/Authentication/Logout",
             "/Index",
             "/PatientAppointment/Create",
             "/Index",
             "/signalrServer/negotiate",
-            "/signalrServer"
-        }; 
-
             "/signalrServer",
             "/Home/404",
             "/Home/403"
