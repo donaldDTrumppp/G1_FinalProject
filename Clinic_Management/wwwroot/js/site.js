@@ -4,7 +4,7 @@
 
 //connection.on("LoadAppointment",
 //    function () {
-//        location.href = '/Appointments/Index'
+//        location.href = '/Appointments'
 //    });
 
 //connection.start().catch(function (err) {

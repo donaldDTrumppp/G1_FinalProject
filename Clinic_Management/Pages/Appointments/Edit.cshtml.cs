@@ -15,9 +15,15 @@ namespace Clinic_Management.Pages.Appointements
     public class EditModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
-        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context)
+        private readonly Clinic_Management.Utils.Authentication authentication;
+        private readonly IConfiguration _configuration;
+        private readonly IHubContext<AppointmentHubs> _signalRHub;
+        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, IConfiguration config, IHubContext<AppointmentHubs> signalRhub)
         {
             _context = context;
+            _configuration = config;
+            authentication = new Clinic_Management.Utils.Authentication(context, config);
+            _signalRHub= signalRhub;
         }
 
         public Appointment Appointment { get; set; } = default!;
@@ -149,8 +155,8 @@ namespace Clinic_Management.Pages.Appointements
                 }
                 else
                 {
-                    requestedDate = assignTime();
-                    var appointment = _context.Appointments.FirstOrDefault(a => (a.DoctorId == doctorId && a.RequestedTime.Equals(requestedDate) && a.Status == 1) && a.AppointmentId != Appointment.AppointmentId);
+                    //requestedDate = assignTime();
+                    var appointment = _context.Appointments.FirstOrDefault(a => (a.DoctorId == doctorId && a.RequestedTime.Equals(DateTime.Parse(assignTime().ToString("yyyy-MM-dd HH:mm:ss"))) && a.Status == 1) && a.AppointmentId != Appointment.AppointmentId);
                     if (appointment != null)
                     {
                         appointmentError += "The doctor already has an appointment at this time";
@@ -164,7 +170,7 @@ namespace Clinic_Management.Pages.Appointements
                             a.DoctorId = doctorId;
                             a.BranchId = branchId;
                             a.Specialist = specialistId;
-                            a.RequestedTime = requestedDate;
+                            a.RequestedTime = DateTime.Parse(assignTime().ToString("yyyy-MM-dd HH:mm:ss"));
                             if (a.Status == 1||a.Status==4)
                             {
                                 a.Status = 4;
@@ -173,6 +179,7 @@ namespace Clinic_Management.Pages.Appointements
                             {
                                 a.Status = 1;
                             }
+                            
 
                         }                                          
                     }
@@ -182,7 +189,7 @@ namespace Clinic_Management.Pages.Appointements
             {
                 a.BranchId = branchId;
                 a.Specialist = specialistId;
-                a.RequestedTime = assignTime();
+                a.RequestedTime = DateTime.Parse(assignTime().ToString("yyyy-MM-dd HH:mm:ss"));
                 a.Description = symptoms;
                 if(a.Status == 1)
                 {
@@ -192,7 +199,8 @@ namespace Clinic_Management.Pages.Appointements
                 {
                     a.Status = 6;
                 }
-            }         
+            }    
+            
             if (isAppointmentError)
             {
                 errorMessage = "Error occurs";
@@ -200,6 +208,9 @@ namespace Clinic_Management.Pages.Appointements
             }
             else
             {
+                string token = HttpContext.Request.Cookies["AuthToken"];
+                User u = authentication.GetUserFromToken(token);
+                a.ReceptionistId = u.UserId;
                 _context.Appointments.Update(a);
                 await _context.SaveChangesAsync();
                 return RedirectToPage("./Index", new { Message = "Appointment updated!"});
@@ -245,6 +256,7 @@ namespace Clinic_Management.Pages.Appointements
                 appointment.Status = 3;
                 await _context.SaveChangesAsync();
             }
+            await _signalRHub.Clients.All.SendAsync("LoadAppointment");
             return RedirectToPage("./Index", new { Message = "Appointment canceled!" });
         }
         public async Task<IActionResult> OnGetDeclineAppointmentAsync(int id)
@@ -254,6 +266,7 @@ namespace Clinic_Management.Pages.Appointements
             {
                 appointment.Status = 7;
                 await _context.SaveChangesAsync();
+                await _signalRHub.Clients.All.SendAsync("LoadAppointment");
             }
             return RedirectToPage("./Index", new { Message = "Appointment declined!" });
         }
