@@ -56,7 +56,7 @@ namespace Clinic_Management.Pages.Authentication
                 .Select(r => r.RoleName)
                 .FirstOrDefaultAsync();
 
-            var token = authentication.GenerateJwtToken(user, role);
+            var token = authentication.GenerateJwtToken(user);
             Response.Cookies.Append("AuthToken", token);
             Response.Cookies.Append("Username", user.Name);
 

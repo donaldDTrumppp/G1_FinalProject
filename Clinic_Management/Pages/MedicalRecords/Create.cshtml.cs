@@ -1,16 +1,19 @@
 ﻿using Clinic_Management.Models;
 using Clinic_Management.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Twilio.TwiML.Voice;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
+    [Authorize(Policy = "StaffPolicy")]
     public class CreateModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
+
+        private readonly Clinic_Management.Utils.Authentication authentication;
 
         private readonly EmailService _emailService;
 
@@ -20,6 +23,7 @@ namespace Clinic_Management.Pages.MedicalRecords
             _context = context;
             _emailService = emailService;
             _config = config;
+            authentication = new Clinic_Management.Utils.Authentication(context, config);
         }
 
         public string Message { get; set; } = "";
@@ -27,6 +31,8 @@ namespace Clinic_Management.Pages.MedicalRecords
 
         public IActionResult OnGet(string? TypeMessage, string? Message)
         {
+            //string token = HttpContext.Request.Cookies["AuthToken"];
+            //User u = authentication.GetUserFromToken(token);
             this.TypeMessage = TypeMessage;
             this.Message = Message;
             ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Clinic_Management.Models;
 using Microsoft.EntityFrameworkCore;
 using Clinic_Management.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clinic_Management.Pages.PatientAppointment
 {
