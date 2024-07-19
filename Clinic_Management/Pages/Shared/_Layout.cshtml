@@ -294,7 +294,239 @@
         </footer>
         <!-- end footer -->
     </main>
+    <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script>
+        //Set cookie time
+        function deleteCookie(name) {
+            document.cookie = name + '=; Max-Age=-99999999;';
+        }
 
+        function disableNt() {
+            document.getElementById("nt").style.display = "none";
+        }
+
+        async function getToken() {
+            const response = await fetch('/api/Authentication');
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                if (data != null) {
+                    var connection = new signalR.HubConnectionBuilder()
+                        .withUrl("/signalrServer?access_token=" + data.token, { accessTokenFactory: () => data.Token })
+                        .build();
+
+                    connection.start().then(function () {
+                        connection.on("LoadNotifications", function (notification) {
+                            console.log("Nhận thông báo mới:", notification);
+                            var image = "";
+                            switch (notification.typeNavigation.typeName) {
+                                case "Appointment": {
+                                    image = "/Images/appointment.jpg";
+                                    break;
+                                }
+                                case "Medical": {
+                                    image = "/Images/medical-record.png";
+                                    break;
+                                }
+                                case "System": {
+                                    image = "/Images/message.png";
+                                    break;
+                                }
+                            }
+                            var ntimage = document.getElementById('newimage');
+                            ntimage.src = image;
+                            document.getElementById("newsubject").innerHTML = notification.subject;
+                            document.getElementById("newcomment").innerHTML = notification.content;
+                            console.log(ntimage.src);
+                            console.log(document.getElementById("newsubject").innerHTML);
+                            console.log(document.getElementById("newcomment").innerHTML);
+                            if (document.getElementById("toast-notification").classList.contains("animate-[fade-out_2s_ease-out_1s_1_forwards]")) {
+                                document.getElementById("toast-notification").classList.remove("animate-[fade-out_2s_ease-out_1s_1_forwards]")
+                            }
+                            void document.getElementById("toast-notification").offsetWidth;
+                            document.getElementById("toast-notification").classList.add("animate-[fade-out_2s_ease-out_1s_1_forwards]")
+                            document.getElementById("nt").style.display = "block";
+
+                            var resultDiv = document.getElementById('notify');
+                            var a = resultDiv.innerHTML;
+                            var b;
+                            b = '<div style="width: 8px; height: 8px; margin-left: 4px; margin-top: 18px" class="absolute left-1 top-0  bg-red-500 rounded-full">'
+                                + '<span class="text-sm text-white p-1"></span>'
+                                + '</div>';
+
+
+                            resultDiv.innerHTML = "";
+                            resultDiv.innerHTML += '<div style="position: relative">' + b + '<a onclick="UpdateNotification(' + notification.notificationId + ', \'' + notification.link + '\')"  class="flex cursor-pointer px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">'
+                                + '<div class="flex-shrink-0">'
+                                + '<img class="rounded-full w-11 h-11" src = "' + image + '" alt = "Jese image">'
+                                + '<div class="absolute flex items-center justify-center w-5 h-5 ms-6 -mt-5 bg-blue-600 border border-white rounded-full dark:border-gray-800">'
+                                + '<svg class="w-2 h-2 text-white" aria-hidden="true" xmlns = "http://www.w3.org/2000/svg" fill = "currentColor" viewBox = "0 0 18 18">'
+                                + '<path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/>'
+                                + '<path d="M4.439 9a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239Z"/>'
+                                + '</svg>'
+                                + '</div>'
+                                + '</div>'
+                                + '<div class="w-full ps-3">'
+                                + '<div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400" style = "text-align: start !important">'
+                                + '<div class="flex justify-between">'
+                                + '<div class="font-semibold text-gray-900 dark:text-white">' + notification.subject + '</div>'
+                                + '<div>' + formatDate(notification.datetime) + '</div>'
+                                + '</div>'
+                                + '<div>' + notification.content + '</div>'
+                                + '</div>'
+                                + '</div>'
+                                + '</a>';
+                            resultDiv.innerHTML += a;
+                        });
+
+                        connection.on("ReceiveUserStatusChange", function (username, isActive) {
+                            console.log(username);
+                            console.log(isActive);
+                            if (username && !isActive) {
+                                //TODO: Delete Token
+                                deleteCookie('AuthToken');
+                                deleteCookie('Username');
+                                window.location.href = "https://localhost:7200/Authentication/Login";
+                            }
+                        });
+
+                    }).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+                return data.Token;
+            } else {
+                console.error('Failed to get token');
+                return null;
+            }
+        }
+        getToken();
+        
+
+        var page = 1;
+        GetNotification();
+
+        async function UpdateNotification(id, link) {
+
+            try {
+                const response = await fetch('/api/Notification/' + id, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                window.location.href = link;
+                console.log(response);
+            } catch (error) {
+                console.error('Fetch error:', error);
+            };
+
+        }
+
+        async function GetNotification() {
+            try {
+                const response = await fetch('/api/Notification/' + page, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                var json = await response.json();
+                var resultDiv = document.getElementById('notify');
+                json.forEach(notify => {
+                    var image = "";
+                    switch (notify.typeNavigation.typeName) {
+                        case "Appointment": {
+                            image = "/Images/appointment.jpg";
+                            break;
+                        }
+                        case "Medical": {
+                            image = "/Images/medical-record.png";
+                            break;
+                        }
+                        case "System": {
+                            image = "/Images/message.png";
+                            break;
+                        }
+                    }
+                    var b;
+                    if (notify.isRead == false) {
+                        b = '<div style="width: 8px; height: 8px; margin-left: 4px; margin-top: 18px" class="absolute left-1 top-0  bg-red-500 rounded-full">'
+                            + '<span class="text-sm text-white p-1"></span>'
+                            + '</div>';
+                    }
+                    else {
+                        b = '<div style="width: 8px; height: 8px; margin-left: 4px; margin-top: 18px; display: none" class="absolute left-1 top-0  bg-red-500 rounded-full">'
+                            + '<span class="text-sm text-white p-1"></span>'
+                            + '</div>';
+                    }
+                    resultDiv.innerHTML += '<div style="position: relative">' + b + '<a onclick="UpdateNotification(' + notify.notificationId + ', \'' + notify.link + '\')"  class="flex cursor-pointer px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">'
+                        + '<div class="flex-shrink-0">'
+                        + '<img class="rounded-full w-11 h-11" src = "' + image + '" alt = "Jese image">'
+                        + '<div class="absolute flex items-center justify-center w-5 h-5 ms-6 -mt-5 bg-blue-600 border border-white rounded-full dark:border-gray-800">'
+                        + '<svg class="w-2 h-2 text-white" aria-hidden="true" xmlns = "http://www.w3.org/2000/svg" fill = "currentColor" viewBox = "0 0 18 18">'
+                        + '<path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/>'
+                        + '<path d="M4.439 9a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239Z"/>'
+                        + '</svg>'
+                        + '</div>'
+                        + '</div>'
+                        + '<div class="w-full ps-3">'
+                        + '<div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400" style = "text-align: start !important">'
+                        + '<div class="flex justify-between">'
+                        + '<div class="font-semibold text-gray-900 dark:text-white">' + notify.subject + '</div>'
+                        + '<div>' + formatDate(notify.datetime) + '</div>'
+                        + '</div>'
+                        + '<div>' + notify.content + '</div>'
+                        + '</div>'
+                        + '</div>'
+                        + '</a></div>';
+                });
+                if (json.length == 0) {
+                    loadingDiv.style.display = "none";
+                }
+                console.log(json);
+            } catch (error) {
+                console.error('Fetch error:', error);
+            };
+        }
+
+        const loadingDiv = document.getElementById('loading');
+
+        // Tạo một instance của IntersectionObserver
+        const observer = new IntersectionObserver(entries => {
+            // Xử lý khi phần tử loading vào vùng nhìn thấy
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    page++;
+                    console.log("Loading");
+                    GetNotification();
+                    // Thực hiện các hành động khác tại đây
+                }
+            });
+        }, {
+            root: document.getElementById("dropdownNotification"), // Chỉ theo dõi trong phạm vi của div cha có khả năng scroll
+            threshold: 0.5 // Chỉ kích hoạt khi phần tử loading có 50% nằm trong vùng nhìn thấy
+        });
+
+        observer.observe(loadingDiv);
+
+        function formatDate(inputDate) {
+            const date = new Date(inputDate);
+
+            if (isNaN(date.getTime())) {
+                throw new Error('Invalid date format');
+            }
+
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(-2);
+
+            return `${day}/${month}/${year}`;
+        }
+    </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131505823-4"></script>

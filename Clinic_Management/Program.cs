@@ -19,6 +19,16 @@ namespace Clinic_Management
             //builder.Services.AddDbContext<G1_PRJ_DBContext>();
             builder.Services.AddTransient<ISMSService, SMSService>();
 
+            builder.Services.AddDbContext<G1_PRJ_DBContext>();
+            builder.Services.AddTransient<EmailService>();
+            builder.Services.AddTransient<SignalrServer>();
+            builder.Services.AddTransient<UserContextService>();
+            builder.Services.AddTransient<NotificationService>();
+            builder.Services.AddTransient<Authentication>();
+            builder.Services.AddTransient<PasswordService>();
+
+            builder.Services.AddSignalR();
+            builder.Services.AddHostedService<BackgroundWorkerService>();
 
             var configuration = builder.Configuration;
 
@@ -33,7 +43,7 @@ namespace Clinic_Management
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+           
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             
