@@ -39,6 +39,7 @@ namespace Clinic_Management.Pages.Appointements
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 5;
         public int totalRecords { get; set; }
+        public int roleID {  get; set; }
         public String Message { get; set; }
         public async Task OnGetAsync(string action, int id,string Message)
         {

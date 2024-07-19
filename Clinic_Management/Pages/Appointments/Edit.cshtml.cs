@@ -18,13 +18,11 @@ namespace Clinic_Management.Pages.Appointements
 
         private readonly Clinic_Management.Utils.Authentication authentication;
         private readonly IConfiguration _configuration;
-        private readonly IHubContext<AppointmentHubs> _signalRHub;
-        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, IConfiguration config, IHubContext<AppointmentHubs> signalRhub)
+        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, IConfiguration config)
         {
             _context = context;
             _configuration = config;
             authentication = new Clinic_Management.Utils.Authentication(context, config);
-            _signalRHub= signalRhub;
 
 
 
@@ -218,7 +216,6 @@ namespace Clinic_Management.Pages.Appointements
                 appointment.Status = 3;
                 await _context.SaveChangesAsync();
             }
-            await _signalRHub.Clients.All.SendAsync("LoadAppointment");
             return RedirectToPage("./Index", new { Message = "Appointment canceled!" });
         }
 
@@ -229,7 +226,6 @@ namespace Clinic_Management.Pages.Appointements
             {
                 appointment.Status = 7;
                 await _context.SaveChangesAsync();
-                await _signalRHub.Clients.All.SendAsync("LoadAppointment");
             }
             return RedirectToPage("./Index", new { Message = "Appointment declined!" });
         }

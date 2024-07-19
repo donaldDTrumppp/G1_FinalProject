@@ -1,6 +1,7 @@
 using Clinic_Management.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Clinic_Management.Pages.Authentication
 {
@@ -13,45 +14,38 @@ namespace Clinic_Management.Pages.Authentication
             _context = context;
         }
 
-        [TempData]
-        public string Message { get; set; }
-
         public async Task<IActionResult> OnGetAsync(string token)
         {
             if (string.IsNullOrEmpty(token))
             {
-                Message = "Invalid token.";
-                return Page();
+                return BadRequest("Invalid token");
             }
 
             var (isValid, userId, email) = TokenMail.ValidateToken(token);
-
             if (!isValid)
             {
-                Message = "The verification link has expired or is invalid. Please request a new one.";
-                return Page();
+                return BadRequest("Invalid or expired token");
             }
 
             var user = await _context.Users.FindAsync(userId);
-
             if (user == null || user.Email != email)
             {
-                Message = "User not found or email mismatch.";
-                return Page();
+                return NotFound("User not found");
             }
 
-            if (user.StatusId == 1)
+            if (user.StatusId == 3)
             {
-                Message = "Your account is already verified.";
-                return Page();
+                user.StatusId = 1;
+                await _context.SaveChangesAsync();
+                TempData["ConfirmationMessage"] = "Your email has been confirmed successfully. You can now log in to your account.";
+            }
+            else
+            {
+                TempData["ConfirmationMessage"] = "Your email was already confirmed or your account status is invalid.";
             }
 
-            user.StatusId = 1; // Active
-
-            await _context.SaveChangesAsync();
-
-            Message = "Your email has been verified successfully. You can now log in.";
-            return RedirectToPage("/Authentication/Login");
+            return Page();
         }
     }
 }
+

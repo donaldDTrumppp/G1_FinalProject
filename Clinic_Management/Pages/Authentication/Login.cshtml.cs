@@ -11,9 +11,9 @@ namespace Clinic_Management.Pages.Authentication
     {
         private readonly G1_PRJ_DBContext _context;
         private readonly IConfiguration _configuration;
-        private readonly Utils.Authentication authentication;
+        private readonly Utils.Authentication _authentication;
 
-        public LoginModel(G1_PRJ_DBContext context, IConfiguration configuration)
+        public LoginModel(G1_PRJ_DBContext context, IConfiguration configuration, Utils.Authentication authentication)
         {
             _context = context;
             _configuration = configuration;
@@ -40,7 +40,7 @@ namespace Clinic_Management.Pages.Authentication
                 ModelState.AddModelError("Username", "Username is invalid.");
                 return Page();
             }
-            if (!_context.Users.Any(u => u.Password == Password))
+            if (!_context.Users.Any(u => u.Password == _authentication.HashPassword(Password)))
             {
                 ModelState.AddModelError("Password", "Password is invalid.");
                 return Page();
@@ -57,7 +57,7 @@ namespace Clinic_Management.Pages.Authentication
                 .Select(r => r.RoleName)
                 .FirstOrDefaultAsync();
 
-                var token = authentication.GenerateJwtToken(user, role);
+                var token = _authentication.GenerateJwtToken(user, role);
                 Response.Cookies.Append("AuthToken", token);
                 Response.Cookies.Append("Username", user.Name);
 

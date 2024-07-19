@@ -117,10 +117,9 @@ namespace Clinic_Management.Pages.Authentication
             };
 
             _context.Users.Add(user);
-            Patient patient = new Patient();
-            patient.PatientId = user.UserId;
-            _context.Patients.Add(patient);
-            await _context.SaveChangesAsync();
+           
+           
+            _context.SaveChangesAsync();
             var token = TokenMail.GenerateToken(user.UserId, user.Email);
             var confirmationLink = Url.Page(
                 "/Authentication/ConfirmEmail",
@@ -133,7 +132,7 @@ namespace Clinic_Management.Pages.Authentication
             _emailService.SendEmailNoHeader(user.Email, "[Register] Verify Account", htmlContent);
 
             Message = "Registration successful. Please check your email and verify your account within 1 minute.";
-            return RedirectToPage("/Authentication/ConfirmEmail");
+            return RedirectToPage("/Authentication/Login");
 
          
         }
