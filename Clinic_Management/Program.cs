@@ -103,6 +103,7 @@ namespace Clinic_Management
 
             builder.Services.AddAuthorization(options =>
             {
+                options.AddPolicy("DoctorPolicy", policy => policy.RequireRole("Doctor"));
                 options.AddPolicy("StaffPolicy", policy => policy.RequireRole("Doctor", "Receptionist"));
                 options.AddPolicy("PatientPolicy", policy => policy.RequireRole("Patient"));
                 options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));

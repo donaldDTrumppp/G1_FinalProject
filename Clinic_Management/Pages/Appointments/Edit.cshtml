@@ -208,7 +208,7 @@
                             var currentDate = new DateOnly();
                         }
 
-                       <input datepicker datepicker-format="dd/mm/yyyy" name="requestedDate" value="@Model.Appointment.RequestedTime.ToString("dd/MM/yyyy")" id="requestDate" type="text" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
+                       <input datepicker datepicker-format="dd/mm/yyyy" name="requestedDateText" value="@Model.Appointment.RequestedTime.ToString("dd/MM/yyyy")" id="requestDate" type="text" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
                     </div>
                     <p id="requestedDate-error" style="color: red">@Model.dateError</p>
                 </div>

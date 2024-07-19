@@ -109,7 +109,7 @@ namespace Clinic_Management.Pages.Authentication
                 PhoneNumber = PhoneNumber,
                 Email = Email,
                 Address = Address,
-                RoleId = RoleId,
+                RoleId = _context.Roles.FirstOrDefault(r => r.RoleName == "Patient").RoleId,
                 Username = Username,
                 Password = _authentication.HashPassword(Password),
                 StatusId = StatusId

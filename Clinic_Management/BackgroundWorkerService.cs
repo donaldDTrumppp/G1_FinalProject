@@ -51,7 +51,7 @@ namespace Clinic_Management
                     var emailService = scope.ServiceProvider.GetRequiredService<EmailService>();
                     var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
                     UpdateAppointmentNotComingStatus(context, notificationService, emailService, config);
-                    //CheckForIncomingAppointments();
+                    CheckForIncomingAppointments(context, notificationService, emailService, config);
                     await Task.Delay(1000, stoppingToken);
                 }
                 
@@ -83,8 +83,8 @@ namespace Clinic_Management
                         notificationService.SendAppointmentNotification((int)appointments[i].PatientId, "You missed your appointment on " + appointments[i].RequestedTime, "");
                     }
                     
-                    //var htmlContent = await emailService.GetAppointmentNotComingEmail("appointment_not_coming.html", appointments[i].RequestedTime, appointments[i].PatientName);
-                    //emailService.SendEmailNoHeader(appointments[i].PatientEmail, "[Appointment] You Missed Your Appointment", htmlContent);
+                    var htmlContent = await emailService.GetAppointmentNotComingEmail("appointment_not_coming.html", appointments[i].RequestedTime, appointments[i].PatientName);
+                    emailService.SendEmailNoHeader(appointments[i].PatientEmail, "[Appointment] You Missed Your Appointment", htmlContent);
                     
                 }
 
@@ -120,7 +120,7 @@ namespace Clinic_Management
                         string activeLink = config["Host"] + config["Port"] + "/PatientAppointment/Details?id=" + appointment.AppointmentId;
                         if (appointment.PatientId != null)
                         {
-                            notificationService.SendAppointmentNotification((int)appointment.PatientId, "Just about " + Math.Ceiling(DateTime.Now.AddHours(1).Subtract(appointment.RequestedTime).TotalMinutes) + " minutes is your appointment", activeLink);
+                            notificationService.SendAppointmentNotification((int)appointment.PatientId, "Just about " + Math.Ceiling(appointment.RequestedTime.Subtract(DateTime.Now).TotalMinutes) + " minutes is your appointment", activeLink);
                         }
                         var htmlContent = await emailService.GetAppointmentReminderEmail("appointment_reminder.html", activeLink, appointment.PatientName);
                         emailService.SendEmailNoHeader(appointment.PatientEmail, "[Appointment] Appointment Reminder", htmlContent);

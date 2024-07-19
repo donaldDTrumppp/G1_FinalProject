@@ -10,6 +10,7 @@ using System.Composition.Convention;
 using Microsoft.AspNetCore.SignalR;
 using Clinic_Management.Hubs;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 namespace Clinic_Management.Pages.Appointments
 {
@@ -37,7 +38,7 @@ namespace Clinic_Management.Pages.Appointments
         public int requestedTime { get; set; }
 
         [BindProperty]
-        public DateTime requestedDate { get; set; }
+        public string requestedDateText { get; set; }
         
         [BindProperty]
         public int doctorId { get; set; }
@@ -122,7 +123,7 @@ namespace Clinic_Management.Pages.Appointments
         }
         public async Task<IActionResult> OnPostAsync(int? AppointmentId)
         {
-            
+            DateTime requestedDate = DateTime.ParseExact(requestedDateText, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             Appointment = await _context.Appointments.Include(a => a.Doctor).Include(a => a.Branch)
                 .Include(a => a.SpecialistNavigation).Include(a => a.StatusNavigation)
                 .Include(a => a.Doctor).Include(a => a.Receptionist).FirstOrDefaultAsync(m => m.AppointmentId == AppointmentId);
@@ -156,7 +157,7 @@ namespace Clinic_Management.Pages.Appointments
                 else
                 {
                     //requestedDate = assignTime();
-                    var appointment = _context.Appointments.FirstOrDefault(a => (a.DoctorId == doctorId && a.RequestedTime.Equals(DateTime.Parse(assignTime().ToString("yyyy-MM-dd HH:mm:ss"))) && a.Status == 1) && a.AppointmentId != Appointment.AppointmentId);
+                    var appointment = _context.Appointments.FirstOrDefault(a => (a.DoctorId == doctorId && a.RequestedTime.Equals(DateTime.Parse(assignTime(requestedDate).ToString("yyyy-MM-dd HH:mm:ss"))) && a.Status == 1) && a.AppointmentId != Appointment.AppointmentId);
                     if (appointment != null)
                     {
                         appointmentError += "The doctor already has an appointment at this time";
@@ -170,7 +171,7 @@ namespace Clinic_Management.Pages.Appointments
                             a.DoctorId = doctorId;
                             a.BranchId = branchId;
                             a.Specialist = specialistId;
-                            a.RequestedTime = DateTime.Parse(assignTime().ToString("yyyy-MM-dd HH:mm:ss"));
+                            a.RequestedTime = DateTime.Parse(assignTime(requestedDate).ToString("yyyy-MM-dd HH:mm:ss"));
                             if (a.Status == 1||a.Status==4)
                             {
                                 a.Status = 4;
@@ -189,7 +190,7 @@ namespace Clinic_Management.Pages.Appointments
             {
                 a.BranchId = branchId;
                 a.Specialist = specialistId;
-                a.RequestedTime = DateTime.Parse(assignTime().ToString("yyyy-MM-dd HH:mm:ss"));
+                a.RequestedTime = DateTime.Parse(assignTime(requestedDate).ToString("yyyy-MM-dd HH:mm:ss"));
                 a.Description = symptoms;
                 if(a.Status == 1)
                 {
@@ -217,7 +218,7 @@ namespace Clinic_Management.Pages.Appointments
             }
             return Page();
         }
-        public DateTime assignTime()
+        public DateTime assignTime(DateTime requestedDate)
         {
             switch (requestedTime)
             {
