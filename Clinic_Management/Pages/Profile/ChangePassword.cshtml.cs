@@ -24,8 +24,6 @@ namespace Clinic_Management.Pages.Profile
 
         [BindProperty]
         [Required(ErrorMessage = "New password is required.")]
-        [StringLength(30, MinimumLength = 8, ErrorMessage = "Password must be between 8 and 30 characters.")]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]+$", ErrorMessage = "Password must contain at least one uppercase letter and one number, and no special characters.")]
         [DataType(DataType.Password)]
         public string NewPassword { get; set; }
 
