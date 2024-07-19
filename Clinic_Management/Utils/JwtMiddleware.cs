@@ -25,11 +25,11 @@ namespace Clinic_Management.Utils
 
         private readonly Clinic_Management.Utils.Authentication _authentication;
 
-        public JwtMiddleware(RequestDelegate next, IConfiguration configuration, Clinic_Management.Models.G1_PRJ_DBContext context)
+        public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
             _configuration = configuration;
-            _ = new Authentication(context, configuration);
+         //   _ = new Authentication(context, configuration);
         }
 
         public async Task Invoke(HttpContext context)
@@ -39,7 +39,6 @@ namespace Clinic_Management.Utils
 
             // Check if the request path is in the excluded paths
 
-            var path = context.Request.Path.ToString();
             if (_excludedPaths.Contains(path, StringComparer.OrdinalIgnoreCase))
             {
                 await _next(context);
@@ -84,7 +83,7 @@ namespace Clinic_Management.Utils
                     RedirectToLogin(context);
                     return;
                 }
-
+                /*
                 string tokenJwt = context.Request.Cookies["AuthToken"];
                 User u = _authentication.GetUserFromToken(token);
                 if (u == null || u.Status.StatusName != "Active")
@@ -93,6 +92,7 @@ namespace Clinic_Management.Utils
                     RedirectToLogin(context);
                     return;
                 }
+                */
             }
             catch
             {

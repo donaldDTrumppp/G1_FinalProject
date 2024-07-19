@@ -39,8 +39,10 @@ namespace Clinic_Management
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            
             while (true)
             {
+                
                 using (var scope = _scopeFactory.CreateScope())
                 {
                     
@@ -52,6 +54,8 @@ namespace Clinic_Management
                     //CheckForIncomingAppointments();
                     await Task.Delay(1000, stoppingToken);
                 }
+                
+                await Task.Delay(1000, stoppingToken);
             }
         }
 

@@ -28,7 +28,6 @@ namespace Clinic_Management
             builder.Services.AddTransient<NotificationService>();
             builder.Services.AddTransient<Authentication>();
             builder.Services.AddTransient<PasswordService>();
-            
             /*
             builder.Services.AddSingleton<EmailService>();
             builder.Services.AddSingleton<SignalrServer>();
@@ -42,9 +41,10 @@ namespace Clinic_Management
 
             var configuration = builder.Configuration;
 
-
+            /*
             builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
             option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
+            */
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSession(options =>
             {
@@ -80,13 +80,14 @@ namespace Clinic_Management
                         var accessToken = context.Request.Query["access_token"];
                         // If the request is for our SignalR hub...
                         var path = context.HttpContext.Request.Path;
-                        
+                        var cookie = context.Request.Cookies["AuthToken"];
+                        /*
                         if (!string.IsNullOrEmpty(accessToken) &&
                             (path.StartsWithSegments("/signalrServer")))
                         {
-                            // Read the token out of the query string
-                            context.Token = accessToken;
-                        var cookie = context.Request.Cookies["AuthToken"];
+                            context.Token = cookie;
+                        }
+                        */
                         if (!string.IsNullOrEmpty(cookie))
                         {
                             context.Token = cookie;
@@ -94,7 +95,7 @@ namespace Clinic_Management
                         return Task.CompletedTask;
                     }
                 };
-
+                
             });
 
             builder.Services.AddAuthorization(options =>
