@@ -106,6 +106,7 @@ namespace Clinic_Management
                 options.AddPolicy("DoctorPolicy", policy => policy.RequireRole("Doctor"));
                 options.AddPolicy("StaffPolicy", policy => policy.RequireRole("Doctor", "Receptionist"));
                 options.AddPolicy("PatientPolicy", policy => policy.RequireRole("Patient"));
+                options.AddPolicy("ReceptionistPolicy", policy => policy.RequireRole("Receptionist"));
                 options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
             });
 

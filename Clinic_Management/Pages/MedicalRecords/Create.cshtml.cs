@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Clinic_Management.Pages.MedicalRecords
 {
-    [Authorize(Policy = "StaffPolicy")]
+    [Authorize(Policy = "DoctorPolicy")]
     public class CreateModel : PageModel
     {
         private readonly Clinic_Management.Models.G1_PRJ_DBContext _context;
