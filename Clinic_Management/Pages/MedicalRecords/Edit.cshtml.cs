@@ -19,12 +19,15 @@ namespace Clinic_Management.Pages.MedicalRecords
 
         private readonly EmailService _emailService;
 
+        private readonly NotificationService _notificationService;
+
         private readonly IConfiguration _config;
-        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config)
+        public EditModel(Clinic_Management.Models.G1_PRJ_DBContext context, EmailService emailService, IConfiguration config, NotificationService notificationService)
         {
             _context = context;
             _emailService = emailService;
             _config = config;
+            _notificationService = notificationService;
         }
 
         [BindProperty]
@@ -103,6 +106,9 @@ namespace Clinic_Management.Pages.MedicalRecords
 
             int TotalRecord = _context.MedicalRecords.ToList().Count;
             int PageIndex = TotalRecord % 5 == 0 ? TotalRecord / 5 : (TotalRecord / 5 + 1);
+
+            string activeLinkNoti = _config["Host"] + _config["Port"] + "/MedicalRecords/Details?id=" + MedicalRecord.MedicalrecordId;
+            await _notificationService.SendMedicalRecordNotification(MedicalRecord.PatientId.GetValueOrDefault(), $"A medical record has EDITED by doctor {MedicalRecord.Doctor.Name}", activeLinkNoti);
 
             string activeLink = _config["Host"] + _config["Port"] + "/MedicalRecords/Details?id=" + MedicalRecord.MedicalrecordId;
             var htmlContent = await _emailService.GetMedicalRecordEmail("medical_record_edited.html",
