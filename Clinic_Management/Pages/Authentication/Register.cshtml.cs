@@ -1,5 +1,9 @@
 using Clinic_Management.Models;
+using Clinic_Management.Services;
 using Clinic_Management.Utilities.MailSender;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
@@ -7,6 +11,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Clinic_Management.Pages.Authentication
@@ -14,10 +19,17 @@ namespace Clinic_Management.Pages.Authentication
     public class RegisterModel : PageModel
     {
         private readonly G1_PRJ_DBContext _context;
-
-        public RegisterModel(G1_PRJ_DBContext context)
+        private readonly Clinic_Management.Utils.Authentication _authentication;
+        private readonly EmailService _emailService;
+        private readonly IConfiguration _config;
+        private const string OtpCookieName = "OTP";
+        private const string OtpExpiryCookieName = "OTPExpiry";
+        public RegisterModel(G1_PRJ_DBContext context, Utils.Authentication authentication, EmailService emailService, IConfiguration congif)
         {
             _context = context;
+            _authentication = authentication;
+            _emailService = emailService;
+            _config = congif;
         }
 
         [BindProperty]
@@ -57,8 +69,9 @@ namespace Clinic_Management.Pages.Authentication
         [BindProperty]
         public int RoleId { get; set; } = 4;
         [BindProperty]
-        public int StatusId { get; set; } = 1;
+        public int StatusId { get; set; } = 3;
 
+        public string Message { get; set; } = "";
 
 
         public void OnGet()
@@ -89,52 +102,37 @@ namespace Clinic_Management.Pages.Authentication
                 ModelState.AddModelError("PhoneNumber", "Phone number already exists. Please use a different phone number.");
                 return Page();
             }
-           
 
-            var user = new User();
-            user.Name = Name;
-            user.Dob = Dob;
-            user.PhoneNumber = PhoneNumber;
-            user.Email = Email;
-            user.Address = Address;
-            user.RoleId = RoleId;
-            user.Username = Username;
-            user.Password = HashPassword(Password);
-            user.StatusId = StatusId;
+            var user = new User
+            {
+                Name = Name,
+                Dob = Dob,
+                PhoneNumber = PhoneNumber,
+                Email = Email,
+                Address = Address,
+                RoleId = RoleId,
+                Username = Username,
+                Password = _authentication.HashPassword(Password),
+                StatusId = StatusId
+            };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+            var token = TokenMail.GenerateToken(user.UserId, user.Email);
+            var confirmationLink = Url.Page(
+                "/Authentication/ConfirmEmail",
+                pageHandler: null,
+                values: new { token },
+                protocol: Request.Scheme);
 
-            // Generate and send confirmation email
-            //var token = Guid.NewGuid().ToString();
-            //HttpContext.Session.SetString("Confirmation_Email", Email);
-            //HttpContext.Session.SetString("Confirmation_Token", token);
+            string activeLink = _config["Host"] + _config["Port"] + "/Authentication/ConfirmEmail";
+            var htmlContent = await _emailService.GetRegisterEmail("register.html", confirmationLink, user.Name);
+            _emailService.SendEmailNoHeader(user.Email, "[Register] Verify Account", htmlContent);
 
-            //var confirmationLink = Url.Page(
-            //    "/Authentication/ConfirmEmail",
-            //    pageHandler: null,
-            //    values: new { token },
-            //    protocol: Request.Scheme);
+            Message = "Registration successful. Please check your email and verify your account within 1 minute.";
+            return RedirectToPage("/Authentication/ConfirmEmail");
 
-            //await _mailSender.SendMailAsync(user.Email, "Confirm your email",
-            //    $"Please confirm your email by <a href='{HtmlEncoder.Default.Encode(confirmationLink)}'>clicking here</a>.");
-
-            return RedirectToPage("/Index");
+         
         }
-
-
-        private string HashPassword(string password)
-        {
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
-            byte[] hash = pbkdf2.GetBytes(20);
-            byte[] hashBytes = new byte[36];
-            Array.Copy(salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, 20);
-            string hashedPassword = Convert.ToBase64String(hashBytes);
-            return hashedPassword;
-        }
-
     }
 }
