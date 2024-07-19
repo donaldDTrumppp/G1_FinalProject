@@ -81,7 +81,7 @@ namespace Clinic_Management.Pages.Admin
             {
                 query = query.Where(a => a.Role.RoleId == RoleId);
             }
-            //TODO: add gay gender
+            //TODO: add filter gender
             //if (Gender != 0)
             //{
             //    query = query.Where(a => a. == RoleId);

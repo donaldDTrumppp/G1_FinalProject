@@ -22,6 +22,7 @@ namespace Clinic_Management
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<G1_PRJ_DBContext>();
             
+
             builder.Services.AddTransient<EmailService>();
             builder.Services.AddTransient<SignalrServer>();
             builder.Services.AddTransient<UserContextService>();
@@ -36,6 +37,7 @@ namespace Clinic_Management
             builder.Services.AddSingleton<Authentication>();
             builder.Services.AddSingleton<PasswordService>();
             */
+
             builder.Services.AddSignalR();
             builder.Services.AddHostedService<BackgroundWorkerService>();
 
@@ -115,6 +117,7 @@ namespace Clinic_Management
                 app.UseHsts();
             }
             app.UseStatusCodePagesWithReExecute("/Errors/{0}");
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

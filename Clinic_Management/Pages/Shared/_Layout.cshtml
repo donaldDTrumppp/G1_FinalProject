@@ -398,6 +398,11 @@
     <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
     <script>
 
+        //Set cookie time
+        function deleteCookie(name) {
+            document.cookie = name + '=; Max-Age=-99999999;';
+        }
+
         function disableNt() {
             document.getElementById("nt").style.display = "none";
         }
@@ -434,6 +439,7 @@
                             ntimage.src = image;
                             document.getElementById("newsubject").innerHTML = notification.subject;
                             document.getElementById("newcomment").innerHTML = notification.content;
+
                             if (document.getElementById("toast-notification").classList.contains("animate-[fade-out_2s_ease-out_1s_1_forwards]")) {
                                 document.getElementById("toast-notification").classList.remove("animate-[fade-out_2s_ease-out_1s_1_forwards]")
                             }
@@ -472,6 +478,19 @@
                                 + '</a>';
                             resultDiv.innerHTML += a;
                         });
+
+
+                        connection.on("ReceiveUserStatusChange", function (username, isActive) {
+                            console.log(username);
+                            console.log(isActive);
+                            if (username && !isActive) {
+                                //TODO: Delete Token
+                                deleteCookie('AuthToken');
+                                deleteCookie('Username');
+                                window.location.href = "https://localhost:7200/Authentication/Login";
+                            }
+                        });
+
                     }).catch(function (err) {
                         return console.error(err.toString());
                     });
@@ -518,6 +537,7 @@
                 }
                 var json = await response.json();
                 console.log(json);
+
                 var resultDiv = document.getElementById('notify');
                 json.forEach(notify => {
                     var image = "";
