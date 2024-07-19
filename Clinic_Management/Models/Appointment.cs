@@ -21,13 +21,14 @@ namespace Clinic_Management.Models
         public int? Specialist { get; set; }
         public string? Description { get; set; }
         public int Status { get; set; }
+        public bool? Reminded { get; set; }
 
-        public virtual Branch Branch { get; set; } = null!;
+        public virtual Branch? Branch { get; set; } = null!;
         public virtual User? Doctor { get; set; }
         public virtual Patient? Patient { get; set; }
         public virtual User? Receptionist { get; set; }
         public virtual Specialist? SpecialistNavigation { get; set; }
-        public virtual AppointmentStatus StatusNavigation { get; set; } = null!;
+        public virtual AppointmentStatus? StatusNavigation { get; set; } = null!;
         public virtual MedicalRecord? MedicalRecord { get; set; }
     }
 }

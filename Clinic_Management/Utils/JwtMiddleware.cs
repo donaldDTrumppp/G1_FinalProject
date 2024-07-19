@@ -15,6 +15,7 @@ namespace Clinic_Management.Utils
             "/Index",
             "/PatientAppointment/Create",
             "/",
+            "/api/Authentication",
             "/signalrServer/negotiate",
             "/signalrServer"
         }; 

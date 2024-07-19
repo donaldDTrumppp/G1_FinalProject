@@ -26,12 +26,12 @@ function moveDiv() {
 }
 
 // Tạo một MutationObserver để theo dõi sự thay đổi thuộc tính của phần tử
-const observer = new MutationObserver(detectClassChange);
+var observer1 = new MutationObserver(detectClassChange);
 
 // Bắt đầu quan sát phần tử với các tùy chọn được chỉ định
 const targetNode = document.getElementById('verify');
 const config = { attributes: true, attributeFilter: ['class'] };
-observer.observe(targetNode, config);
+observer1.observe(targetNode, config);
 
 window.onload = function () {
     moveDiv();

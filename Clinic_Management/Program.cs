@@ -21,12 +21,22 @@ namespace Clinic_Management
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<G1_PRJ_DBContext>();
+            
             builder.Services.AddTransient<EmailService>();
             builder.Services.AddTransient<SignalrServer>();
             builder.Services.AddTransient<UserContextService>();
             builder.Services.AddTransient<NotificationService>();
             builder.Services.AddTransient<Authentication>();
             builder.Services.AddTransient<PasswordService>();
+            
+            /*
+            builder.Services.AddSingleton<EmailService>();
+            builder.Services.AddSingleton<SignalrServer>();
+            builder.Services.AddSingleton<UserContextService>();
+            builder.Services.AddSingleton<NotificationService>();
+            builder.Services.AddSingleton<Authentication>();
+            builder.Services.AddSingleton<PasswordService>();
+            */
             builder.Services.AddSignalR();
             builder.Services.AddHostedService<BackgroundWorkerService>();
 
@@ -71,6 +81,7 @@ namespace Clinic_Management
                         var accessToken = context.Request.Query["access_token"];
                         // If the request is for our SignalR hub...
                         var path = context.HttpContext.Request.Path;
+                        
                         if (!string.IsNullOrEmpty(accessToken) &&
                             (path.StartsWithSegments("/signalrServer")))
                         {
@@ -105,7 +116,6 @@ namespace Clinic_Management
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
             app.UseMiddleware<JwtMiddleware>();
 

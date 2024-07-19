@@ -24,6 +24,8 @@ namespace Clinic_Management.Services
         {
             Notification n = new Notification();
             n.ReceiverId = userId;
+            User user = _context.Users.FirstOrDefault(u => u.UserId == userId);
+          
             n.Content = content;
             n.Subject = "System Message";
             n.Link = link;
@@ -37,12 +39,16 @@ namespace Clinic_Management.Services
             {
                 n.IsRead = false;
             }
+            _context.Notifications.Add(n);
+            _context.SaveChanges();
+            _signalRHub.Clients.Group(user.Username.ToString()).SendAsync("LoadNotifications", n);
         }
 
         public async Task SendMedicalRecordNotification(int userId, string content, string link)
         {
             Notification n = new Notification();
             n.ReceiverId = userId;
+            User user = _context.Users.FirstOrDefault(u => u.UserId == userId);
             n.Content = content;
             n.Subject = "Medical Record";
             n.Link = link;
@@ -56,12 +62,16 @@ namespace Clinic_Management.Services
             {
                 n.IsRead = false;
             }
+            _context.Notifications.Add(n);
+            _context.SaveChanges();
+            _signalRHub.Clients.Group(user.Username.ToString()).SendAsync("LoadNotifications", n);
         }
 
         public async Task SendAppointmentNotification(int userId, string content, string link)
         {
             Notification n = new Notification();
             n.ReceiverId = userId;
+            User user = _context.Users.FirstOrDefault(u => u.UserId == userId);
             n.Content = content;
             n.Subject = "Appointment";
             n.Link = link;
@@ -75,6 +85,11 @@ namespace Clinic_Management.Services
             {
                 n.IsRead = false;
             }
+            Console.WriteLine(user.Username);
+            _context.Notifications.Add(n);
+            _context.SaveChanges();
+            _signalRHub.Clients.Group(user.Username.ToString()).SendAsync("LoadNotifications", n);
+
         }
 
         public async Task SendAppointmentNotificationToAllReceptionist(int branchId, string content, string link)

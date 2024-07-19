@@ -85,6 +85,8 @@ namespace Clinic_Management.Models
 
                 entity.Property(e => e.ReceptionistId).HasColumnName("receptionist_id");
 
+                entity.Property(e => e.Reminded).HasColumnName("reminded");
+
                 entity.Property(e => e.RequestedTime)
                     .HasColumnType("datetime")
                     .HasColumnName("requested_time");

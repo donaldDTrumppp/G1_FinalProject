@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="~/css/styles.css?v=2" asp-append-version="true" />
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+
     <style>
         #animateDiv {
             width: 100%;
@@ -433,9 +434,6 @@
                             ntimage.src = image;
                             document.getElementById("newsubject").innerHTML = notification.subject;
                             document.getElementById("newcomment").innerHTML = notification.content;
-                            console.log(ntimage.src);
-                            console.log(document.getElementById("newsubject").innerHTML);
-                            console.log(document.getElementById("newcomment").innerHTML);
                             if (document.getElementById("toast-notification").classList.contains("animate-[fade-out_2s_ease-out_1s_1_forwards]")) {
                                 document.getElementById("toast-notification").classList.remove("animate-[fade-out_2s_ease-out_1s_1_forwards]")
                             }
@@ -519,6 +517,7 @@
                     throw new Error(`Response status: ${response.status}`);
                 }
                 var json = await response.json();
+                console.log(json);
                 var resultDiv = document.getElementById('notify');
                 json.forEach(notify => {
                     var image = "";
