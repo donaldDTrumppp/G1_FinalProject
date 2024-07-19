@@ -1,4 +1,5 @@
 ﻿using Clinic_Management.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,7 +17,7 @@ namespace Clinic_Management.Utils
             _context = context;
             _configuration = configuration;
         }
-        public string GenerateJwtToken(User user, string roleName)
+        public string GenerateJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtOptions");
             var key = Encoding.UTF8.GetBytes(jwtSettings["SigningKey"]);
@@ -28,7 +29,7 @@ namespace Clinic_Management.Utils
                 new Claim(JwtRegisteredClaimNames.NameId, user.UserId.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
                 new Claim(JwtRegisteredClaimNames.Name, user.Name),
-                new Claim("roleId", user.RoleId.ToString())
+                new Claim("role", _context.Roles.FirstOrDefault(r => r.RoleId == user.RoleId).RoleName)
             };
 
             var token = new JwtSecurityToken(
@@ -101,10 +102,10 @@ namespace Clinic_Management.Utils
             }
         }
 
-        public User GetUserFromToken(string token, string signingKey)
+        public User GetUserFromToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(signingKey);
+            var key = Encoding.UTF8.GetBytes(_configuration["JwtOptions:SigningKey"]);
 
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
@@ -116,9 +117,9 @@ namespace Clinic_Management.Utils
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
-            int userId = int.Parse(jwtToken.Claims.First(x => x.Type == "userId").Value);
+            int userId = int.Parse(jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
 
-            return _context.Users.FirstOrDefault(u => u.UserId == userId);
+            return _context.Users.Include(s => s.Status).FirstOrDefault(u => u.UserId == userId);
         }
 
     }

@@ -73,7 +73,6 @@ namespace Clinic_Management
                     ValidAudience = jwtSettings["Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(key)
                 };
-
                 options.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
@@ -87,12 +86,16 @@ namespace Clinic_Management
                         {
                             // Read the token out of the query string
                             context.Token = accessToken;
+                        var cookie = context.Request.Cookies["AuthToken"];
+                        if (!string.IsNullOrEmpty(cookie))
+                        {
+                            context.Token = cookie;
                         }
                         return Task.CompletedTask;
                     }
                 };
-            }
-            );
+
+            });
 
             builder.Services.AddAuthorization(options =>
             {
