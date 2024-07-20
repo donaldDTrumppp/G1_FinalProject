@@ -658,16 +658,18 @@
                         document.getElementById('book-appointments-link').style.display = 'block';
                         document.getElementById('medical-record-link').style.display = 'block';
                     }
-                    if (role.trim() === 'Receptionist') {
+                    else if (role.trim() === 'Receptionist') {
                         document.getElementById('staff-view-appointments-link').style.display = 'block';
                         document.getElementById('medical-record-link').style.display = 'block';
                     }
-                    if (role.trim() === 'Doctor') {
+                    else if (role.trim() === 'Doctor') {
                         document.getElementById('staff-view-appointments-link').style.display = 'block';
                         document.getElementById('medical-record-link').style.display = 'block';
                     }
-                    if (role.trim() === 'Admin') {
+                    else if (role.trim() === 'Admin') {
                         document.getElementById('users-link').style.display = 'block';
+                    }else {
+                        document.getElementById('book-appointments-link').style.display = 'block';
                     }
                 } else {
                     console.error('Failed to fetch role');
