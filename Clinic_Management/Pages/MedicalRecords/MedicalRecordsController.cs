@@ -14,11 +14,12 @@ namespace Clinic_Management.Pages.MedicalRecords
     {
         private readonly G1_PRJ_DBContext _context;
         private AppointmentBrotherCode brotherCode;
-
-        public MedicalRecordsController(G1_PRJ_DBContext context)
+        private readonly Clinic_Management.Utils.Authentication _authentication;
+        public MedicalRecordsController(G1_PRJ_DBContext context, Clinic_Management.Utils.Authentication authentication)
         {
             _context = context;
             brotherCode = new AppointmentBrotherCode(_context);
+            _authentication = authentication;
         }
 
         // GET: api/MedicalRecords
@@ -254,6 +255,18 @@ namespace Clinic_Management.Pages.MedicalRecords
 
                 return File(stream, "application/xml", "medical_records.xml");
             }
+        }
+
+        [HttpGet("role")]
+        public async Task<ActionResult<String>> GetCurrentRole()
+        {
+            string token = HttpContext.Request.Cookies["AuthToken"];
+            User u = _authentication.GetUserFromToken(token);
+            if (u == null)
+            {
+                return "Cut";
+            }
+            return u.Role.RoleName;
         }
     }
 

@@ -67,11 +67,11 @@ namespace Clinic_Management.Pages.MedicalRecords
             {
                 if(u.Role.RoleName == "Patient")
                 {
-
+                    query = query.Where(m => m.PatientId == u.UserId);
                 }
                 else if (u.Role.RoleName == "Doctor")
                 {
-
+                    query = query.Where(m => m.DoctorId == u.UserId);
                 }
                 else if (u.Role.RoleName == "Receptionist")
                 {
