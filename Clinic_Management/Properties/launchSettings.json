@@ -9,6 +9,15 @@
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7200;http://localhost:5270"
     },
+    "Clinic_Management2": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:8888"
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,

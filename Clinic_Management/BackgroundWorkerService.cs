@@ -10,12 +10,7 @@ namespace Clinic_Management
     public class BackgroundWorkerService : BackgroundService
     {
         readonly ILogger<BackgroundWorkerService> _logger;
-
-
-
-
         private readonly IServiceScopeFactory _scopeFactory;
-
 
         public BackgroundWorkerService(IServiceScopeFactory scopeFactory, ILogger<BackgroundWorkerService> logger)
         {
@@ -64,7 +59,6 @@ namespace Clinic_Management
         {
             try
             {
-
                 List<Appointment> appointments = context.Appointments
                     .Where(a => a.StatusNavigation.StatusName == "Scheduled" || a.StatusNavigation.StatusName == "Rescheduled")
                     .Where(a => a.MedicalRecord == null)
@@ -72,7 +66,6 @@ namespace Clinic_Management
                     .Include(a => a.Patient)
                     .Include(a => a.MedicalRecord)
                     .ToList();
-
                 for (int i = 0; i < appointments.Count; i++)
                 {
                     appointments[i].Status = context.AppointmentStatuses.FirstOrDefault(s => s.StatusName == "Not coming").StatusId;
@@ -85,7 +78,6 @@ namespace Clinic_Management
                     
                     var htmlContent = await emailService.GetAppointmentNotComingEmail("appointment_not_coming.html", appointments[i].RequestedTime, appointments[i].PatientName);
                     emailService.SendEmailNoHeader(appointments[i].PatientEmail, "[Appointment] You Missed Your Appointment", htmlContent);
-                    
                 }
 
             }

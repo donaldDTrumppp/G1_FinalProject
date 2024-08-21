@@ -7,7 +7,59 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Clinic_Management</title>
+    <title>Basiha Medical - @ViewData["Title"]</title>
+    
+    <!-- SEO plugin start -->
+    <meta name="description" content="Book appointments and schedule treatments at Basiha Medical, your trusted healthcare partner." />
+    <meta name="keywords" content="medical appointments, healthcare, treatment scheduling, Basiha Medical" />
+    <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
+    <link rel="canonical" href="https://www.basihamedical.com">
+
+    @* Social media *@
+    <meta property="og:title" content="Basiha Medical - Book Your Appointment" />
+    <meta property="og:description" content="Easily book your medical appointments and schedule treatments online with Basiha Medical." />
+    <meta property="og:image" content="https://www.basihamedical.com/images/banner-img.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:description" content="Book appointments and schedule treatments at Basiha Medical, your trusted healthcare partner.">
+    <meta property="og:url" content="https://www.basihamedical.com">
+    <meta property="og:image" content="https://www.basihamedical.com/images/banner-img.png">
+    <meta property="og:image:secure_url" content="https://www.basihamedical.com/images/banner-img.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="rank math">
+    <meta property="og:image:type" content="image/png">
+
+    @* Twitter *@
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Basiha Medical - Book Your Appointment" />
+    <meta name="twitter:description" content="Book appointments and schedule treatments at Basiha Medical, your trusted healthcare partner." />
+    <meta name="twitter:image" content="URL_to_your_image" />
+    <!-- SEO plugin end -->
+    <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@type": "MedicalOrganization",
+            "name": "Basiha Medical",
+            "url": "https://www.basihamedical.com",
+            "logo": "/images/image.png",
+            "sameAs": [
+                "Social_media_links"
+            ],
+            "contactPoint": {
+                "@@type": "ContactPoint",
+                "telephone": "+84123456789",
+                "contactType": "Customer Service"
+            },
+            "address": {
+                "@@type": "PostalAddress",
+                "road": "Khu 2 Hoàng Cương",
+                "district": "Thanh Ba",
+                "city": "Phú Thọ"
+            }
+        }
+    </script>
+
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css?v=1" asp-append-version="true" />
     <link rel="stylesheet" href="~/Clinic_Management.styles.css" asp-append-version="true" />
@@ -629,21 +681,16 @@
             return `${day}/${month}/${year}`;
         }
     </script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script src="https://unpkg.com/flowbite@1.5.1/dist/flowbite.js"></script>
 
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131505823-4"></script>
+    <!-- Google tag (gtag.js) -->
+    <script src="https://www.googletagmanager.com/gtag/js?id=G-2L3JZDSC21"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
-        gtag('config', 'UA-131505823-4');
-
+        gtag('config', 'G-2L3JZDSC21');
     </script>
     <script>
         async function fetchUserRole() {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 public static class TokenMail
@@ -8,7 +7,7 @@ public static class TokenMail
 
     public static string GenerateToken(int userId, string email)
     {
-        var expiryTime = DateTime.UtcNow.AddMinutes(1);
+        var expiryTime = DateTime.UtcNow.AddMinutes(10);
         var data = $"{userId}:{email}:{expiryTime:yyyyMMddHHmmss}";
         var encodedData = Convert.ToBase64String(Encoding.UTF8.GetBytes(data));
         var hash = ComputeHash(encodedData);

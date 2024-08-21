@@ -1,14 +1,9 @@
-
-using Clinic_Management.Hubs;
+using AspNetCoreRateLimit;
 using Clinic_Management.Models;
 using Clinic_Management.Services;
 using Clinic_Management.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Configuration;
 using System.Text;
 
 namespace Clinic_Management
@@ -18,6 +13,25 @@ namespace Clinic_Management
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var configuration = builder.Configuration;
+
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(7200, listenOptions => listenOptions.UseHttps()); // HTTPS
+                options.ListenAnyIP(5270); // HTTP
+                options.ListenAnyIP(8888, listenOptions => listenOptions.UseHttps()); // Additional HTTPS URL
+                options.ListenAnyIP(9999, listenOptions => listenOptions.UseHttps()); // Additional HTTPS URL
+            });
+
+            // Configure logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
+
+            builder.Services.AddMemoryCache();
+            builder.Services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
+            builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
             // Add services to the container.
             builder.Services.AddRazorPages();
@@ -30,24 +44,22 @@ namespace Clinic_Management
             builder.Services.AddTransient<NotificationService>();
             builder.Services.AddTransient<Authentication>();
             builder.Services.AddTransient<PasswordService>();
-            /*
-            builder.Services.AddSingleton<EmailService>();
-            builder.Services.AddSingleton<SignalrServer>();
-            builder.Services.AddSingleton<UserContextService>();
-            builder.Services.AddSingleton<NotificationService>();
-            builder.Services.AddSingleton<Authentication>();
-            builder.Services.AddSingleton<PasswordService>();
-            */
 
             builder.Services.AddSignalR();
             builder.Services.AddHostedService<BackgroundWorkerService>();
 
-            var configuration = builder.Configuration;
+            
 
             /*
             builder.Services.AddDbContext<G1_PRJ_DBContext>(option =>
             option.UseSqlServer(configuration.GetConnectionString("MyCnn")));
             */
+
+            //Reverse Proxy
+            builder.Services.AddReverseProxy()
+                .LoadFromConfig(configuration.GetSection("ReverseProxy"));
+            builder.Services.AddHealthChecks();
+            
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSession(options =>
             {
@@ -110,8 +122,6 @@ namespace Clinic_Management
                 options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
             });
 
-
-
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
@@ -136,6 +146,17 @@ namespace Clinic_Management
             app.MapRazorPages();
             app.MapHub<SignalrServer>("/signalrServer");
 
+            // ReverseProxy Map
+
+            app.MapReverseProxy();
+            app.MapHealthChecks("health");
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    // ReverseProxy Map
+            //    app.MapReverseProxy();
+            //    app.MapHealthChecks("health");
+            //});
 
             app.MapGet("/", context =>
             {
