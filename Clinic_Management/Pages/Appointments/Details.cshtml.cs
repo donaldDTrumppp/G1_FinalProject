@@ -42,10 +42,26 @@ namespace Clinic_Management.Pages.Appointments
                 return NotFound();
             }
 
-            var appointment= await _context.Appointments.Include(a=>a.Doctor).Include(a=>a.Branch).Include(p=>p.Patient)
-                .Include(a=>a.SpecialistNavigation).Include(a=>a.StatusNavigation)
-                .Include(a=>a.Doctor).Include(a=>a.Receptionist).FirstOrDefaultAsync(m => m.AppointmentId == id);
-            patient = _context.Users.Include(p=>p.Patient).Include(p=>p.Patient.MedicalRecords).FirstOrDefault(p => p.UserId == appointment.PatientId);
+            var appointment= await _context.Appointments
+                .Include(a=>a.Doctor)
+                .Include(a=>a.Branch)
+                .Include(p=>p.Patient)
+                .Include(a=>a.SpecialistNavigation)
+                .Include(a=>a.StatusNavigation)
+                .Include(a=>a.Doctor)
+                .Include(a=>a.Receptionist)
+                .FirstOrDefaultAsync(m => m.AppointmentId == id);
+
+            if(appointment == null)
+            {
+                return NotFound();
+            }
+
+            patient = _context.Users
+                .Include(p=>p.Patient)
+                .Include(p=>p.Patient.MedicalRecords)
+                .FirstOrDefault(p => p.UserId == appointment.PatientId);
+
             if (patient != null)
             {
                 MedicalRecords = _context.MedicalRecords.Where(m => m.PatientId == patient.UserId).ToList();
@@ -107,6 +123,7 @@ namespace Clinic_Management.Pages.Appointments
             else
             {
                 appointment.DoctorId = user.UserId;
+                appointment.Status = 1;
                 _context.SaveChanges();
                 return RedirectToPage("/Appointments/Index", new { Message = "Appointment updated!" });
             }

@@ -81,11 +81,14 @@ namespace Clinic_Management.Pages.MedicalRecords
             //Rescheduled
             //Not coming
             //Wait for approval
+            var token = HttpContext.Request.Cookies["AuthToken"];
+            User user = _context.Users.FirstOrDefault(u => u.UserId == _authentication.GetUserIdFromToken(token));
+
             var apms = _context.Appointments
                 .Include(m => m.SpecialistNavigation)
                 .Include(m => m.StatusNavigation)
                 .Include(d => d.Doctor)
-                .Where(a => a.StatusNavigation.StatusName == "Scheduled" || a.StatusNavigation.StatusName == "Rescheduled")
+                .Where(a => a.DoctorId == user.UserId &&  (a.StatusNavigation.StatusName == "Scheduled" || a.StatusNavigation.StatusName == "Rescheduled"))
                 .ToList();
             var basicApms = apms.Select(s => new BasicAppointment
             {

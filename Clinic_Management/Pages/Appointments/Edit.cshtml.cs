@@ -221,7 +221,22 @@ namespace Clinic_Management.Pages.Appointments
                 await _context.SaveChangesAsync();
                 string activeLink = _configuration["Host"] + _configuration["Port"] + "/PatientAppointment/Details?id=" + a.AppointmentId;
 
-                var htmlContent = await _emailService.GetAppointmentApprovedEmail("appointment_approved.html", a.Branch.BranchName, a.PatientName, a.PatientAddress, a.PatientDob.ToString(), a.PatientPhoneNumber, a.PatientEmail, a.RequestedTime.ToString(), a.SpecialistNavigation.SpecialistName, a.Description, activeLink, a.Doctor.Name, a.Receptionist.Name, "Approved");
+                var htmlContent = await _emailService.GetAppointmentApprovedEmail(
+                    "appointment_approved.html",
+                    a.Branch.BranchName,
+                    a.PatientName,
+                    a.PatientAddress,
+                    a.PatientDob.ToString(),
+                    a.PatientPhoneNumber,
+                    a.PatientEmail,
+                    a.RequestedTime.ToString(),
+                    a.SpecialistNavigation.SpecialistName,
+                    a.Description,
+                    activeLink,
+                    a.Doctor.Name,
+                    a.Receptionist.Name,
+                    "Approved"
+                    );
                 _emailService.SendEmailAppointment(a.PatientEmail, "[Appointment Approved] Your Appointment Has Been Approved", htmlContent);
                 if (a.PatientId != null)
                 {

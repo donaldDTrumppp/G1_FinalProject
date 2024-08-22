@@ -16,7 +16,7 @@ namespace Clinic_Management.Pages.Authentication
         [BindProperty]
         public string Message { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string token, string Message)
+        public async Task<IActionResult> OnGetAsync(string token, string? Message)
         {
             this.Message = Message;
             if (string.IsNullOrEmpty(token))
@@ -48,7 +48,13 @@ namespace Clinic_Management.Pages.Authentication
             }
 
             user.StatusId = 1; // Active
+            var patient = new Patient
+            {
+                PatientId = user.UserId,
+                NumberOfVisits = 0
+            };
 
+            await _context.Patients.AddAsync(patient);
             await _context.SaveChangesAsync();
 
             Message = "Your email has been verified successfully. You can now log in.";

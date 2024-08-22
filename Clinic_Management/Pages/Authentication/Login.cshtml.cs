@@ -42,12 +42,12 @@ namespace Clinic_Management.Pages.Authentication
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            
             if (!_context.Users.Any(u => u.Username == Username))
             {
                 ModelState.AddModelError("Username", "Username is invalid.");
                 return Page();
             }
+
             if (!_context.Users.Any(u => u.Password == _passwordService.HashPassword(Password)))
             {
                 ModelState.AddModelError("Password", "Password is invalid.");
@@ -57,6 +57,12 @@ namespace Clinic_Management.Pages.Authentication
             var user = await _context.Users
                 .Where(u => (u.Username == Username && u.Password == _passwordService.HashPassword(Password)) || (u.Email == Username && u.Password == Password))
                 .FirstOrDefaultAsync();
+
+            if(user == null)
+            {
+                ModelState.AddModelError("Password", "Username and password incorrect");
+                return Page();
+            }
 
             if (user.StatusId == 1)
             {

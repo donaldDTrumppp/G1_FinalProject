@@ -36,7 +36,6 @@ namespace Clinic_Management
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<G1_PRJ_DBContext>();
-            
 
             builder.Services.AddTransient<EmailService>();
             builder.Services.AddTransient<SignalrServer>();
@@ -129,7 +128,7 @@ namespace Clinic_Management
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-            app.UseStatusCodePagesWithReExecute("/Errors/{0}");
+            app.UseStatusCodePagesWithReExecute("/Home/{0}");
 
 
             app.UseHttpsRedirection();

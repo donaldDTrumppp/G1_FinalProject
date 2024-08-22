@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -114,8 +115,7 @@ namespace Clinic_Management.Pages.Authentication
                 Password = _authentication.HashPassword(Password),
                 StatusId = StatusId
             };
-
-            _context.Users.Add(user);
+            _context.Users.Add(user);           
             await _context.SaveChangesAsync();
             var token = TokenMail.GenerateToken(user.UserId, user.Email);
             var confirmationLink = Url.Page(

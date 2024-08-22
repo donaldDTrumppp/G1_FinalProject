@@ -14,6 +14,7 @@ namespace Clinic_Management.Utils
             "/Authentication/Register",
             "/Authentication/ConfirmEmail",
             "/Authentication/ResetPassword",
+            "/Authentication/ForgotPassword",
             "/Authentication/Logout",
             "/Index",
             "/PatientAppointment/Create",
@@ -22,7 +23,8 @@ namespace Clinic_Management.Utils
             "/signalrServer/negotiate",
             "/signalrServer",
             "/Home/404",
-            "/Home/403"
+            "/Home/403",
+            "/Error/400"
         };
 
 
